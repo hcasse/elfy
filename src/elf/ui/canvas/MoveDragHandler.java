@@ -1,5 +1,5 @@
 /*
- * ElfSim tool
+ * ElfUI library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -17,62 +17,46 @@
  */
 package elf.ui.canvas;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 
 /**
- * Implements a default item without any effect.
+ * Drag handler moving the selection.
  * @author casse
  */
-public class NullItem implements Item {
-	public static Rectangle EMPTY = new Rectangle(0, 0, 0, 0);
+public class MoveDragHandler implements DragHandler {
+	Canvas canvas;
+	int last_x, last_y;
 	
 	@Override
-	public void display(Graphics2D g) {
+	public void install(Canvas canvas) {
+		this.canvas = canvas;
 	}
 
 	@Override
-	public Rectangle getDisplayRect() {
-		return EMPTY;
+	public void uninstall() {
+		canvas = null;
 	}
 
 	@Override
-	public void move(int dx, int dy) {
+	public void onBegin(MouseEvent event) {
+		last_x = event.getX();
+		last_y = event.getY();
 	}
 
 	@Override
-	public boolean acceptsSelect(Collection<Item> selection) {
-		return false;
+	public void onDrag(MouseEvent event) {
+		if(!canvas.getSelection().isEmpty())
+			for(Item item: canvas.getSelection()) {
+				canvas.repaint(item.getDisplayRect());
+				item.move(event.getX() - last_x, event.getY() - last_y);
+				canvas.repaint(item.getDisplayRect());
+			}
+		last_x = event.getX();
+		last_y = event.getY();
 	}
 
 	@Override
-	public boolean acceptsMove(int dx, int dy) {
-		return false;
-	}
-
-	@Override
-	public int getDepth() {
-		return 0;
-	}
-
-	@Override
-	public boolean isInside(int x, int y) {
-		return false;
-	}
-
-	@Override
-	public void onMouseEvent(MouseEvent event) {
-	}
-
-	@Override
-	public int getFlags() {
-		return 0;
-	}
-
-	@Override
-	public void setFlags(int flags) {
+	public void onEnd(MouseEvent event) {
 	}
 
 }

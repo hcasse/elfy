@@ -30,13 +30,24 @@ public interface Item {
 	public static final int
 		OVER 		= 0x0001,
 		SELECTED 	= 0x0002; 
+
+	/**
+	 * Get the flags of the item.
+	 * @return		Flags.
+	 */
+	int getFlags();
+	
+	/**
+	 * Set the flags of the item.
+	 * @param flags		Item flags.
+	 */
+	void setFlags(int flags);
 	
 	/**
 	 * Called to display the item.
 	 * @param g				Graphics to use.
-	 * @param flags			Combination of OVER and SELECTED.
 	 */
-	void display(Graphics2D g, int flags);
+	void display(Graphics2D g);
 	
 	/**
 	 * Get the display rectangle, typically for refresh.

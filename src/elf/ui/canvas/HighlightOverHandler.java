@@ -1,5 +1,5 @@
 /*
- * ElfSim tool
+ * ElfUI library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -17,62 +17,56 @@
  */
 package elf.ui.canvas;
 
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
-import java.util.Collection;
 
 /**
- * Implements a default item without any effect.
+ * Over-handler highlighting the item under.
  * @author casse
+ *
  */
-public class NullItem implements Item {
-	public static Rectangle EMPTY = new Rectangle(0, 0, 0, 0);
+public class HighlightOverHandler implements OverHandler {
+	Canvas canvas;
+	Item item;
 	
 	@Override
-	public void display(Graphics2D g) {
+	public void onMove(MouseEvent event) {
+		
+		// already on the same ?
+		if(item != null) {
+			if(item.isInside(event.getX(), event.getY()))
+				return;
+			else
+				onLeave();
+		}
+		
+		// look for a new one
+		item = canvas.findItemAt(event.getX(), event.getY());
+		if(item != null) {
+			item.setFlags(item.getFlags() | Item.OVER);
+			canvas.repaint(item.getDisplayRect());
+		}
 	}
 
 	@Override
-	public Rectangle getDisplayRect() {
-		return EMPTY;
+	public void install(Canvas canvas) {
+		this.canvas = canvas;
+		item = null;
 	}
 
 	@Override
-	public void move(int dx, int dy) {
+	public void uninstall() {
+		canvas = null;
+		onLeave();
+		item = null;
 	}
 
 	@Override
-	public boolean acceptsSelect(Collection<Item> selection) {
-		return false;
-	}
-
-	@Override
-	public boolean acceptsMove(int dx, int dy) {
-		return false;
-	}
-
-	@Override
-	public int getDepth() {
-		return 0;
-	}
-
-	@Override
-	public boolean isInside(int x, int y) {
-		return false;
-	}
-
-	@Override
-	public void onMouseEvent(MouseEvent event) {
-	}
-
-	@Override
-	public int getFlags() {
-		return 0;
-	}
-
-	@Override
-	public void setFlags(int flags) {
+	public void onLeave() {
+		if(item != null) {
+			item.setFlags(item.getFlags() & ~Item.OVER);
+			canvas.repaint(item.getDisplayRect());
+			item = null;
+		}
 	}
 
 }

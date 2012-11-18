@@ -23,6 +23,7 @@ import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -33,12 +34,13 @@ import javax.swing.JComponent;
  * @author casse
  */
 public class Canvas extends JComponent implements MouseMotionListener, MouseListener {
+	public static final OverHandler DEFAULT_OVER_HANDLER = new HighlightOverHandler(); 
 	private static final long serialVersionUID = 1L;
 	Dimension log_dim;
 	LinkedList<Item> items = new LinkedList<Item>();
-	Item over = null;
 	Vector<Item> selection = new Vector<Item>();
-	int last_x, last_y;
+	OverHandler over_handler;
+	DragHandler drag_handler;
 	
 	/**
 	 * Build a default canvas.
@@ -47,6 +49,38 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		log_dim = new Dimension(1024, 1024);
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
+		over_handler = DEFAULT_OVER_HANDLER;
+		over_handler.install(this);
+		drag_handler = DragHandler.NULL;
+		drag_handler.install(this);
+	}
+	
+	/**
+	 * Get the current selection.
+	 * @return		Current selection.
+	 */
+	Collection<Item> getSelection() {
+		return selection;
+	}
+	
+	/**
+	 * Change the over-handler.
+	 * @param handler		New over-handler.
+	 */
+	public void setOverHandler(OverHandler handler) {
+		over_handler.uninstall();
+		over_handler = handler;
+		over_handler.install(this);
+	}
+	
+	/**
+	 * Set the current drag handler.
+	 * @param handler	New drag handler.
+	 */
+	public void setDragHandler(DragHandler handler) {
+		drag_handler.uninstall();
+		drag_handler = handler;
+		drag_handler.install(this);
 	}
 	
 	/**
@@ -76,6 +110,19 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		this.repaint(item.getDisplayRect());		
 	}
 
+	/**
+	 * Find the item at the given position.
+	 * @param x		X position.
+	 * @param y		Y position.
+	 * @return		Found item or null.
+	 */
+	public Item findItemAt(int x, int y) {
+		for(Item item: items)
+			if(item.isInside(x, y))
+				return item;
+		return null;
+	}
+
 	@Override
 	public Dimension getPreferredSize() {
         return log_dim;
@@ -87,40 +134,17 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
         Graphics2D g2 = (Graphics2D)g;
         for(Item item: items)
         	if(g.getClipBounds().intersects(item.getDisplayRect()))
-        		item.display(g2, (over == item ? Item.OVER : 0) | (selection.contains(item) ? Item.SELECTED : 0));
+        		item.display(g2);
     }
 
 	@Override
 	public void mouseDragged(MouseEvent event) {
-		if(!selection.isEmpty())
-			for(Item item: selection) {
-				repaint(item.getDisplayRect());
-				item.move(event.getX() - last_x, event.getY() - last_y);
-				repaint(item.getDisplayRect());
-			}
-		last_x = event.getX();
-		last_y = event.getY();
+		drag_handler.onDrag(event);
 	}
 
 	@Override
 	public void mouseMoved(MouseEvent event) {
-		
-		// already on the same ?
-		if(over != null) {
-			if(over.isInside(event.getX(), event.getY()))
-				return;
-			else {
-				this.repaint(over.getDisplayRect());
-				over = null;
-			}
-		}
-		
-		// look for a new one
-		for(Item item: items)
-			if(item.isInside(event.getX(), event.getY())) {
-				over = item;
-				this.repaint(over.getDisplayRect());
-			}
+		over_handler.onMove(event);
 	}
 
 	@Override
@@ -132,32 +156,41 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	}
 
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent event) {
+		over_handler.onLeave();
 	}
 
 	@Override
 	public void mousePressed(MouseEvent event) {
 		
-		// last press
-		last_x = event.getX();
-		last_y = event.getY();
+		// left-button ?
+		if(event.getButton() != MouseEvent.BUTTON1)
+			return;
+
+		// start the drag handler
+		drag_handler.onBegin(event);
 		
 		// single selection
 		if(!event.isShiftDown()) {
-			for(Item item: selection)
+			for(Item item: selection) {
+				item.setFlags(item.getFlags() & ~Item.SELECTED);
 				repaint(item.getDisplayRect());
+			}
 			selection.clear();
 		}
 		
 		// add the item
-		if(over != null && !selection.contains(over)) {
-			selection.add(over);
-			repaint(over.getDisplayRect());
+		Item item = findItemAt(event.getX(), event.getY());
+		if(item != null && !selection.contains(item)) {
+			selection.add(item);
+			item.setFlags(item.getFlags() | Item.SELECTED);
+			repaint(item.getDisplayRect());
 		}
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent event) {
+		drag_handler.onEnd(event);
 	} 
 	
 }
