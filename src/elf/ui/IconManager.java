@@ -1,6 +1,6 @@
 /*
- * Orchid Framework
- * Copyright (c) 2009 - Hugues Cassé <hugues.casse@laposte.net>
+ * ElfCore library
+ * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
