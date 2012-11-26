@@ -25,7 +25,7 @@ import java.util.TreeMap;
  * @author casse
  */
 public class Attributes implements Comparator<AbstractAttribute> {
-	TreeMap<AbstractAttribute, Object> attrs = new TreeMap<AbstractAttribute, Object>();
+	TreeMap<AbstractAttribute, Object> attrs = new TreeMap<AbstractAttribute, Object>(this);
 	
 	@Override
 	public int compare(AbstractAttribute o1, AbstractAttribute o2) {

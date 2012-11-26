@@ -37,7 +37,7 @@ public abstract class Application extends Attributes {
 
 	private String name;
 	private Version version;
-	private LinkedList<Configuration> configs = new LinkedList<Configuration>();
+	LinkedList<Configuration> configs = new LinkedList<Configuration>();
 	
 	/**
 	 * Build an application.
@@ -47,15 +47,6 @@ public abstract class Application extends Attributes {
 	public Application(String name, Version version) {
 		this.name = name;
 		this.version = version;
-	}
-	
-	/**
-	 * Add a configuration to manage.
-	 * @param config	Added configuration.
-	 */
-	protected void add(Configuration config) {
-		configs.add(config);
-		config.app = this;
 	}
 	
 	/**
@@ -94,12 +85,19 @@ public abstract class Application extends Attributes {
 				return;
 			}
 		
+		// prepare exit hook
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override public void run() { cleanup(); }
+		});
+		
 		// run the application
 		proceed();
 	}
 	
-	@Override
-	public void finalize() {
+	/**
+	 * Perform the cleanup action (done before exiting).
+	 */
+	private void cleanup() {
 		for(Configuration config: configs)
 			try {
 				config.save();
