@@ -75,6 +75,13 @@ public class XMLStructuredStore implements StructuredStore {
 		Stack<Integer> stack = new Stack<Integer>();
 		
 		/**
+		 * Builder for an XML save.
+		 */
+		public XMLSave() {
+			doc.setRootElement(top);
+		}
+		
+		/**
 		 * Push a new state.
 		 * @param new_state		Pushed state.
 		 * @param element		New current element.
@@ -258,6 +265,7 @@ public class XMLStructuredStore implements StructuredStore {
 					cur.elt = elt;
 					cur.state = IN_FIELD;
 				}
+				return true;
 			default:
 				throw new IOException("cannot get field from field or list");
 			}

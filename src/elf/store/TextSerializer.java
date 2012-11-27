@@ -17,6 +17,7 @@
  */
 package elf.store;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -31,6 +32,7 @@ import java.util.regex.Pattern;
  * @author casse
  */
 public class TextSerializer {
+	private static final Pattern COLOR_PAT = Pattern.compile("^#([0-9a-fA-F]{6})$");
 	private static final Pattern bool_pat = Pattern.compile("^(false|no|off)|(true|yes|on)$");
 	private static final Hashtable<Class<?>, Serializer> map = new Hashtable<Class<?>, Serializer>();
 	static {
@@ -47,6 +49,7 @@ public class TextSerializer {
 					return m.group(1) == null;
 			}
 		});
+		map.put(boolean.class, map.get(Boolean.class));
 		
 		map.put(Character.class, new StreamSerializer() {
 			@Override public Object unserialize(Reader reader) throws IOException {
@@ -60,48 +63,57 @@ public class TextSerializer {
 				writer.write((Character)value);
 			}
 		});
+		map.put(char.class, map.get(Character.class));
 
 		map.put(Byte.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Byte.parseByte(text);
 			}
 		});
+		map.put(byte.class, map.get(Byte.class));
 
 		map.put(Short.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Short.parseShort(text);
 			}
 		});
+		map.put(short.class, map.get(Short.class));
 
 		map.put(Integer.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Integer.parseInt(text);
 			}
 		});
+		map.put(int.class, map.get(Integer.class));
 
 		map.put(Long.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Long.parseLong(text);
 			}
 		});
+		map.put(long.class, map.get(Long.class));
 
 		map.put(Float.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Float.parseFloat(text);
 			}
 		});
+		map.put(float.class, map.get(Float.class));
 
 		map.put(Double.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return Double.parseDouble(text);
 			}
 		});
+		map.put(double.class, map.get(Double.class));
 		
 		map.put(String.class, new ToStringSerializer() {
 			@Override public Object unserialize(String text) throws IOException {
 				return text;
 			}
 		});
+		
+		map.put(Color.class, new ColorSerializer());
 	}
 	
 	/**
@@ -255,5 +267,26 @@ public class TextSerializer {
 		}
 		
 	}
-	
+
+	/**
+	 * Color serializer.
+	 * @author casse
+	 */
+	private static class ColorSerializer extends StringSerializer {
+
+		@Override
+		public String serialize(Object value) throws IOException {
+			Color color = (Color)value;
+			return String.format("#%06x", color.getRGB() & 0x00ffffff);
+		}
+
+		@Override
+		public Object unserialize(String text) throws IOException {
+			Matcher m = COLOR_PAT.matcher(text);
+			if(!m.matches())
+				throw new IOException("bad color value: " + text);
+			return new Color(Integer.parseInt(m.group(1), 16));
+		}
+		
+	}
 }

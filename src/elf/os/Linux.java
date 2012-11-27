@@ -17,6 +17,8 @@
  */
 package elf.os;
 
+import java.io.IOException;
+
 import elf.store.FileStorage;
 import elf.store.Storage;
 
@@ -47,7 +49,14 @@ public class Linux extends OS {
 		}
 		
 		// build the path
-		return new FileStorage(config_path.append(app).append(ressource));
+		Path app_path = config_path.append(app);
+		if(!app_path.exists())
+			try {
+				app_path.makeAsDir();
+			} catch (IOException e) {
+				System.err.println("ERROR: cannot access the configuration directory: " + e.getLocalizedMessage());
+			}
+		return new FileStorage(app_path.append(ressource));
 	}
 
 }

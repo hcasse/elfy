@@ -96,8 +96,9 @@ public abstract class Application extends Attributes {
 	
 	/**
 	 * Perform the cleanup action (done before exiting).
+	 * May be overload but the super method must be called !
 	 */
-	private void cleanup() {
+	protected void cleanup() {
 		for(Configuration config: configs)
 			try {
 				config.save();

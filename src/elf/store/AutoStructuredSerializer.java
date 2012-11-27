@@ -20,6 +20,7 @@ package elf.store;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -31,6 +32,16 @@ import java.util.Collection;
 public class AutoStructuredSerializer {
 	StructuredStore store;
 	Object object;
+	
+	/**
+	 * Test if the field is an instance accessible field.
+	 * @param field		Field to test.
+	 * @return			True if it is instance, false else.
+	 */
+	private static boolean isInstanceField(Field field) {
+		return (field.getModifiers() & Modifier.PUBLIC) != 0
+			&&	(field.getModifiers() & Modifier.STATIC) == 0;
+	}
 	
 	/**
 	 * Build an automatic serializer.
@@ -58,18 +69,19 @@ public class AutoStructuredSerializer {
 	 * @throws IOException		In case of error.
 	 */
 	private void saveFields(StructuredStore.Save save, Object object) throws IOException {
-		for(Field field: object.getClass().getDeclaredFields())
-			if(field.isAccessible()) {
+		for(Field field: object.getClass().getDeclaredFields()) {
+			if(isInstanceField(field)) {
 				try {
 					Object value = field.get(object);
 					save.putField(field.getName());
-					saveData(save,value);
+					saveData(save, value);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
+		}
 	}
 	
 	/**
@@ -112,11 +124,13 @@ public class AutoStructuredSerializer {
 	 */
 	private void loadFields(StructuredStore.Load load, Object object) throws IOException {
 		for(Field field: object.getClass().getDeclaredFields())
-			if(field.isAccessible()) {
+			if(isInstanceField(field)) {
 				try {
 					if(load.getField(field.getName()))
-						loadData(load, field.getGenericType());
+						field.set(object, loadData(load, field.getGenericType()));
 				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
 					e.printStackTrace();
 				}
 			}
