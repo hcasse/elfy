@@ -1,5 +1,5 @@
 /*
- * ElfSim tool
+ * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -17,89 +17,82 @@
  */
 package elf.ui.canvas;
 
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.Collection;
 
 /**
- * Implements a default item without any effect.
+ * Abstract item provides common basic facilities of an item
+ * (selectable, draggable and interactive).
  * @author casse
  */
-public class NullItem implements ParentItem {
-	public static final Rectangle EMPTY = new Rectangle(0, 0, 0, 0);
-	public static final NullItem NULL = new NullItem();
+public abstract class AbstractItem implements Item {
+	int flags;
+	protected int depth;
+	ParentItem parent = NullItem.NULL;
 	
 	@Override
-	public void display(Graphics2D g) {
-	}
-
-	@Override
-	public void move(int dx, int dy) {
-	}
-
-	@Override
-	public boolean isSelectable(Collection<Item> selection) {
-		return false;
-	}
-
-	@Override
-	public boolean acceptsMove(int dx, int dy) {
-		return false;
-	}
-
-	@Override
-	public int getDepth() {
-		return 0;
-	}
-
-	@Override
-	public boolean isInside(int x, int y) {
-		return false;
-	}
-
-	/*@Override
-	public void onMouseEvent(MouseEvent event) {
-	}*/
-
-	@Override
-	public int getFlags() {
-		return 0;
-	}
-
-	@Override
 	public void setFlags(int flags) {
-	}
-
-	@Override
-	public Item findItemAt(int x, int y) {
-		return null;
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return EMPTY;
+		if(flags != this.flags) {
+			this.flags = flags;
+			Rectangle bounds = getBounds();
+			getParent().refresh(this, bounds.x, bounds.y, bounds.width, bounds.height);
+		}
 	}
 
 	@Override
 	public boolean isInteractive() {
-		return false;
+		return true;
+	}
+
+	@Override
+	public boolean isSelectable(Collection<Item> selection) {
+		return true;
+	}
+
+	@Override
+	public boolean acceptsMove(int dx, int dy) {
+		return true;
+	}
+
+	@Override
+	public int getDepth() {
+		return depth;
+	}
+
+	@Override
+	public boolean isInside(int x, int y) {
+		return getBounds().contains(x, y);
+	}
+
+	@Override
+	public Item findItemAt(int x, int y) {
+		if(getBounds().contains(x, y))
+			return this;
+		else
+			return null;
+	}
+
+	@Override
+	public int getFlags() {
+		return flags;
 	}
 
 	@Override
 	public void setParent(ParentItem parent) {
+		this.parent = parent;
 	}
 
 	@Override
 	public ParentItem getParent() {
-		return null;
+		return parent;
 	}
 
 	@Override
-	public void moved(Item item, int dx, int dy) {
-	}
-
-	@Override
-	public void refresh(Item item, int x, int y, int w, int h) {
+	public void move(int dx, int dy) {
+		Rectangle bounds = getBounds();
+		bounds.x += dx;
+		bounds.y += dy;
+		getParent().moved(this, dx, dy);
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * ElfSim tool
+ * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,7 +19,6 @@ package elf.ui.canvas;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 /**
@@ -31,6 +30,18 @@ public interface Item {
 		OVER 		= 0x0001,
 		SELECTED 	= 0x0002; 
 
+	/**
+	 * Set the current parent item.
+	 * @param parent		Parent item.
+	 */
+	void setParent(ParentItem parent);
+	
+	/**
+	 * Get the parent item.
+	 * @return		Parent item.
+	 */
+	ParentItem getParent();
+	
 	/**
 	 * Get the flags of the item.
 	 * @return		Flags.
@@ -50,12 +61,6 @@ public interface Item {
 	void display(Graphics2D g);
 	
 	/**
-	 * Get the display rectangle, typically for refresh.
-	 * @return		Display rectangle.
-	 */
-	Rectangle getDisplayRect();
-	
-	/**
 	 * Move the item with the given offset.
 	 * @param dx		X offset.
 	 * @param dy		Y offset.
@@ -63,11 +68,17 @@ public interface Item {
 	void move(int dx, int dy);
 	
 	/**
+	 * Test if the item supports interaction with the mouse.
+	 * @return		True if it is interactive, false else.
+	 */
+	boolean isInteractive();
+	
+	/**
 	 * Ask the item whether it can be selected.
 	 * @param selection		Current selection.
 	 * @return				True if it can be selected, false else.
 	 */
-	boolean acceptsSelect(Collection<Item> selection);
+	boolean isSelectable(Collection<Item> selection);
 	
 	/**
 	 * Ask the whether it can be moved.
@@ -95,6 +106,19 @@ public interface Item {
 	 * Called when a mouse event arise on the item.
 	 * @param event		Mouse event.
 	 */
-	void onMouseEvent(MouseEvent event);
+	//void onMouseEvent(MouseEvent event);
 
+	/**
+	 * Get the item under the given point.
+	 * @param x		Point X.
+	 * @param y		Point Y.
+	 * @return		Item under the given point or null.
+	 */
+	Item findItemAt(int x, int y);
+	
+	/**
+	 * Get the bounds of the item.
+	 * @return	Item bounds.
+	 */
+	Rectangle getBounds();
 }

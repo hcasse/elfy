@@ -41,10 +41,8 @@ public class HighlightOverHandler implements OverHandler {
 		
 		// look for a new one
 		item = canvas.findItemAt(event.getX(), event.getY());
-		if(item != null) {
+		if(item != null && item.isInteractive())
 			item.setFlags(item.getFlags() | Item.OVER);
-			canvas.repaint(item.getDisplayRect());
-		}
 	}
 
 	@Override
@@ -64,7 +62,6 @@ public class HighlightOverHandler implements OverHandler {
 	public void onLeave() {
 		if(item != null) {
 			item.setFlags(item.getFlags() & ~Item.OVER);
-			canvas.repaint(item.getDisplayRect());
 			item = null;
 		}
 	}

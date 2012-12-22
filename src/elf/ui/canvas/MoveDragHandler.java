@@ -47,9 +47,12 @@ public class MoveDragHandler implements DragHandler {
 	public void onDrag(MouseEvent event) {
 		if(!canvas.getSelection().isEmpty())
 			for(Item item: canvas.getSelection()) {
-				canvas.repaint(item.getDisplayRect());
-				item.move(event.getX() - last_x, event.getY() - last_y);
-				canvas.repaint(item.getDisplayRect());
+				int dx = event.getX() - last_x, dy = event.getY() - last_y;
+				if(item.acceptsMove(dx, dy)) {
+					//canvas.repaint(item.getDisplayRect());
+					item.move(dx, dy);
+					//canvas.repaint(item.getDisplayRect());
+				}
 			}
 		last_x = event.getX();
 		last_y = event.getY();

@@ -1,5 +1,5 @@
 /*
- * ElfSim tool
+ * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -20,11 +20,12 @@ package elf.ui.canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -36,8 +37,8 @@ import javax.swing.JComponent;
 public class Canvas extends JComponent implements MouseMotionListener, MouseListener {
 	public static final OverHandler DEFAULT_OVER_HANDLER = new HighlightOverHandler(); 
 	private static final long serialVersionUID = 1L;
-	Dimension log_dim;
-	LinkedList<Item> items = new LinkedList<Item>();
+	int min_w = 1024, min_h = 1024;
+	Group group = new CanvasGroup();
 	Vector<Item> selection = new Vector<Item>();
 	OverHandler over_handler;
 	DragHandler drag_handler;
@@ -46,13 +47,16 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * Build a default canvas.
 	 */
 	public Canvas() {
-		log_dim = new Dimension(1024, 1024);
 		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
 		over_handler = DEFAULT_OVER_HANDLER;
 		over_handler.install(this);
 		drag_handler = DragHandler.NULL;
 		drag_handler.install(this);
+		group.getBounds().x = 0;
+		group.getBounds().y = 0;
+		group.getBounds().width = min_w;
+		group.getBounds().height = min_h;
 	}
 	
 	/**
@@ -89,7 +93,8 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * @param h		Height.
 	 */
 	public Canvas(int w, int h) {
-		log_dim = new Dimension(w, h);
+		min_w = w;
+		min_h = h;
 	}
 	
 	/**
@@ -97,8 +102,7 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * @param item		Added item.
 	 */
 	public void add(Item item) {
-		items.add(item);
-		this.repaint(item.getDisplayRect());
+		group.add(item);
 	}
 	
 	/**
@@ -106,8 +110,7 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * @param item		Removed item.
 	 */
 	public void remove(Item item) {
-		items.remove(item);
-		this.repaint(item.getDisplayRect());		
+		group.remove(item);
 	}
 
 	/**
@@ -117,24 +120,20 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * @return		Found item or null.
 	 */
 	public Item findItemAt(int x, int y) {
-		for(Item item: items)
-			if(item.isInside(x, y))
-				return item;
-		return null;
+		return group.findItemAt(x, y);
 	}
 
 	@Override
 	public Dimension getPreferredSize() {
-        return log_dim;
-    }
+		Rectangle r = group.getBounds();
+		return new Dimension(Math.max(min_w, r.width), Math.max(min_h, r.height));
+	}
 
 	@Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D)g;
-        for(Item item: items)
-        	if(g.getClipBounds().intersects(item.getDisplayRect()))
-        		item.display(g2);
+		group.display(g2);
     }
 
 	@Override
@@ -174,7 +173,7 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		if(!event.isShiftDown()) {
 			for(Item item: selection) {
 				item.setFlags(item.getFlags() & ~Item.SELECTED);
-				repaint(item.getDisplayRect());
+				repaint(item.getBounds());
 			}
 			selection.clear();
 		}
@@ -184,13 +183,37 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		if(item != null && !selection.contains(item)) {
 			selection.add(item);
 			item.setFlags(item.getFlags() | Item.SELECTED);
-			repaint(item.getDisplayRect());
+			repaint(item.getBounds());
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent event) {
 		drag_handler.onEnd(event);
-	} 
+	}
+
+	static class ItemComparator implements Comparator<Item> {
+
+		@Override
+		public int compare(Item o1, Item o2) {
+			return o1.getDepth() - o2.getDepth();
+		}
+		
+		
+	}
 	
+	/**
+	 * Group for the canvas. Perform link between canvas items and swing.
+	 * @author casse
+	 *
+	 */
+	private class CanvasGroup extends Group {
+
+		@Override
+		public void refresh(Item item, int x, int y, int w, int h) {
+			Canvas.this.repaint(x, y, w, h);
+		}
+		
+	}
+
 }
