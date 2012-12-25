@@ -18,6 +18,7 @@
 package elf.ui.canvas;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
 
@@ -100,6 +101,11 @@ public class NullItem implements ParentItem {
 
 	@Override
 	public void refresh(Item item, int x, int y, int w, int h) {
+	}
+
+	@Override
+	public Point getHandle() {
+		return EMPTY.getLocation();
 	}
 
 }

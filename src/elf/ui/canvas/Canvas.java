@@ -47,8 +47,8 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	 * Build a default canvas.
 	 */
 	public Canvas() {
-		this.addMouseMotionListener(this);
 		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 		over_handler = DEFAULT_OVER_HANDLER;
 		over_handler.install(this);
 		drag_handler = DragHandler.NULL;
@@ -161,14 +161,12 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 
 	@Override
 	public void mousePressed(MouseEvent event) {
+		System.out.println("DEBUG: pressed !");
 		
 		// left-button ?
 		if(event.getButton() != MouseEvent.BUTTON1)
 			return;
 
-		// start the drag handler
-		drag_handler.onBegin(event);
-		
 		// single selection
 		if(!event.isShiftDown()) {
 			for(Item item: selection) {
@@ -185,6 +183,10 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 			item.setFlags(item.getFlags() | Item.SELECTED);
 			repaint(item.getBounds());
 		}
+
+		// start the drag handler
+		drag_handler.onBegin(event);
+		
 	}
 
 	@Override

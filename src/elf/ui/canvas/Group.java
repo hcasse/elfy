@@ -18,6 +18,7 @@
 package elf.ui.canvas;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
 import java.util.PriorityQueue;
@@ -158,6 +159,7 @@ public class Group implements ParentItem {
 		if(bounds != null)
 			bounds.add(ibounds);
 		refresh(item, ibounds.x - dx, ibounds.y - dy, ibounds.width, ibounds.height);
+		refresh(item, ibounds.x, ibounds.y, ibounds.width, ibounds.height);
 	}
 
 	@Override
@@ -187,5 +189,10 @@ public class Group implements ParentItem {
 	protected void moveBounds(int dx, int dy) {
 		bounds.x += dx;
 		bounds.y += dy;
+	}
+
+	@Override
+	public Point getHandle() {
+		return getBounds().getLocation();
 	}
 }

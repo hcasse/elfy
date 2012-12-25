@@ -18,6 +18,7 @@
 package elf.ui.canvas;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
 
@@ -121,4 +122,10 @@ public interface Item {
 	 * @return	Item bounds.
 	 */
 	Rectangle getBounds();
+	
+	/**
+	 * Get the handle for the given item.
+	 * @return		Handle.
+	 */
+	Point getHandle();
 }

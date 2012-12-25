@@ -17,6 +17,7 @@
  */
 package elf.ui.canvas;
 
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
 
@@ -93,6 +94,11 @@ public abstract class AbstractItem implements Item {
 		bounds.x += dx;
 		bounds.y += dy;
 		getParent().moved(this, dx, dy);
+	}
+
+	@Override
+	public Point getHandle() {
+		return getBounds().getLocation();
 	}
 
 }
