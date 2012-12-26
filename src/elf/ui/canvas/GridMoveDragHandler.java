@@ -72,7 +72,6 @@ public abstract class GridMoveDragHandler implements DragHandler {
 	
 	@Override
 	public void onBegin(MouseEvent event) {
-		System.out.println("DEBUG: drag");
 		if(canvas.getSelection().isEmpty())
 			return;
 		
@@ -88,8 +87,6 @@ public abstract class GridMoveDragHandler implements DragHandler {
 		// compute the offset relative to the mouse position
 		off_x = last_x - event.getX();
 		off_y = last_y - event.getY();
-		System.out.println("DEBUG: off_x, off_y = " + off_x + ", " + off_y);
-		System.out.println("DEBUG: last_x, last_y = " + last_x + ", " + last_y);
 	}
 
 	@Override
@@ -100,8 +97,6 @@ public abstract class GridMoveDragHandler implements DragHandler {
 		// compute the new grid position
 		int nx = alignX(event.getX() + off_x);
 		int ny = alignY(event.getY() + off_y);
-		System.out.println("DEBUG: mouse = " + event.getX() + ", " + event.getY());
-		System.out.println("DEBUG: nx, ny = " + nx + ", " + ny);
 		if(nx == last_x && ny == last_y)
 			return;	
 		

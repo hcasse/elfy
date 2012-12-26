@@ -131,13 +131,14 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 
 	@Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2 = (Graphics2D)g;
+		super.paintComponent(g);
+		Graphics2D g2 = (Graphics2D)g;
 		group.display(g2);
     }
 
 	@Override
 	public void mouseDragged(MouseEvent event) {
+		over_handler.onLeave();
 		drag_handler.onDrag(event);
 	}
 
@@ -161,7 +162,6 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		System.out.println("DEBUG: pressed !");
 		
 		// left-button ?
 		if(event.getButton() != MouseEvent.BUTTON1)
@@ -178,15 +178,15 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		
 		// add the item
 		Item item = findItemAt(event.getX(), event.getY());
-		if(item != null && !selection.contains(item)) {
+		if(item != null && item.isSelectable(selection) && !selection.contains(item)) {
 			selection.add(item);
 			item.setFlags(item.getFlags() | Item.SELECTED);
 			repaint(item.getBounds());
 		}
 
 		// start the drag handler
-		drag_handler.onBegin(event);
-		
+		if(!selection.isEmpty())
+			drag_handler.onBegin(event);
 	}
 
 	@Override
@@ -198,7 +198,7 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 
 		@Override
 		public int compare(Item o1, Item o2) {
-			return o1.getDepth() - o2.getDepth();
+			return o2.getDepth() - o1.getDepth();
 		}
 		
 		
