@@ -21,7 +21,9 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Collection;
-import java.util.PriorityQueue;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * Item as a group of items.
@@ -31,7 +33,7 @@ public class Group implements ParentItem {
 	ParentItem parent = NullItem.NULL;
 	int depth;
 	Rectangle bounds;
-	PriorityQueue<Item> items = new PriorityQueue<Item>(8, new Canvas.ItemComparator());
+	LinkedList<Item> items = new LinkedList<Item>();
 	
 	/**
 	 * Get the items in the group.
@@ -46,7 +48,19 @@ public class Group implements ParentItem {
 	 * @param item		Added item.
 	 */
 	public void add(Item item) {
-		items.add(item);
+		
+		// sort in ascending way
+		ListIterator<Item> it = items.listIterator();
+		while(it.hasNext()) {
+			Item iit = it.next();
+			if(iit.getDepth() > item.getDepth()) {
+				it.previous();
+				break;
+			}
+		}
+		it.add(item);
+
+		// connect the parent link
 		item.setParent(this);
 		if(bounds != null) {
 			Rectangle ibounds = item.getBounds(); 
@@ -75,11 +89,9 @@ public class Group implements ParentItem {
 
 	@Override
 	public void display(Graphics2D g) {
-		//g.translate(x, y);
         for(Item item: items)
         	if(g.getClipBounds().intersects(item.getBounds()))
         		item.display(g);
-       //g.translate(-x, -y);
 	}
 
 	@Override
@@ -120,8 +132,9 @@ public class Group implements ParentItem {
 	public Item findItemAt(int x, int y) {
 		if(!bounds.contains(x, y))
 			return null;
-		for(Item item: items) {
-			Item found = item.findItemAt(x, y);
+		Iterator<Item> it = items.descendingIterator();
+		while(it.hasNext()) {
+			Item found = it.next().findItemAt(x, y);
 			if(found != null)
 				return found;
 		}
