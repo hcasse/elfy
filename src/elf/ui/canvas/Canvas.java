@@ -21,12 +21,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.util.Collection;
 import java.util.Comparator;
-import java.util.Vector;
 
 import javax.swing.JComponent;
 
@@ -34,25 +29,17 @@ import javax.swing.JComponent;
  * Represents with vector display.
  * @author casse
  */
-public class Canvas extends JComponent implements MouseMotionListener, MouseListener {
-	public static final OverHandler DEFAULT_OVER_HANDLER = new HighlightOverHandler(); 
+public class Canvas extends JComponent {
 	private static final long serialVersionUID = 1L;
+
+	// state
 	int min_w = 1024, min_h = 1024;
 	Group group = new CanvasGroup();
-	Vector<Item> selection = new Vector<Item>();
-	OverHandler over_handler;
-	DragHandler drag_handler;
 	
 	/**
 	 * Build a default canvas.
 	 */
 	public Canvas() {
-		this.addMouseListener(this);
-		this.addMouseMotionListener(this);
-		over_handler = DEFAULT_OVER_HANDLER;
-		over_handler.install(this);
-		drag_handler = DragHandler.NULL;
-		drag_handler.install(this);
 		group.getBounds().x = 0;
 		group.getBounds().y = 0;
 		group.getBounds().width = min_w;
@@ -60,32 +47,24 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 	}
 	
 	/**
-	 * Get the current selection.
-	 * @return		Current selection.
-	 */
-	Collection<Item> getSelection() {
-		return selection;
-	}
-	
-	/**
 	 * Change the over-handler.
 	 * @param handler		New over-handler.
 	 */
-	public void setOverHandler(OverHandler handler) {
+	/*public void setOverHandler(OverHandler handler) {
 		over_handler.uninstall();
 		over_handler = handler;
 		over_handler.install(this);
-	}
+	}*/
 	
 	/**
 	 * Set the current drag handler.
 	 * @param handler	New drag handler.
 	 */
-	public void setDragHandler(DragHandler handler) {
+	/*public void setDragHandler(DragHandler handler) {
 		drag_handler.uninstall();
 		drag_handler = handler;
 		drag_handler.install(this);
-	}
+	}*/
 	
 	/**
 	 * Build a canvas with the given dimension.
@@ -135,64 +114,6 @@ public class Canvas extends JComponent implements MouseMotionListener, MouseList
 		Graphics2D g2 = (Graphics2D)g;
 		group.display(g2);
     }
-
-	@Override
-	public void mouseDragged(MouseEvent event) {
-		over_handler.onLeave();
-		drag_handler.onDrag(event);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent event) {
-		over_handler.onMove(event);
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent event) {
-		over_handler.onLeave();
-	}
-
-	@Override
-	public void mousePressed(MouseEvent event) {
-		
-		// left-button ?
-		if(event.getButton() != MouseEvent.BUTTON1)
-			return;
-
-		// single selection
-		if(!event.isShiftDown()) {
-			for(Item item: selection) {
-				item.setFlags(item.getFlags() & ~Item.SELECTED);
-				repaint(item.getBounds());
-			}
-			selection.clear();
-		}
-		
-		// add the item
-		Item item = findItemAt(event.getX(), event.getY());
-		if(item != null && item.isSelectable(selection) && !selection.contains(item)) {
-			selection.add(item);
-			item.setFlags(item.getFlags() | Item.SELECTED);
-			repaint(item.getBounds());
-		}
-
-		// start the drag handler
-		if(!selection.isEmpty())
-			drag_handler.onBegin(event);
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent event) {
-		drag_handler.onEnd(event);
-	}
 
 	static class ItemComparator implements Comparator<Item> {
 

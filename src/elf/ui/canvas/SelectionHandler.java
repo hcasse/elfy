@@ -1,5 +1,5 @@
 /*
- * ElfUI library
+ * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,24 +19,26 @@ package elf.ui.canvas;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
+import elf.ui.meta.Data;
 import elf.ui.meta.DataCollection;
 
 /**
- * Drag handler moving the selection.
+ * Select handler managing simply the canvas selection.
  * @author casse
  */
-public class MoveDragHandler implements Handler, MouseListener, MouseMotionListener {
-	Canvas canvas;
-	int last_x, last_y;
+public class SelectionHandler implements Handler, MouseListener {
+	Data<Item> current;
 	DataCollection<Item> selection;
+	Canvas canvas;
 	
 	/**
-	 * Build a moving drag handler.
-	 * @param selection		Current selection.
+	 * Build a selection handler.
+	 * @param current		Current item.
+	 * @param selection		Selection collection.
 	 */
-	public MoveDragHandler(DataCollection<Item> selection) {
+	public SelectionHandler(Data<Item> current, DataCollection<Item> selection) {
+		this.current = current;
 		this.selection = selection;
 	}
 	
@@ -44,52 +46,55 @@ public class MoveDragHandler implements Handler, MouseListener, MouseMotionListe
 	public void install(Canvas canvas) {
 		this.canvas = canvas;
 		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
 	}
 
 	@Override
 	public void uninstall() {
-		canvas = null;
 		canvas.removeMouseListener(this);
-		canvas.removeMouseMotionListener(this);
+		canvas = null;
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent arg0) {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseEntered(MouseEvent arg0) {
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void mouseExited(MouseEvent arg0) {
 	}
 
 	@Override
 	public void mousePressed(MouseEvent event) {
-		last_x = event.getX();
-		last_y = event.getY();
+		
+		// check button
+		if(event.getButton() != MouseEvent.BUTTON1)
+			return;
+			
+		// single selection
+		if((event.getModifiers() & MouseEvent.SHIFT_MASK) == 0) {
+			for(Item item: selection)
+				item.setFlags(item.getFlags() & ~Item.SELECTED);
+			selection.clear();
+		}
+		
+		// no item ?
+		if(current.get() == null)
+			return;
+		
+		// add the item
+		Item item = current.get();
+		if(item.isSelectable(selection.getCollection())
+		&& !selection.contains(item)) {
+			selection.add(item);
+			item.setFlags(item.getFlags() | Item.SELECTED);
+		}
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent event) {
-		if(!selection.isEmpty())
-			for(Item item: selection) {
-				int dx = event.getX() - last_x, dy = event.getY() - last_y;
-				if(item.acceptsMove(dx, dy))
-					item.move(dx, dy);
-			}
-		last_x = event.getX();
-		last_y = event.getY();
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent arg0) {
 	}
 
 }

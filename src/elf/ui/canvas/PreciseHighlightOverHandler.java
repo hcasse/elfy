@@ -1,5 +1,5 @@
 /*
- * ElfUI library
+ * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -19,57 +19,40 @@ package elf.ui.canvas;
 
 import java.awt.event.MouseEvent;
 
+import elf.ui.meta.Data;
+
 /**
  * Over-handler highlighting the item under with re-calculation of what is under according to depth.
  * @author casse
  */
-public class PreciseHighlightOverHandler implements OverHandler {
-	Canvas canvas;
-	Item item;
+public class PreciseHighlightOverHandler extends HighlightOverHandler {
 	
+	public PreciseHighlightOverHandler(Data<Item> data) {
+		super(data);
+	}
+
 	@Override
-	public void onMove(MouseEvent event) {
+	public void mouseMoved(MouseEvent event) {
 		
 		// already on the same ?
-		if(item != null) {
-			Item new_item = item.getParent().findItemAt(event.getX(), event.getY());
-			if(new_item == item)
+		if(data.get() != null) {
+			Item new_item = data.get().getParent().findItemAt(event.getX(), event.getY());
+			if(new_item == data.get())
 				return;
 			else {
 				onLeave();
-				if(item != null) {
-					item = new_item;
-					item.setFlags(item.getFlags() | Item.OVER);
+				if(data.get() != null) {
+					data.set(new_item);
+					data.get().setFlags(data.get().getFlags() | Item.OVER);
 				}
 				return;
 			}
 		}
 		
 		// look for a new one
-		item = canvas.findItemAt(event.getX(), event.getY());
-		if(item != null && item.isInteractive())
-			item.setFlags(item.getFlags() | Item.OVER);
-	}
-
-	@Override
-	public void install(Canvas canvas) {
-		this.canvas = canvas;
-		item = null;
-	}
-
-	@Override
-	public void uninstall() {
-		canvas = null;
-		onLeave();
-		item = null;
-	}
-
-	@Override
-	public void onLeave() {
-		if(item != null) {
-			item.setFlags(item.getFlags() & ~Item.OVER);
-			item = null;
-		}
+		data.set(canvas.findItemAt(event.getX(), event.getY()));
+		if(data.get() != null && data.get().isInteractive())
+			data.get().setFlags(data.get().getFlags() | Item.OVER);
 	}
 
 }

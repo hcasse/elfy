@@ -18,52 +18,94 @@
 package elf.ui.canvas;
 
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
+import elf.ui.meta.Data;
 
 /**
  * Over-handler highlighting the item under.
  * @author casse
  *
  */
-public class HighlightOverHandler implements OverHandler {
-	Canvas canvas;
-	Item item;
+public class HighlightOverHandler implements Handler, MouseMotionListener, MouseListener {
+	protected Data<Item> data;
+	protected Canvas canvas;
+	
+	/**
+	 * Create the highlight over handler.
+	 * @param data		Data item.
+	 */
+	public HighlightOverHandler(Data<Item> data) {
+		this.data = data;
+	}
 	
 	@Override
-	public void onMove(MouseEvent event) {
+	public void install(Canvas canvas) {
+		this.canvas = canvas;
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
+	}
+
+	@Override
+	public void uninstall() {
+		canvas.removeMouseMotionListener(this);
+		canvas.removeMouseListener(this);
+		canvas = null;
+		onLeave();
+		data.set(null);
+	}
+
+	/**
+	 * Called when an item is left.
+	 */
+	protected void onLeave() {
+		if(data.get() != null) {
+			data.get().setFlags(data.get().getFlags() & ~Item.OVER);
+			data.set(null);
+		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent event) {
 		
 		// already on the same ?
-		if(item != null) {
-			if(item.isInside(event.getX(), event.getY()))
+		if(data.get() != null) {
+			if(data.get().isInside(event.getX(), event.getY()))
 				return;
 			else
 				onLeave();
 		}
 		
 		// look for a new one
-		item = canvas.findItemAt(event.getX(), event.getY());
-		if(item != null && item.isInteractive())
-			item.setFlags(item.getFlags() | Item.OVER);
+		data.set(canvas.findItemAt(event.getX(), event.getY()));
+		if(data.get() != null && data.get().isInteractive())
+			data.get().setFlags(data.get().getFlags() | Item.OVER);
 	}
 
 	@Override
-	public void install(Canvas canvas) {
-		this.canvas = canvas;
-		item = null;
+	public void mouseClicked(MouseEvent e) {
 	}
 
 	@Override
-	public void uninstall() {
-		canvas = null;
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		onLeave();
-		item = null;
 	}
 
 	@Override
-	public void onLeave() {
-		if(item != null) {
-			item.setFlags(item.getFlags() & ~Item.OVER);
-			item = null;
-		}
+	public void mousePressed(MouseEvent e) {
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
 	}
 
 }

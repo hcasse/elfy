@@ -19,14 +19,27 @@ package elf.ui.canvas;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+
+import elf.ui.meta.DataCollection;
 
 /**
  * Drag handler moving the selection according to a predefined grid.
  * @author casse
  */
-public abstract class GridMoveDragHandler implements DragHandler {
+public abstract class GridMoveDragHandler implements Handler, MouseListener, MouseMotionListener {
 	Canvas canvas;
 	int off_x, off_y, last_x, last_y;
+	DataCollection<Item> selection;
+	
+	/**
+	 * Build the handler.
+	 * @param selection		Selection to work with.
+	 */
+	public GridMoveDragHandler(DataCollection<Item> selection) {
+		this.selection = selection;
+	}
 	
 	/**
 	 * Get the grid size on X axis.
@@ -43,10 +56,14 @@ public abstract class GridMoveDragHandler implements DragHandler {
 	@Override
 	public void install(Canvas canvas) {
 		this.canvas = canvas;
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
 	}
 
 	@Override
 	public void uninstall() {
+		canvas.removeMouseListener(this);
+		canvas.removeMouseMotionListener(this);
 		canvas = null;
 	}
 
@@ -71,14 +88,50 @@ public abstract class GridMoveDragHandler implements DragHandler {
 	}
 	
 	@Override
-	public void onBegin(MouseEvent event) {
-		if(canvas.getSelection().isEmpty())
+	public void mouseDragged(MouseEvent event) {
+		if(selection.isEmpty())
+			return;
+		
+		// compute the new grid position
+		int nx = alignX(event.getX() + off_x);
+		int ny = alignY(event.getY() + off_y);
+		if(nx == last_x && ny == last_y)
+			return;	
+		
+		// fix the items if required
+		for(Item item: selection)
+			item.move(nx - last_x, ny - last_y);
+		
+		// record the new position
+		last_x = nx;
+		last_y = ny;
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent event) {
+		if(selection.isEmpty() || event.getButton() != MouseEvent.BUTTON1)
 			return;
 		
 		// compute minimal handle of selection
 		last_x = Integer.MAX_VALUE;
 		last_y = Integer.MAX_VALUE;
-		for(Item item: canvas.getSelection()) {
+		for(Item item: selection) {
 			Point ih = item.getHandle();
 			last_x = Math.min(last_x, ih.x);
 			last_y = Math.min(last_y, ih.y);
@@ -90,27 +143,7 @@ public abstract class GridMoveDragHandler implements DragHandler {
 	}
 
 	@Override
-	public void onDrag(MouseEvent event) {
-		if(canvas.getSelection().isEmpty())
-			return;
-		
-		// compute the new grid position
-		int nx = alignX(event.getX() + off_x);
-		int ny = alignY(event.getY() + off_y);
-		if(nx == last_x && ny == last_y)
-			return;	
-		
-		// fix the items if required
-		for(Item item: canvas.getSelection())
-			item.move(nx - last_x, ny - last_y);
-		
-		// record the new position
-		last_x = nx;
-		last_y = ny;
-	}
-
-	@Override
-	public void onEnd(MouseEvent event) {
+	public void mouseReleased(MouseEvent arg0) {
 	}
 
 }
