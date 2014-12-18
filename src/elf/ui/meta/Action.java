@@ -166,6 +166,7 @@ public abstract class Action {
 		public DataDependency(Action action, Data<T> data) {
 			super(action);
 			this.data = data;
+			data.addListener(this);
 		}
 
 		@Override

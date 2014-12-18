@@ -18,6 +18,7 @@
 package elf.os;
 
 import java.io.File;
+import java.io.IOException;
 
 import elf.data.Version;
 import elf.store.FileStorage;
@@ -90,7 +91,7 @@ public class OS {
 	 * @param ressource		Ressource name.
 	 * @return				Storage if any.
 	 */
-	public Storage getLocalStore(String app, String ressource) {
+	public Storage getLocalStore(String app, String ressource) throws IOException {
 		return new FileStorage(getHome().append(app).append(ressource));
 	}
 	

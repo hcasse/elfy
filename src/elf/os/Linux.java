@@ -60,8 +60,11 @@ public class Linux extends OS {
 	}
 
 	@Override
-	public Storage getLocalStore(String app, String ressource) {
-		return new FileStorage(getHome().append("." + app).append(ressource));
+	public Storage getLocalStore(String app, String ressource) throws IOException {
+		Path apath = getHome().append("." + app);
+		if(!apath.exists())
+			apath.makeAsDir();
+		return new FileStorage(apath.append(ressource));
 	}
 
 }
