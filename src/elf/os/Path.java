@@ -38,7 +38,7 @@ public class Path {
 	 */
 	public static Path getHome() {
 		if(home == null)
-			home = new Path(System.getProperty("user.home"));
+			home = new Path(System.getProperty("user.home", "/"));
 		return home;
 	}
 	

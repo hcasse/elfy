@@ -73,6 +73,28 @@ public class OS {
 	}
 	
 	/**
+	 * Get user home.
+	 * @return	User home.
+	 */
+	public Path getHome() {
+		return Path.getHome();
+	}
+	
+	/**
+	 * Get storage for local data of an application.
+	 * The difference between local data and configuration is that local does not represent
+	 * options of the application or customization of the application. The difference between
+	 * local data and user / file data is that the user is not supposed to handle directly
+	 * these data (they may be hidden somewhere in the user home directory).
+	 * @param app			Application.
+	 * @param ressource		Ressource name.
+	 * @return				Storage if any.
+	 */
+	public Storage getLocalStore(String app, String ressource) {
+		return new FileStorage(getHome().append(app).append(ressource));
+	}
+	
+	/**
 	 * Get a structured for configuration store.
 	 * @param app			Name of the application.
 	 * @param ressource		Name of the ressource.

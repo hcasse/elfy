@@ -59,4 +59,9 @@ public class Linux extends OS {
 		return new FileStorage(app_path.append(ressource));
 	}
 
+	@Override
+	public Storage getLocalStore(String app, String ressource) {
+		return new FileStorage(getHome().append("." + app).append(ressource));
+	}
+
 }
