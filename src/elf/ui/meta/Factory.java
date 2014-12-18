@@ -20,7 +20,7 @@ public class Factory {
 	 * 					name of the menu, a null represents a bar).
 	 * @return			Built menu bar.
 	 */
-	public static JMenuBar makeMenuBar(Action[][] actions) {
+	public static JMenuBar makeMenuBar(OldAction[][] actions) {
 		JMenuBar bar = new JMenuBar();
 		for(int i = 0; i < actions.length; i++) {
 			JMenu menu = actions[i][0].makeMenu();

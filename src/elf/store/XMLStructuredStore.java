@@ -109,7 +109,7 @@ public class XMLStructuredStore implements StructuredStore {
 			case IN_LIST:
 				Element item = new Element(ITEM_ELEM);
 				current.appendChild(item);
-				item.appendChild(new Text(""));
+				item.appendChild(new Text(TextSerializer.serialize(value)));
 				break;
 			case IN_FIELD:
 				current.appendChild(new Text(TextSerializer.serialize(value)));
@@ -211,7 +211,7 @@ public class XMLStructuredStore implements StructuredStore {
 				break;
 			case IN_LIST:
 				r = TextSerializer.unserialize(type, cur.elt.getValue().trim());
-				if(cur.i < cur.elts.size())
+				if(cur.i + 1 < cur.elts.size())
 					cur.elt = cur.elts.get(++cur.i);
 				break;
 			}

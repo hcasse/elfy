@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
  */
 public interface Icon {
 	public static final int
+		NORMAL = 0x00,
 		SELECTED = 0x01,
 		DISABLED = 0x02;
 	public static final int

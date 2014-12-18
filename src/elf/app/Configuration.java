@@ -25,7 +25,8 @@ import elf.store.StructuredStore;
 
 /**
  * A configuration manages a configuration object and is responsible
- * for loading and saving it.
+ * for loading and saving it. The configuration adds itself to the list of
+ * configurations of an application.
  * @author casse
  */
 public class Configuration {
@@ -66,6 +67,8 @@ public class Configuration {
 			AutoStructuredSerializer serial = new AutoStructuredSerializer(store, object);
 			serial.load();
 		}
+		else
+			modified = true;
 	}
 	
 	/**
