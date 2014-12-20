@@ -44,6 +44,16 @@ public class DataCollection<T> implements Iterable<T> {
 	public Collection<T> getCollection() {
 		return coll;
 	}
+	
+	/**
+	 * change the collection.
+	 * @param coll	Changed collection.
+	 */
+	public void setCollection(Collection<T> coll) {
+		this.coll = coll;
+		for(Listener<T> listener: listeners)
+			listener.onChange();
+	}
 
 	/**
 	 * Add a listener.
@@ -115,6 +125,11 @@ public class DataCollection<T> implements Iterable<T> {
 		 * Called each time the collection is cleared.
 		 */
 		void onClear();
+		
+		/**
+		 * Called when the collection is changed.
+		 */
+		void onChange();
 	}
 
 	/**

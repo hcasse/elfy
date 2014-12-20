@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.app;
 
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -27,13 +27,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import elf.ui.Icon;
 import elf.ui.meta.Action;
 
 /**
  * Factory for a Swing UI.
  * @author casse
  */
-public class SwingFactory {
+public class Factory {
 
 	/**
 	 * Action listener for Elf actions.
@@ -103,6 +104,18 @@ public class SwingFactory {
 			b.setText(l);
 		return b;
 	}
+
+	/**
+	 * Make a button only with an icon.
+	 * @param action	Current action.
+	 * @return			Created tool button.
+	 */
+	public JButton makeToolButton(Action action) {
+		Icon icon = action.getIcon();
+		JButton b = new JButton(icon.get(Icon.NORMAL, Icon.TOOLBAR));
+		prepareButton(b, action);
+		return b;
+	}
 	
 	/**
 	 * Build a menu item (no action).
@@ -114,5 +127,5 @@ public class SwingFactory {
 		prepareMenuItem(menu, action);
 		return menu;
 	}
-	
+
 }

@@ -204,6 +204,11 @@ public abstract class Action {
 		public void onClear() {
 			action.update();
 		}
+
+		@Override
+		public void onChange() {
+			action.update();
+		}
 		
 	};
 }
