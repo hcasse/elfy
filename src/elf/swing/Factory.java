@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.app;
+package elf.swing;
 
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -128,4 +128,11 @@ public class Factory {
 		return menu;
 	}
 
+	/**
+	 * Build a text field.
+	 * @return	Built text field.
+	 */
+	public <T> TextField<T> makeTextField() {
+		return null;
+	}
 }

@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import elf.ui.meta.DataCollection;
+import elf.ui.meta.CollectionVar;
 
 /**
  * Drag handler moving the selection.
@@ -30,13 +30,13 @@ import elf.ui.meta.DataCollection;
 public class MoveDragHandler implements Handler, MouseListener, MouseMotionListener {
 	Canvas canvas;
 	int last_x, last_y;
-	DataCollection<Item> selection;
+	CollectionVar<Item> selection;
 	
 	/**
 	 * Build a moving drag handler.
 	 * @param selection		Current selection.
 	 */
-	public MoveDragHandler(DataCollection<Item> selection) {
+	public MoveDragHandler(CollectionVar<Item> selection) {
 		this.selection = selection;
 	}
 	

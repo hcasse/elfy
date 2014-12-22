@@ -22,7 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import elf.ui.meta.DataCollection;
+import elf.ui.meta.CollectionVar;
 
 /**
  * Drag handler moving the selection according to a predefined grid.
@@ -31,13 +31,13 @@ import elf.ui.meta.DataCollection;
 public abstract class GridMoveDragHandler implements Handler, MouseListener, MouseMotionListener {
 	Canvas canvas;
 	int off_x, off_y, last_x, last_y;
-	DataCollection<Item> selection;
+	CollectionVar<Item> selection;
 	
 	/**
 	 * Build the handler.
 	 * @param selection		Selection to work with.
 	 */
-	public GridMoveDragHandler(DataCollection<Item> selection) {
+	public GridMoveDragHandler(CollectionVar<Item> selection) {
 		this.selection = selection;
 	}
 	

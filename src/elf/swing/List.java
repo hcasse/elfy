@@ -33,8 +33,8 @@ import javax.swing.event.ListSelectionListener;
 
 import elf.ui.AbstractDisplayer;
 import elf.ui.Displayer;
-import elf.ui.meta.Data;
-import elf.ui.meta.DataCollection;
+import elf.ui.meta.Var;
+import elf.ui.meta.CollectionVar;
 
 /**
  * List component.
@@ -42,8 +42,8 @@ import elf.ui.meta.DataCollection;
  */
 public class List<T> extends JList<T> implements elf.ui.List<T> {
 	private static final long serialVersionUID = 1L;
-	private Data<T> select = new Data<T>();
-	private DataCollection<T> coll = new DataCollection<T>(new Vector<T>());
+	private Var<T> select = new Var<T>();
+	private CollectionVar<T> coll = new CollectionVar<T>(new Vector<T>());
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private final Model model = new Model();
 
@@ -96,23 +96,23 @@ public class List<T> extends JList<T> implements elf.ui.List<T> {
 	}
 	
 	@Override
-	public Data<T> getSelector() {
+	public Var<T> getSelector() {
 		return select;
 	}
 
 	@Override
-	public void setSelector(Data<T> select) {
+	public void setSelector(Var<T> select) {
 		select.set(this.select.get());
 		this.select = select;
 	}
 
 	@Override
-	public DataCollection<T> getCollection() {
+	public CollectionVar<T> getCollection() {
 		return coll;
 	}
 
 	@Override
-	public void setCollection(DataCollection<T> coll) {
+	public void setCollection(CollectionVar<T> coll) {
 		coll.removeListener(model);
 		this.coll = coll;
 		coll.addListener(model);
@@ -134,7 +134,7 @@ public class List<T> extends JList<T> implements elf.ui.List<T> {
 	 * Internal model.
 	 * @author casse
 	 */
-	private class Model extends AbstractListModel<T> implements DataCollection.Listener<T> {
+	private class Model extends AbstractListModel<T> implements CollectionVar.Listener<T> {
 		private static final long serialVersionUID = 1L;
 		ArrayList<T> array = new ArrayList<T>();
 

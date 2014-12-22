@@ -19,7 +19,7 @@ package elf.ui.canvas;
 
 import java.awt.event.MouseEvent;
 
-import elf.ui.meta.Data;
+import elf.ui.meta.Var;
 
 /**
  * Over-handler highlighting the item under with re-calculation of what is under according to depth.
@@ -27,7 +27,7 @@ import elf.ui.meta.Data;
  */
 public class PreciseHighlightOverHandler extends HighlightOverHandler {
 	
-	public PreciseHighlightOverHandler(Data<Item> data) {
+	public PreciseHighlightOverHandler(Var<Item> data) {
 		super(data);
 	}
 

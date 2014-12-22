@@ -25,7 +25,7 @@ import java.util.LinkedList;
  * Data collection providing model-observer pattern.
  * @author casse
  */
-public class DataCollection<T> implements Iterable<T> {
+public class CollectionVar<T> implements Iterable<T> {
 	Collection<T> coll;
 	LinkedList<Listener<T>> listeners = new LinkedList<Listener<T>>();
 	
@@ -33,7 +33,7 @@ public class DataCollection<T> implements Iterable<T> {
 	 * Build a data collection.
 	 * @param coll		Contained collection.
 	 */
-	public DataCollection(Collection<T> coll) {
+	public CollectionVar(Collection<T> coll) {
 		this.coll = coll;
 	}
 	

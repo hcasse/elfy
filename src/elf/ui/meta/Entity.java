@@ -15,51 +15,43 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.ui.meta;
 
-import elf.ui.meta.Var;
-import elf.ui.meta.CollectionVar;
+import elf.ui.Icon;
 
 /**
- * Abstract object for a list. 
+ * An entity groups together facilities to identify and display an UI item.
  * @author casse
  */
-public interface List<T> {
+public interface Entity {
+	/**
+	 * Get the label of the action.
+	 * @return	Action label.
+	 */
+	public String getLabel();
+	
+	/**
+	 * Get the help string for the action.
+	 * @return	Help string.
+	 */
+	public String getHelp();
+	
+	/**
+	 * Get the mnemonic of the action.
+	 * @return	Mnemonic (or 0 if no mnemonic).
+	 */
+	public int getMnemonic();
+	
+	/**
+	 * Get the control-character of the action.
+	 * @return	Control character.
+	 */
+	public int getControl();
 
 	/**
-	 * Get the current selector.
-	 * @return	Current selector.
+	 * Get an icon for the action.
+	 * @return	Matching icon.
 	 */
-	public Var<T> getSelector();
-
-	/**
-	 * Set the selector data.
-	 * @param select	Selector data.
-	 */
-	public void setSelector(Var<T> select);
-
-	/**
-	 * Get the current collection.
-	 * @return	Current collection.
-	 */
-	public CollectionVar<T> getCollection();
-
-	/**
-	 * Set the collection.
-	 * @param coll	New collection.
-	 */
-	public void setCollection(CollectionVar<T> coll);
-
-	/**
-	 * Get the current displayer.
-	 * @return	Current displayer.
-	 */
-	public Displayer<T> getDisplayer();
-
-	/**
-	 * Set the displayer.
-	 * @param display	New displayer.
-	 */
-	public void setDisplayer(Displayer<T> display);
-
+	public Icon getIcon();
+	
 }

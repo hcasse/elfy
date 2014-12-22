@@ -19,44 +19,14 @@ package elf.ui.meta;
 
 import java.util.LinkedList;
 
-import elf.ui.Icon;
-
-public abstract class Action {
+/**
+ * An action in the UI.
+ * @author casse
+ */
+public abstract class Action extends AbstractEntity {
 	private LinkedList<Command> commands = new LinkedList<Command>();
 	private LinkedList<Dependency> deps = new LinkedList<Dependency>();
 
-	/**
-	 * Get the label of the action.
-	 * @return	Action label.
-	 */
-	public abstract String getLabel();
-	
-	/**
-	 * Get the help string for the action.
-	 * @return	Help string.
-	 */
-	public String getHelp() {
-		return null;
-	}
-	
-	/**
-	 * Get the mnemonic of the action.
-	 * @return	Mnemonic (or 0 if no mnemonic).
-	 */
-	public int getMnemonic() { return 0; }
-	
-	/**
-	 * Get the control-character of the action.
-	 * @return	Control character.
-	 */
-	public int getControl() { return 0; }
-
-	/**
-	 * Get an icon for the action.
-	 * @return	Matching icon.
-	 */
-	public Icon getIcon() { return null; }
-	
 	/**
 	 * Run the action.
 	 */
@@ -99,7 +69,7 @@ public abstract class Action {
 	 * Add a dependency to data.
 	 * @param d
 	 */
-	public<T> void add(Data<T> d) {
+	public<T> void add(Var<T> d) {
 		add(new DataDependency<T>(this, d));
 	}
 	
@@ -107,7 +77,7 @@ public abstract class Action {
 	 * Add a dependency to a collection of data.
 	 * @param d	Added dependency.
 	 */
-	public<T> void add(DataCollection<T> d) {
+	public<T> void add(CollectionVar<T> d) {
 		add(new DataCollectionDependency<T>(this, d));
 	}
 	
@@ -160,17 +130,17 @@ public abstract class Action {
 	 *
 	 * @param <T>	Type of data.
 	 */
-	public static class DataDependency<T> extends Dependency implements Data.Listener<T> {
-		Data<T> data;
+	public static class DataDependency<T> extends Dependency implements Var.Listener<T> {
+		Var<T> data;
 		
-		public DataDependency(Action action, Data<T> data) {
+		public DataDependency(Action action, Var<T> data) {
 			super(action);
 			this.data = data;
 			data.addListener(this);
 		}
 
 		@Override
-		public void change(Data<T> data) {
+		public void change(Var<T> data) {
 			action.update();
 		}
 
@@ -182,10 +152,10 @@ public abstract class Action {
 	 *
 	 * @param <T>	Type of data.
 	 */
-	public static class DataCollectionDependency<T> extends Dependency implements DataCollection.Listener<T> {
-		DataCollection<T> coll;
+	public static class DataCollectionDependency<T> extends Dependency implements CollectionVar.Listener<T> {
+		CollectionVar<T> coll;
 		
-		public DataCollectionDependency(Action action, DataCollection<T> coll) {
+		public DataCollectionDependency(Action action, CollectionVar<T> coll) {
 			super(action);
 			this.coll = coll;
 		}

@@ -25,20 +25,20 @@ import java.util.Vector;
  *
  * @param <T>	Stored data.
  */
-public class Data<T> {
+public class Var<T> {
 	Vector<Listener<T>> listeners = new Vector<Listener<T>>();
 	T value;
 	
 	/**
 	 * Build the data with default value.
 	 */
-	public Data() { }
+	public Var() { }
 	
 	/**
 	 * Build the data with the given value.
 	 * @param value	Set value.
 	 */
-	public Data(T value) { this.value = value; }
+	public Var(T value) { this.value = value; }
 	
 	/**
 	 * Get the value of the data.
@@ -81,6 +81,6 @@ public class Data<T> {
 		 * Called each time the data has been changed.
 		 * @param data	Changed data.
 		 */
-		public void change(Data<T> data);
+		public void change(Var<T> data);
 	}
 }

@@ -23,6 +23,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.util.Hashtable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,7 +35,7 @@ import java.util.regex.Pattern;
 public class TextSerializer {
 	private static final Pattern COLOR_PAT = Pattern.compile("^#([0-9a-fA-F]{6})$");
 	private static final Pattern bool_pat = Pattern.compile("^(false|no|off)|(true|yes|on)$");
-	private static final Hashtable<Class<?>, Serializer> map = new Hashtable<Class<?>, Serializer>();
+	private static final Hashtable<Type, Serializer> map = new Hashtable<Type, Serializer>();
 	static {
 		
 		map.put(Boolean.class, new StringSerializer() {
@@ -130,7 +131,7 @@ public class TextSerializer {
 	 * @param type		Type serializer is looked for.
 	 * @return			Found serializer or null.
 	 */
-	public static Serializer get(Class<?> type) {
+	public static Serializer get(Type type) {
 		return map.get(type);
 	}
 	
@@ -202,7 +203,7 @@ public class TextSerializer {
 	 * Provide serialization service.
 	 * @author casse
 	 */
-	interface Serializer {
+	public interface Serializer {
 		void serialize(Writer writer, Object value) throws IOException;
 		String serialize(Object value) throws IOException;
 		Object unserialize(Reader reader) throws IOException;
