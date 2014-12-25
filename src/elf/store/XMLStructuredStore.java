@@ -275,8 +275,15 @@ public class XMLStructuredStore implements StructuredStore {
 		public void end() throws IOException {
 			if(!stack.isEmpty())
 				cur = stack.pop();
-			if(cur.state == IN_FIELD)
+			switch(cur.state) {
+			case IN_FIELD:
 				pop();
+				break;
+			case IN_LIST:
+				if(cur.i + 1 < cur.elts.size())
+					cur.elt = cur.elts.get(++cur.i);
+				break;
+			}
 		}
 		
 	}

@@ -17,14 +17,15 @@
  */
 package elf.swing;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.AbstractListModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.JComponent;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -40,41 +41,42 @@ import elf.ui.meta.CollectionVar;
  * List component.
  * @author casse
  */
-public class List<T> extends JList<T> implements elf.ui.List<T> {
-	private static final long serialVersionUID = 1L;
+public class List<T> implements elf.ui.List<T>, Component {
 	private Var<T> select = new Var<T>();
 	private CollectionVar<T> coll = new CollectionVar<T>(new Vector<T>());
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private final Model model = new Model();
+	private JList<T> jlist = new JList<T>();
+	private JScrollPane spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 	/**
 	 * Build a list.
 	 */
 	public List() {
 		coll.addListener(model);
-		setModel(model);
+		jlist.setModel(model);
 		
 		// handlers for selection
-		addListSelectionListener(new ListSelectionListener() {
+		jlist.addListSelectionListener(new ListSelectionListener() {
 			@Override public void valueChanged(ListSelectionEvent arg0)
-				{ select.set(getSelectedValue()); }
+				{ select.set(jlist.getSelectedValue()); }
 		});
-		getModel().addListDataListener(new ListDataListener() {
+		jlist.getModel().addListDataListener(new ListDataListener() {
 			@Override public void contentsChanged(ListDataEvent event)
-				{ select.set(getSelectedValue()); }
+				{ select.set(jlist.getSelectedValue()); }
 			@Override public void intervalAdded(ListDataEvent arg0)
-				{ select.set(getSelectedValue()); }
+				{ select.set(jlist.getSelectedValue()); }
 			@Override public void intervalRemoved(ListDataEvent arg0)
-				{ select.set(getSelectedValue()); }
+				{ select.set(jlist.getSelectedValue()); }
 		});
 		
 		// add displayer
-		setCellRenderer(new DefaultListCellRenderer() {
+		jlist.setCellRenderer(new DefaultListCellRenderer() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				Component r = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				java.awt.Component r = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				@SuppressWarnings("unchecked")
 				T object = (T)value;
 				setText(display.asString(object));
@@ -83,9 +85,9 @@ public class List<T> extends JList<T> implements elf.ui.List<T> {
 		});
 
 		// other configuration
-		this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-		setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+		spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 	}
 	
 	/**
@@ -127,7 +129,7 @@ public class List<T> extends JList<T> implements elf.ui.List<T> {
 	@Override
 	public void setDisplayer(Displayer<T> display) {
 		this.display = display;
-		repaint();
+		jlist.repaint();
 	}
 
 	/**
@@ -183,6 +185,11 @@ public class List<T> extends JList<T> implements elf.ui.List<T> {
 			update();
 			this.fireContentsChanged(this, 0, array.size() - 1);			
 		}
+	}
+
+	@Override
+	public JComponent getComponent() {
+		return spane;
 	}
 
 }

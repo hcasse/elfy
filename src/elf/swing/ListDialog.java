@@ -54,24 +54,14 @@ public class ListDialog<T> extends JDialog {
 			return list.getSelectedValue();		
 	}
 
-	/**
-	 * Build the dialog.
-	 * @param parent	Parent component.
-	 * @param comment	Comment of the dialog.
-	 * @param title		Title of the dialog.
-	 * @param values	List of values.
-	 * @param init		Index of initial value (or -1).
-	 */
-	public ListDialog(
-		JComponent parent,
+	private void init(
+		Frame parent,
 		String comment,
 		String title,
 		Vector<T> values,
 		int init,
 		String action
 	) {
-		super(JOptionPane.getFrameForComponent(parent), title, true);
-
 		// cancel button
 		JButton cancelButton = new JButton("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
@@ -125,8 +115,8 @@ public class ListDialog<T> extends JDialog {
 
 			@SuppressWarnings("unchecked")
 			@Override
-			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				Component res = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+			public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+				java.awt.Component res = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 				this.setText(asString((T)value));
 				return res;
 			}
@@ -183,7 +173,47 @@ public class ListDialog<T> extends JDialog {
 		//Initialize values.
 		setValue(init);
 		pack();
-		setLocationRelativeTo(parent);
+		setLocationRelativeTo(parent);		
+	}
+	
+	/**
+	 * Build the dialog.
+	 * @param parent	Parent component.
+	 * @param comment	Comment of the dialog.
+	 * @param title		Title of the dialog.
+	 * @param values	List of values.
+	 * @param init		Index of initial value (or -1).
+	 */
+	public ListDialog(
+		JComponent parent,
+		String comment,
+		String title,
+		Vector<T> values,
+		int init,
+		String action
+	) {
+		super(JOptionPane.getFrameForComponent(parent), title, true);
+		init(JOptionPane.getFrameForComponent(parent), comment, title, values, init, action);
+	}
+
+	/**
+	 * Build the dialog.
+	 * @param parent	Parent component.
+	 * @param comment	Comment of the dialog.
+	 * @param title		Title of the dialog.
+	 * @param values	List of values.
+	 * @param init		Index of initial value (or -1).
+	 */
+	public ListDialog(
+		Frame parent,
+		String comment,
+		String title,
+		Vector<T> values,
+		int init,
+		String action
+	) {
+		super(parent, title, true);
+		init(parent, comment, title, values, init, action);
 	}
 
 	/**
