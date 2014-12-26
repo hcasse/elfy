@@ -20,14 +20,16 @@ package elf.swing;
 import java.awt.Event;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import elf.ui.Icon;
+import elf.ui.IconManager;
 import elf.ui.meta.Action;
 
 /**
@@ -35,7 +37,30 @@ import elf.ui.meta.Action;
  * @author casse
  */
 public class Factory {
+	public static final String
+		ICON_BACK = "back",
+		ICON_MENU = "menu";
+	private final IconManager iman;
 
+	public Factory() {
+		IconManager i = null;
+		try {
+			i = new IconManager(new URL(IconManager.class.getResource("."), "../../pix"));
+		} catch (MalformedURLException e) {
+			System.err.println("INTERNAL ERROR: no standard icons");
+		}
+		iman = i;
+	}
+	
+	/**
+	 * Get a standard icon.
+	 * @param id	Identifier of the standard icon (ICON_xxx constants).
+	 * @return		Found icon.
+	 */
+	public Icon getIcon(String id) {
+		return iman.get(id);
+	}
+	
 	/**
 	 * Action listener for Elf actions.
 	 * @author casse
@@ -112,6 +137,8 @@ public class Factory {
 	 */
 	public JButton makeToolButton(Action action) {
 		Icon icon = action.getIcon();
+		if(icon == null)
+			icon = iman.getBroken();
 		JButton b = new JButton(icon.get(Icon.NORMAL, Icon.TOOLBAR));
 		prepareButton(b, action);
 		return b;
@@ -122,8 +149,8 @@ public class Factory {
 	 * @param action	Current action.
 	 * @return			Built menu item.
 	 */
-	public JMenu makeMenu(Action action) {
-		JMenu menu = new JMenu(action.getLabel());
+	public JMenuItem makeMenu(Action action) {
+		JMenuItem menu = new JMenuItem(action.getLabel());
 		prepareMenuItem(menu, action);
 		return menu;
 	}
@@ -135,4 +162,5 @@ public class Factory {
 	public <T> TextField<T> makeTextField() {
 		return null;
 	}
+	
 }

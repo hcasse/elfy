@@ -34,7 +34,7 @@ import javax.swing.event.ListSelectionListener;
 
 import elf.ui.AbstractDisplayer;
 import elf.ui.Displayer;
-import elf.ui.meta.Var;
+import elf.ui.meta.SingleVar;
 import elf.ui.meta.CollectionVar;
 
 /**
@@ -42,7 +42,7 @@ import elf.ui.meta.CollectionVar;
  * @author casse
  */
 public class List<T> implements elf.ui.List<T>, Component {
-	private Var<T> select = new Var<T>();
+	private SingleVar<T> select = new SingleVar<T>();
 	private CollectionVar<T> coll = new CollectionVar<T>(new Vector<T>());
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private final Model model = new Model();
@@ -98,12 +98,12 @@ public class List<T> implements elf.ui.List<T>, Component {
 	}
 	
 	@Override
-	public Var<T> getSelector() {
+	public SingleVar<T> getSelector() {
 		return select;
 	}
 
 	@Override
-	public void setSelector(Var<T> select) {
+	public void setSelector(SingleVar<T> select) {
 		select.set(this.select.get());
 		this.select = select;
 	}

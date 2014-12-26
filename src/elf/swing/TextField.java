@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import elf.ui.meta.Var;
+import elf.ui.meta.SingleVar;
 
 /**
  * Text field for Swing implementation.
@@ -52,7 +52,7 @@ public class TextField<T> extends elf.ui.TextField<T> {
 		init();
 	}
 	
-	public TextField(Var<T> var) {
+	public TextField(SingleVar<T> var) {
 		super(var);
 		init();
 	}

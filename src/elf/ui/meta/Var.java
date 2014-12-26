@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,41 +20,28 @@ package elf.ui.meta;
 import java.util.Vector;
 
 /**
- * A data that may be observed.
- * @author H. Cassé <casse@irit.fr>
- *
- * @param <T>	Stored data.
+ * Common interface to variables.
+ * @author casse
  */
-public class Var<T> {
-	Vector<Listener<T>> listeners = new Vector<Listener<T>>();
-	T value;
-	
-	/**
-	 * Build the data with default value.
-	 */
-	public Var() { }
-	
-	/**
-	 * Build the data with the given value.
-	 * @param value	Set value.
-	 */
-	public Var(T value) { this.value = value; }
-	
+public abstract class Var<T> extends AbstractEntity {
+	private Vector<Listener<T>> listeners = new Vector<Listener<T>>();
+
+	protected void fireChange() {
+		for(Listener<T> listener : listeners)
+			listener.change(this);		
+	}
+
 	/**
 	 * Get the value of the data.
 	 * @return	Data value.
 	 */
-	public final T get() { return value; }
+	public abstract T get();
 	
 	/**
 	 * Set the value of the data.
 	 * @param value		Set value.
 	 */
-	public final void set(T value) {
-		this.value = value;
-		for(Listener<T> listener : listeners)
-			listener.change(this);
-	}
+	public abstract void set(T value);
 	
 	/**
 	 * Add the given listener.
@@ -83,4 +70,5 @@ public class Var<T> {
 		 */
 		public void change(Var<T> data);
 	}
+	
 }

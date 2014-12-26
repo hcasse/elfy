@@ -24,7 +24,14 @@ import javax.swing.JComponent;
  * @author casse
  */
 public interface Component {
-
+	public static final int
+		LEFT = 0,
+		CENTER = 1,
+		RIGHT = 2,
+		SPREAD = 3,
+		VERTICAL = 4,
+		HORIZONTAL = 5;
+	
 	/**
 	 * Get the matcing Swing component.
 	 * @return	Swing Component.

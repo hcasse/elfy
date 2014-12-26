@@ -21,14 +21,15 @@ import java.lang.reflect.Type;
 
 import elf.store.TextSerializer;
 import elf.store.TextSerializer.Serializer;
+import elf.ui.meta.SingleVar;
 import elf.ui.meta.Var;
 
 /**
  * Text field.
  * @author casse
  */
-public abstract class TextField<T> implements Var.Listener<T> {
-	private Var<T> var;
+public abstract class TextField<T> implements SingleVar.Listener<T> {
+	private SingleVar<T> var;
 	private Serializer serial;
 	
 	/**
@@ -41,11 +42,11 @@ public abstract class TextField<T> implements Var.Listener<T> {
 	}
 
 	public TextField(T init) {
-		set(new Var<T>(init));
+		set(new SingleVar<T>(init));
 		serial = TextSerializer.get(getGenericTypeArgument());
 	}
 	
-	public TextField(Var<T> var) {
+	public TextField(SingleVar<T> var) {
 		set(var);
 		serial = TextSerializer.get(getGenericTypeArgument());
 	}
@@ -78,7 +79,7 @@ public abstract class TextField<T> implements Var.Listener<T> {
 	 * Get the current variable.
 	 * @return	Current variable.
 	 */
-	public Var<T> getVar() {
+	public SingleVar<T> getVar() {
 		return var;
 	}
 	
@@ -86,7 +87,7 @@ public abstract class TextField<T> implements Var.Listener<T> {
 	 * Set the current variable.
 	 * @param var	New variable.
 	 */
-	public void set(Var<T> var) {
+	public void set(SingleVar<T> var) {
 		if(var != null)
 			var.removeListener(this);
 		this.var = var;

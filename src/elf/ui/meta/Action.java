@@ -69,7 +69,7 @@ public abstract class Action extends AbstractEntity {
 	 * Add a dependency to data.
 	 * @param d
 	 */
-	public<T> void add(Var<T> d) {
+	public<T> void add(SingleVar<T> d) {
 		add(new DataDependency<T>(this, d));
 	}
 	
@@ -130,10 +130,10 @@ public abstract class Action extends AbstractEntity {
 	 *
 	 * @param <T>	Type of data.
 	 */
-	public static class DataDependency<T> extends Dependency implements Var.Listener<T> {
-		Var<T> data;
+	public static class DataDependency<T> extends Dependency implements SingleVar.Listener<T> {
+		SingleVar<T> data;
 		
-		public DataDependency(Action action, Var<T> data) {
+		public DataDependency(Action action, SingleVar<T> data) {
 			super(action);
 			this.data = data;
 			data.addListener(this);

@@ -32,8 +32,9 @@ import javax.imageio.ImageIO;
  * @author casse
  */
 public class IconManager {
-	URL path;
-	Hashtable<String, Icon> icons = new Hashtable<String, Icon>();
+	private URL path;
+	private Hashtable<String, Icon> icons = new Hashtable<String, Icon>();
+	private Icon broken;
 	
 	/**
 	 * Build the icon manager.
@@ -41,6 +42,24 @@ public class IconManager {
 	 */
 	public IconManager(URL path) {
 		this.path = path;
+	}
+	
+	/**
+	 * Get the broken icon.
+	 * @return	Icon for broken image.
+	 */
+	public Icon getBroken() {
+		if(broken == null) {
+			URL url;
+			try {
+				url = IconManager.class.getResource("/pix/broken.png");
+				Image image = ImageIO.read(url);
+				broken = new Icon.Image(image);			
+			} catch (IOException e) {
+				System.err.println("ERROR: no broken icon");
+			}
+		}
+		return broken;
 	}
 	
 	/**
@@ -56,10 +75,9 @@ public class IconManager {
 				Image image = ImageIO.read(url);
 				icon = new Icon.Image(image);
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				icon = Icon.NULL;
+				icon = getBroken();
 			} catch (IOException e) {
-				icon = Icon.NULL;
+				icon = getBroken();
 			}
 			icons.put(name, icon);
 		}
