@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,49 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.meta.Action;
 
 /**
- * Text field.
+ * A pane made of succeeding pages (one after one). 
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T> {
+public interface PagePane extends Component {
+
+	/**
+	 * Add a new page.
+	 * @return	Added page.
+	 */
+	Page addPage();
 	
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Set the current page.
+	 * @param page	Current page.
 	 */
-	Var<T> get();
+	void set(Page page);
 	
 	/**
-	 * Change the current variable.
-	 * @param var	New variable.
+	 * Push a new page, saving the previous page in a stack.
+	 * @param page		Pushed page.
 	 */
-	void set(Var<T> var);
+	void push(Page page);
 	
 	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
+	 * Pop the previously pushed page.
 	 */
-	void setAdapter(StringAdapter<T> adapter);
+	void pop();
+	
+	/**
+	 * Get action causing a back move in the pages.
+	 * @return		Back action.
+	 */
+	Action getBackAction();
+	
+	/**
+	 * A page in the page pane.
+	 * @author casse
+	 */
+	public interface Page extends Container {
+	
+	}
+	
 }

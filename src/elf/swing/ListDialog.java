@@ -166,7 +166,7 @@ public class ListDialog<T> extends JDialog {
 		buttonPane.add(setButton);
 
 		// set the frame
-		Container contentPane = getContentPane();
+		java.awt.Container contentPane = getContentPane();
 		contentPane.add(listPane, BorderLayout.CENTER);
 		contentPane.add(buttonPane, BorderLayout.PAGE_END);
 

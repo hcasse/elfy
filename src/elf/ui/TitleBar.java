@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,43 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.meta.Action;
 
 /**
- * Text field.
+ * Interface for title bar. A title bar is the title itself,
+ * possible several icons to the left, several icons to the right
+ * and a menu button.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T> {
+public interface TitleBar extends Component {
+
+	/**
+	 * Add action for left icon.
+	 * @param action	Icon action.
+	 */
+	void addLeft(Action action);
 	
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Add action for right icon.
+	 * @param action	Icon action.
 	 */
-	Var<T> get();
+	void addRight(Action action);
 	
 	/**
-	 * Change the current variable.
-	 * @param var	New variable.
+	 * Add action for a menu.
+	 * @param action	Menu action.
 	 */
-	void set(Var<T> var);
+	void addMenu(Action action);
 	
 	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
+	 * Get the title.
+	 * @return	Title.
 	 */
-	void setAdapter(StringAdapter<T> adapter);
+	String getTitle();
+	
+	/**
+	 * Set the title.
+	 * @param title		Title.
+	 */
+	void setTitle(String title);
 }

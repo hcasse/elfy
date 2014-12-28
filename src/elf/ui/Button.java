@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,24 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.meta.Action;
 
 /**
- * Text field.
+ * A button in the UI.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T> {
-	
+public interface Button extends Component {
+	public static final int
+		STYLE_TEXT = 0,			/** Simple text */
+		STYLE_ICON_TEXT = 1,	/** Icon (left) and text */
+		STYLE_ICON = 2,			/** Icon only (text size) */
+		STYLE_TOOL = 3,			/** Icon only (tool bar size) */
+		STYLE_TOOL_TEXT = 4;	/** Icon (tool bar size) and, below, small text */
+
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Get the current action.
+	 * @return	Current action.
 	 */
-	Var<T> get();
+	Action getAction();
 	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
 }

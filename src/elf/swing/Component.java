@@ -17,25 +17,51 @@
  */
 package elf.swing;
 
+import javax.swing.AbstractButton;
 import javax.swing.JComponent;
+
+import elf.ui.meta.Action;
+import elf.ui.meta.Entity;
 
 /**
  * Interface for objects producing a Swing component.
  * @author casse
  */
-public interface Component {
-	public static final int
-		LEFT = 0,
-		CENTER = 1,
-		RIGHT = 2,
-		SPREAD = 3,
-		VERTICAL = 4,
-		HORIZONTAL = 5;
+public abstract class Component implements elf.ui.Component {
 	
 	/**
 	 * Get the matcing Swing component.
 	 * @return	Swing Component.
 	 */
-	JComponent getComponent();
+	public abstract JComponent getComponent();
+
+	/**
+	 * Initialize button for an entity.
+	 * @param component		Button.
+	 * @param entity		Current entity.
+	 */
+	protected void prepareEntity(AbstractButton component, Entity entity) {
+		if(entity.getHelp() != null)
+			component.setToolTipText(entity.getHelp());
+		/*Icon i = entity.getIcon();
+		if(i != null)
+			component.setIcon(i.get(Icon.NORMAL, Icon.TEXTUAL));*/		
+		if(entity.getMnemonic() != 0)
+			component.setMnemonic(entity.getMnemonic());
+	}
+	
+	/**
+	 * Prepare the component.
+	 * @param component		Current component.
+	 * @param action		Current action.
+	 */
+	protected void prepareButton(AbstractButton component, Action action) {
+		prepareEntity(component, action);
+		component.setEnabled(action.isEnabled());
+	}
+
+	@Override
+	public void dispose() {
+	}
 	
 }

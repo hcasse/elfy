@@ -19,11 +19,24 @@ package elf.ui.meta;
 
 import java.util.LinkedList;
 
+import elf.ui.I18N;
+import elf.ui.Icon;
+import elf.ui.IconManager;
+
 /**
  * An action in the UI.
  * @author casse
  */
 public abstract class Action extends AbstractEntity {
+	public static final Action NULL = new Action() {
+		@Override public void run() { }
+	};
+	public static final Action QUIT = new Action() {
+		@Override public void run() { System.exit(0); }
+		@Override public String getLabel() { return I18N.STD.t("Quit"); }
+		@Override public Icon getIcon() { return IconManager.STD.get(IconManager.ICON_QUIT); }
+		
+	};
 	private LinkedList<Command> commands = new LinkedList<Command>();
 	private LinkedList<Dependency> deps = new LinkedList<Dependency>();
 

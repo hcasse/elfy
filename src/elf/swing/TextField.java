@@ -25,36 +25,57 @@ import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import elf.ui.StringAdapter;
 import elf.ui.meta.SingleVar;
+import elf.ui.meta.Var;
 
 /**
  * Text field for Swing implementation.
  * @author casse
  */
-public class TextField<T> extends elf.ui.TextField<T> {
+public class TextField<T> extends Component implements elf.ui.TextField<T>, SingleVar.Listener<T> {
+	private Var<T> var;
+	private StringAdapter<T> adapter;
 	private JTextField field;
 	private boolean break_rec = false;
 	
-	/**
-	 * Initialization of Swing text field.
-	 */
-	private void init() {
-		field = new JTextField();
-		field.getDocument().addDocumentListener(new DocumentListener() {
-			@Override public void changedUpdate(DocumentEvent arg0) { updateSync(); }
-			@Override public void insertUpdate(DocumentEvent arg0) { updateSync(); }
-			@Override public void removeUpdate(DocumentEvent arg0) { updateSync(); }
-		});
+	private Class<?> getGenericTypeArgument() {
+		return var.get().getClass();		
 	}
-	
+
 	public TextField(T init) {
-		super(init);
-		init();
+		set(new SingleVar<T>(init));
+		adapter = new StringAdapter.SerializerAdapter<T>(getGenericTypeArgument());
 	}
 	
-	public TextField(SingleVar<T> var) {
-		super(var);
-		init();
+	public TextField(Var<T> var) {
+		set(var);
+		adapter = new StringAdapter.SerializerAdapter<T>(getGenericTypeArgument());
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		var.removeListener(this);
+		field = null;
+	}
+	
+	@Override
+	public Var<T> get() {
+		return var;
+	}
+	
+	@Override
+	public void set(Var<T> var) {
+		if(var != null)
+			var.removeListener(this);
+		this.var = var;
+		var.addListener(this);
+	}
+	
+	@Override
+	public void change(Var<T> data) {
+		updateUI();
 	}
 	
 	/**
@@ -62,26 +83,33 @@ public class TextField<T> extends elf.ui.TextField<T> {
 	 * @return	Swing component.
 	 */
 	public JComponent getComponent() {
+		if(field == null) {
+			field = new JTextField();
+			field.getDocument().addDocumentListener(new DocumentListener() {
+				@Override public void changedUpdate(DocumentEvent arg0) { updateSync(); }
+				@Override public void insertUpdate(DocumentEvent arg0) { updateSync(); }
+				@Override public void removeUpdate(DocumentEvent arg0) { updateSync(); }
+			});
+			updateUI();
+		}
 		return field;
 	}
 
-	@Override
 	protected void updateUI() {
+		if(field == null)
+			return;
 		if(!break_rec)
-			try {
-				field.setText(getSerializer().serialize(getVar().get()));
-			} catch (IOException e) {
-				// shouldn't arise
-			}
+			field.setText(adapter.toString(get().get()));
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	protected void updateVar() {
+		if(field == null)
+			return;
 		try {
-			Object value = getSerializer().unserialize(field.getText());
+			Object value = adapter.fromString(field.getText());
 			field.setForeground(Color.BLACK);
-			getVar().set((T)value);
+			get().set((T)value);
 		} catch (IOException e) {
 			field.setForeground(Color.RED);
 		}
@@ -95,6 +123,12 @@ public class TextField<T> extends elf.ui.TextField<T> {
 		break_rec = true;
 		updateVar();
 		break_rec = false;
+	}
+
+	@Override
+	public void setAdapter(StringAdapter<T> adapter) {
+		this.adapter = adapter;
+		updateVar();
 	}
 	
 }

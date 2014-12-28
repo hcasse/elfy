@@ -25,6 +25,7 @@ import elf.store.FileStorage;
 import elf.store.Storage;
 import elf.store.StructuredStore;
 import elf.store.XMLStructuredStore;
+import elf.swing.UI;
 
 /**
  * Interface providing access to OS features.
@@ -105,4 +106,11 @@ public class OS {
 		return new XMLStructuredStore(getConfigStore(app, ressource));
 	}
 	
+	/**
+	 * Get the OS user interface.
+	 * @return	User interface.
+	 */
+	public UI getUI() {
+		return null;
+	}
 }

@@ -35,7 +35,26 @@ public class IconManager {
 	private URL path;
 	private Hashtable<String, Icon> icons = new Hashtable<String, Icon>();
 	private Icon broken;
-	
+
+	public static final String
+		ICON_BACK = "back",
+		ICON_MENU = "menu",
+		ICON_QUIT = "quit",
+		ICON_INFO = "info",
+		ICON_WARNING = "warning",
+		ICON_ERROR = "error",
+		ICON_HELP = "help";
+	public static final IconManager STD;
+	static {
+		IconManager i = null;
+		try {
+			i = new IconManager(new URL(IconManager.class.getResource("."), "../../pix"));
+		} catch (MalformedURLException e) {
+			System.err.println("INTERNAL ERROR: no standard icons");
+		}
+		STD = i;
+	}
+
 	/**
 	 * Build the icon manager.
 	 * @param path		Path to get the icon from.		

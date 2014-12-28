@@ -1,0 +1,2 @@
+Quit=Quitter
+Back=Précédent

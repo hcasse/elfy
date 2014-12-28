@@ -41,11 +41,11 @@ import elf.ui.meta.CollectionVar;
  * List component.
  * @author casse
  */
-public class List<T> implements elf.ui.List<T>, Component {
+public class List<T> extends Component implements elf.ui.List<T> {
 	private SingleVar<T> select = new SingleVar<T>();
-	private CollectionVar<T> coll = new CollectionVar<T>(new Vector<T>());
+	private CollectionVar<T> coll;;
 	private Displayer<T> display = new AbstractDisplayer<T>();
-	private final Model model = new Model();
+	private Model model;
 	private JList<T> jlist = new JList<T>();
 	private JScrollPane spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
@@ -53,48 +53,26 @@ public class List<T> implements elf.ui.List<T>, Component {
 	 * Build a list.
 	 */
 	public List() {
-		coll.addListener(model);
-		jlist.setModel(model);
-		
-		// handlers for selection
-		jlist.addListSelectionListener(new ListSelectionListener() {
-			@Override public void valueChanged(ListSelectionEvent arg0)
-				{ select.set(jlist.getSelectedValue()); }
-		});
-		jlist.getModel().addListDataListener(new ListDataListener() {
-			@Override public void contentsChanged(ListDataEvent event)
-				{ select.set(jlist.getSelectedValue()); }
-			@Override public void intervalAdded(ListDataEvent arg0)
-				{ select.set(jlist.getSelectedValue()); }
-			@Override public void intervalRemoved(ListDataEvent arg0)
-				{ select.set(jlist.getSelectedValue()); }
-		});
-		
-		// add displayer
-		jlist.setCellRenderer(new DefaultListCellRenderer() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-				java.awt.Component r = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-				@SuppressWarnings("unchecked")
-				T object = (T)value;
-				setText(display.asString(object));
-				return r;
-			}
-		});
-
-		// other configuration
-		jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-		spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+		coll = new CollectionVar<T>(new Vector<T>());
+	}
+	
+	/**
+	 * Build a list.
+	 * @param collection	Collection of the list.
+	 */
+	public List(CollectionVar<T> collection) {
+		this.coll = collection;
 	}
 	
 	/**
 	 * Remove the component.
 	 */
 	public void dispose() {
+		super.dispose();
 		coll.removeListener(model);
+		jlist = null;
+		spane = null;
+		model = null;
 	}
 	
 	@Override
@@ -110,6 +88,44 @@ public class List<T> implements elf.ui.List<T>, Component {
 
 	@Override
 	public CollectionVar<T> getCollection() {
+		if(jlist == null) {
+			model = new Model();
+			coll.addListener(model);
+			jlist.setModel(model);
+			
+			// handlers for selection
+			jlist.addListSelectionListener(new ListSelectionListener() {
+				@Override public void valueChanged(ListSelectionEvent arg0)
+					{ select.set(jlist.getSelectedValue()); }
+			});
+			jlist.getModel().addListDataListener(new ListDataListener() {
+				@Override public void contentsChanged(ListDataEvent event)
+					{ select.set(jlist.getSelectedValue()); }
+				@Override public void intervalAdded(ListDataEvent arg0)
+					{ select.set(jlist.getSelectedValue()); }
+				@Override public void intervalRemoved(ListDataEvent arg0)
+					{ select.set(jlist.getSelectedValue()); }
+			});
+			
+			// add displayer
+			jlist.setCellRenderer(new DefaultListCellRenderer() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public java.awt.Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+					java.awt.Component r = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+					@SuppressWarnings("unchecked")
+					T object = (T)value;
+					setText(display.asString(object));
+					return r;
+				}
+			});
+
+			// other configuration
+			jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));			
+		}
 		return coll;
 	}
 

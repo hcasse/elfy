@@ -19,8 +19,12 @@ package elf.os;
 
 import java.io.IOException;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import elf.store.FileStorage;
 import elf.store.Storage;
+import elf.swing.UI;
 
 /**
  * Linux implementation of OS interface.
@@ -28,6 +32,7 @@ import elf.store.Storage;
  * @author casse
  */
 public class Linux extends OS {
+	private elf.swing.UI ui;
 	Path config_path;
 	
 	@Override
@@ -65,6 +70,25 @@ public class Linux extends OS {
 		if(!apath.exists())
 			apath.makeAsDir();
 		return new FileStorage(apath.append(ressource));
+	}
+
+	@Override
+	public UI getUI() {
+		if(ui == null) {
+			ui = new elf.swing.UI();
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (ClassNotFoundException e) {
+				// TODO
+			} catch (InstantiationException e) {
+				// TODO
+			} catch (IllegalAccessException e) {
+				// TODO
+			} catch (UnsupportedLookAndFeelException e) {
+				// TODO
+			}
+		}
+		return ui;
 	}
 
 }

@@ -17,6 +17,8 @@
  */
 package elf.swing;
 
+import java.util.LinkedList;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -27,25 +29,50 @@ import elf.ui.meta.Action;
  * A fixed position tool bar made of icons. 
  * @author casse
  */
-public class ActionBar implements Component {
-	public static final int
-		ICON = 0,
-		TEXT = 1,
-		ICON_AND_TEXT = 2,
-		ICON_OVER_TEXT = 3;
-	private Factory factory;
-	private Action[] actions;
+public class ActionBar extends Component implements elf.ui.ActionBar {
+	private LinkedList<Action> actions = new LinkedList<Action>();
 	private int
 		align = LEFT,
 		axis = HORIZONTAL,
 		pad = 4,
 		margin = 1,
-		style = ICON;
+		style = Button.STYLE_ICON_TEXT;
 	private Box box;
-	
-	public ActionBar(Factory factory, Action[] actions) {
-		this.factory = factory;
-		this.actions = actions;
+	private LinkedList<Button> buttons = new LinkedList<Button>();
+	private static final int
+		NONE = 0,
+		PAD = 1,
+		GLUE = 2;
+	private static final int[] left = {
+		NONE,
+		GLUE,
+		NONE,
+		GLUE
+	};
+	private static final int[] center = {
+		PAD,
+		PAD,
+		PAD,
+		GLUE
+	};
+	private static final int[] right = {
+		GLUE,
+		GLUE,
+		NONE,
+		GLUE
+	};
+
+	/**
+	 * Add the given seperation.
+	 * @param type	Type of separation.
+	 * @param box	Box to add to.
+	 */
+	private void addSeparation(int type, Box box) {
+		switch(type) {
+		case NONE: 	break;
+		case PAD:	box.add(Box.createHorizontalStrut(pad)); break;
+		case GLUE:	box.add(Box.createGlue()); break;
+		}
 	}
 	
 	@Override
@@ -60,29 +87,18 @@ public class ActionBar implements Component {
 			box.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
 			
 			// create the actions
-			if(align != LEFT)
-				box.add(Box.createHorizontalGlue());
+			addSeparation(left[align], box);
 			boolean first = true;
-			for(int i = 0; i < actions.length; i++) {
+			for(Action action: actions) {
 				if(first)
 					first = false;
-				else if(align == SPREAD)
-					box.add(Box.createGlue());
 				else
-					box.add(Box.createHorizontalStrut(pad));
-				JComponent button;
-				if(style == ICON)
-					button = factory.makeToolButton(actions[i]);
-				else if(style == TEXT)
-					button = factory.makeButton(actions[i]);
-				else if(style == ICON_AND_TEXT)
-					button = null;
-				else
-					button = null;
-				box.add(button);
+					addSeparation(center[align], box);
+				Button button = new Button(action, style);
+				buttons.add(button);
+				box.add(button.getComponent());
 			}
-			if(align != RIGHT)
-				box.add(Box.createHorizontalGlue());
+			addSeparation(right[align], box);
 		}
 		return box;
 	}
@@ -95,21 +111,11 @@ public class ActionBar implements Component {
 		return align;
 	}
 
-	/**
-	 * Set the alignment.
-	 * @param align		Alignment (one of LEFT, CENTER or RIGHT).
-	 */
-	public void setAlign(int align) {
-		this.align = align;
+	@Override
+	public void setAlignment(int alignment) {
+		this.align = alignment;
 	}
 
-	/**
-	 * Get the axis.
-	 * @return	Axis (one of HORIZONTAL or VERTICAL).
-	 */
-	public int getAxis() {
-		return axis;
-	}
 
 	/**
 	 * Set the axis.
@@ -119,28 +125,9 @@ public class ActionBar implements Component {
 		this.axis = axis;
 	}
 
-	/**
-	 * Get the pad value (between icons).
-	 * @return	Pad value.
-	 */
-	public int getPad() {
-		return pad;
-	}
-
-	/**
-	 * Set the pad value (between icons).
-	 * @param pad	Pad value.
-	 */
-	public void setPad(int pad) {
-		this.pad = pad;
-	}
-
-	/**
-	 * Get the margin (around the bar).
-	 * @return	Margin size.
-	 */
-	public int getMargin() {
-		return margin;
+	@Override
+	public void setPadding(int width) {
+		this.pad = width;
 	}
 
 	/**
@@ -151,24 +138,22 @@ public class ActionBar implements Component {
 		this.margin = margin;
 	}
 
-	public Action[] getActions() {
-		return actions;
-	}
-
-	/**
-	 * Get the style.
-	 * @return	Style (one of ICON, TEXT, ICON_AND_TEXT, ICON_OVER_TEXT).
-	 */
-	public int getStyle() {
-		return style;
-	}
-
-	/**
-	 * Set the style.
-	 * @param style		Style (one of ICON, TEXT, ICON_AND_TEXT, ICON_OVER_TEXT).
-	 */
+	@Override
 	public void setStyle(int style) {
 		this.style = style;
+	}
+
+	@Override
+	public void add(Action action) {
+		actions.add(action);
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+		for(Button button: buttons)
+			button.dispose();
+		box = null;
 	}
 
 }

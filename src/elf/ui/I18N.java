@@ -34,8 +34,9 @@ import java.util.Properties;
  */
 public class I18N {
 	public static final String PREFIX = "../../i18n/", SUFFIX = ".txt";
-	Locale locale = Locale.getDefault();
-	Properties props = new Properties();
+	public static final I18N STD = new I18N("std", new Locale[] { Locale.getDefault() });
+	private Locale locale = Locale.getDefault();
+	private Properties props = new Properties();
 	
 	/**
 	 * Build an I18N support.

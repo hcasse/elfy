@@ -15,32 +15,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.swing;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.View;
+import elf.ui.meta.Entity;
 
 /**
- * Text field.
+ * Swing UI implementation.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T> {
-	
-	/**
-	 * Get the current variable.
-	 * @return	Current variable.
-	 */
-	Var<T> get();
-	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
+public class UI implements elf.ui.UI {
+
+	@Override
+	public View makeView(Entity entity) {
+		return new elf.swing.View(entity);
+	}
+
 }

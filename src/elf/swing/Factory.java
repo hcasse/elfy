@@ -25,12 +25,15 @@ import java.net.URL;
 
 import javax.swing.AbstractButton;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import elf.ui.Icon;
 import elf.ui.IconManager;
 import elf.ui.meta.Action;
+import elf.ui.meta.Entity;
+import elf.ui.meta.Var;
 
 /**
  * Factory for a Swing UI.
@@ -62,29 +65,18 @@ public class Factory {
 	}
 	
 	/**
-	 * Action listener for Elf actions.
-	 * @author casse
+	 * Initialize button for an entity.
+	 * @param component		Button.
+	 * @param entity		Current entity.
 	 */
-	private static class Command implements ActionListener, Action.Command {
-		Action action;
-		AbstractButton button;
-		
-		public Command(Action action, AbstractButton button) {
-			this.action = action;
-			this.button = button;
-			action.add(this);
-		}
-		
-		@Override
-		public void actionPerformed(ActionEvent event) {
-			action.run();
-		}
-
-		@Override
-		public void enable(boolean enabled) {
-			button.setEnabled(enabled);
-		}
-		
+	private void prepareEntity(AbstractButton component, Entity entity) {
+		if(entity.getHelp() != null)
+			component.setToolTipText(entity.getHelp());
+		Icon i = entity.getIcon();
+		if(i != null)
+			component.setIcon(i.get(Icon.NORMAL, Icon.TEXTUAL));		
+		if(entity.getMnemonic() != 0)
+			component.setMnemonic(entity.getMnemonic());
 	}
 	
 	/**
@@ -93,14 +85,8 @@ public class Factory {
 	 * @param action		Current action.
 	 */
 	private void prepareButton(AbstractButton component, Action action) {
-		if(action.getMnemonic() != 0)
-			component.setMnemonic(action.getMnemonic());
+		prepareEntity(component, action);
 		component.setEnabled(action.isEnabled());
-		if(action.getHelp() != null)
-			component.setToolTipText(action.getHelp());
-		Icon i = action.getIcon();
-		if(i != null)
-			component.setIcon(i.get(Icon.NORMAL, Icon.TEXTUAL));
 		Command command = new Command(action, component);
 		component.addActionListener(command);
 	}
@@ -161,6 +147,44 @@ public class Factory {
 	 */
 	public <T> TextField<T> makeTextField() {
 		return null;
+	}
+	
+	/**
+	 * Build a check box.
+	 * @param var
+	 * @return
+	 */
+	public JCheckBox makeCheckBox(Var<Boolean> var) {
+		JCheckBox cb = new JCheckBox();
+		cb.setSelected(var.get());
+		prepareEntity(cb, var);
+		return cb;
+	}
+
+	/**
+	 * Action listener for Elf actions.
+	 * @author casse
+	 */
+	private static class Command implements ActionListener, Action.Command {
+		Action action;
+		AbstractButton button;
+		
+		public Command(Action action, AbstractButton button) {
+			this.action = action;
+			this.button = button;
+			action.add(this);
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent event) {
+			action.run();
+		}
+
+		@Override
+		public void enable(boolean enabled) {
+			button.setEnabled(enabled);
+		}
+		
 	}
 	
 }

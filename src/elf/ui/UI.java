@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,19 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.meta.Entity;
 
 /**
- * Text field.
+ * Generic way to access graphical User Interface.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T> {
-	
+public interface UI {
+
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Build a new view (using entity information for identification).
+	 * @param entity	Entity representing the view.
+	 * @return			Created view.
 	 */
-	Var<T> get();
+	View makeView(Entity entity);
 	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
 }
