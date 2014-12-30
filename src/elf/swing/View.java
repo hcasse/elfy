@@ -19,10 +19,15 @@ package elf.swing;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Collection;
+import java.util.Vector;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
+import elf.ui.Displayer;
+import elf.ui.Monitor;
 import elf.ui.meta.Action;
 import elf.ui.meta.Entity;
 
@@ -33,12 +38,13 @@ import elf.ui.meta.Entity;
 public class View extends Container implements elf.ui.View {
 	private Entity entity;
 	private JFrame frame;
-	private Action close_action = Action.NULL;
+	private Action close_action = Action.QUIT;
+	private Monitor monitor;
 	
 	public View(Entity entity) {
 		this.entity = entity;
 	}
-
+		
 	/**
 	 * Get the current JFrame.
 	 * @return	Current JFrame.
@@ -87,4 +93,76 @@ public class View extends Container implements elf.ui.View {
 		return null;
 	}
 
+	@Override
+	public Monitor getMonitor() {
+		if(monitor == null)
+			monitor = new elf.swing.Monitor(this);
+		return monitor;
+	}
+
+	@Override
+	public boolean showConfirmDialog(String message, String title) {
+		return JOptionPane.showConfirmDialog(frame, message, title,  JOptionPane.YES_NO_OPTION) == 0;
+	}
+
+	@Override
+	public <T> SelectionDialog<T> makeSelectionDialog(String message, String title, Collection<T> values) {
+		return new SelectionDialog<T>(message, title, values);
+	}
+
+	/**
+	 * Implementation of selection dialog.
+	 * @author casse
+	 *
+	 * @param <T>	Type of values.
+	 */
+	private class SelectionDialog<T> implements elf.ui.SelectionDialog<T> {
+		// TODO Make it in its own class and remove ListDialog.
+		private String title, message, action;
+		private Vector<T> collection = new Vector<T>();
+		private Displayer<T> displayer = new Displayer<T>() {
+			@Override public String asString(T value) { return value.toString(); }
+		};
+		private T init;
+		
+		public SelectionDialog(String message, String title, Collection<T> collection) {
+			this.message = message;
+			this.title = title;
+			this.collection.addAll(collection);
+		}
+		
+		@Override
+		public T show() {
+			int i = -1;
+			if(init != null)
+				i = collection.indexOf(init);
+			ListDialog<T> dialog = new ListDialog<T>(getFrame(), message, title, collection, i, action) {
+				private static final long serialVersionUID = 1L;
+				@Override protected String asString(T object) { return displayer.asString(object); }			
+			};
+			return dialog.run();
+		}
+
+		@Override
+		public void setAction(String name) {
+			this.action = name;
+		}
+
+		@Override
+		public void setDisplayer(Displayer<T> displayer) {
+			this.displayer = displayer;
+		}
+
+		@Override
+		public void setValues(Collection<T> collection) {
+			this.collection.clear();
+			this.collection.addAll(collection);
+		}
+
+		@Override
+		public void setInitial(T value) {
+			init = value;
+		}
+		
+	}
 }

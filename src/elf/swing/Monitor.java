@@ -19,7 +19,6 @@ package elf.swing;
 
 import java.util.Vector;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -27,7 +26,7 @@ import javax.swing.JOptionPane;
  * @author casse
  */
 public class Monitor implements elf.ui.Monitor {
-	private JFrame owner;
+	private View view;
 	private String title;
 	private boolean success = false, in_job = false;
 	private Vector<String> msgs = new Vector<String>();
@@ -36,8 +35,8 @@ public class Monitor implements elf.ui.Monitor {
 	 * Build a Swing monitor.
 	 * @param owner		Owner window.
 	 */
-	public Monitor(JFrame owner) {
-		this.owner = owner;
+	public Monitor(View view) {
+		this.view = view;
 	}
 	
 	@Override
@@ -45,7 +44,7 @@ public class Monitor implements elf.ui.Monitor {
 		if(in_job)
 			msgs.add("INFO: " + message);
 		else
-			JOptionPane.showMessageDialog(owner, message, "Information", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(view.getFrame(), message, "Information", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	@Override
@@ -53,7 +52,7 @@ public class Monitor implements elf.ui.Monitor {
 		if(in_job)
 			msgs.add("WARNING: " + message);
 		else
-			JOptionPane.showMessageDialog(owner, message, "Warning", JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(view.getFrame(), message, "Warning", JOptionPane.WARNING_MESSAGE);
 	}
 
 	@Override
@@ -62,12 +61,12 @@ public class Monitor implements elf.ui.Monitor {
 		if(in_job)
 			msgs.add("INFO: " + message);
 		else
-			JOptionPane.showMessageDialog(owner, message, "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(view.getFrame(), message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 
 	@Override
 	public void panic(String message) {
-		JOptionPane.showMessageDialog(owner, message, "Panic", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(view.getFrame(), message, "Panic", JOptionPane.ERROR_MESSAGE);
 		System.exit(1);
 	}
 
@@ -83,7 +82,7 @@ public class Monitor implements elf.ui.Monitor {
 	public boolean end() {
 		if(!msgs.isEmpty()) {
 			// should be fixed: read-only list, only one button.
-			ListDialog<String> list = new ListDialog<String>(owner, "", title, msgs, -1, "Proceed");
+			ListDialog<String> list = new ListDialog<String>(view.getFrame(), "", title, msgs, -1, "Proceed");
 			list.run();
 		}
 		return success;

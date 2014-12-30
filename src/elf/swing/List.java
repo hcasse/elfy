@@ -36,18 +36,19 @@ import elf.ui.AbstractDisplayer;
 import elf.ui.Displayer;
 import elf.ui.meta.SingleVar;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.Var;
 
 /**
  * List component.
  * @author casse
  */
 public class List<T> extends Component implements elf.ui.List<T> {
-	private SingleVar<T> select = new SingleVar<T>();
-	private CollectionVar<T> coll;;
+	private Var<T> select = new SingleVar<T>();
+	private CollectionVar<T> coll;
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private Model model;
-	private JList<T> jlist = new JList<T>();
-	private JScrollPane spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	private JList<T> jlist;
+	private JScrollPane spane;
 
 	/**
 	 * Build a list.
@@ -76,19 +77,101 @@ public class List<T> extends Component implements elf.ui.List<T> {
 	}
 	
 	@Override
-	public SingleVar<T> getSelector() {
+	public Var<T> getSelector() {
 		return select;
 	}
 
 	@Override
-	public void setSelector(SingleVar<T> select) {
+	public void setSelector(Var<T> select) {
 		select.set(this.select.get());
 		this.select = select;
 	}
 
 	@Override
 	public CollectionVar<T> getCollection() {
-		if(jlist == null) {
+		return coll;
+	}
+
+	@Override
+	public void setCollection(CollectionVar<T> coll) {
+		System.err.println("DEBUG: setCollection(" + coll.getCollection() + ")");
+		coll.removeListener(model);
+		this.coll = coll;
+		coll.addListener(model);
+		model.update();
+	}
+
+	@Override
+	public Displayer<T> getDisplayer() {
+		return display;
+	}
+
+	@Override
+	public void setDisplayer(Displayer<T> display) {
+		this.display = display;
+		if(jlist != null)
+			jlist.repaint();
+	}
+
+	/**
+	 * Internal model.
+	 * @author casse
+	 */
+	private class Model extends AbstractListModel<T> implements CollectionVar.Listener<T> {
+		private static final long serialVersionUID = 1L;
+		ArrayList<T> array = new ArrayList<T>();
+
+		public Model() {
+			update();
+		}
+		
+		private void update() {
+			array.clear();
+			array.addAll(coll.getCollection());
+		}
+		
+		@Override
+		public T getElementAt(int index) {
+			if(index < array.size())
+				return array.get(index);
+			else
+				return null;
+		}
+
+		@Override
+		public int getSize() {
+			return array.size();
+		}
+
+		@Override
+		public void onAdd(T item) {
+			update();
+			this.fireContentsChanged(this, 0, array.size() - 1);
+		}
+
+		@Override
+		public void onRemove(T item) {
+			update();
+			this.fireContentsChanged(this, 0, array.size() - 1);
+		}
+
+		@Override
+		public void onClear() {
+			update();
+			this.fireContentsChanged(this, 0, array.size() - 1);
+		}
+
+		@Override
+		public void onChange() {
+			update();
+			this.fireContentsChanged(this, 0, array.size() - 1);			
+		}
+	}
+
+	@Override
+	public JComponent getComponent() {
+		if(spane == null) {
+			jlist = new JList<T>();
 			model = new Model();
 			coll.addListener(model);
 			jlist.setModel(model);
@@ -122,89 +205,10 @@ public class List<T> extends Component implements elf.ui.List<T> {
 			});
 
 			// other configuration
+			spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));			
+			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		}
-		return coll;
-	}
-
-	@Override
-	public void setCollection(CollectionVar<T> coll) {
-		coll.removeListener(model);
-		this.coll = coll;
-		coll.addListener(model);
-		model.update();
-	}
-
-	@Override
-	public Displayer<T> getDisplayer() {
-		return display;
-	}
-
-	@Override
-	public void setDisplayer(Displayer<T> display) {
-		this.display = display;
-		jlist.repaint();
-	}
-
-	/**
-	 * Internal model.
-	 * @author casse
-	 */
-	private class Model extends AbstractListModel<T> implements CollectionVar.Listener<T> {
-		private static final long serialVersionUID = 1L;
-		ArrayList<T> array = new ArrayList<T>();
-
-		public Model() {
-			update();
-		}
-		
-		private void update() {
-			array.clear();
-			array.addAll(coll.getCollection());
-		}
-		
-		@Override
-		public T getElementAt(int index) {
-			if(index < array.size())
-				return array.get(index);
-			else
-				return null;
-		}
-
-		@Override
-		public int getSize() {
-			return coll.size();
-		}
-
-		@Override
-		public void onAdd(T item) {
-			update();
-			this.fireContentsChanged(this, 0, array.size() - 1);
-		}
-
-		@Override
-		public void onRemove(T item) {
-			update();
-			this.fireContentsChanged(this, 0, array.size() - 1);
-		}
-
-		@Override
-		public void onClear() {
-			update();
-			this.fireContentsChanged(this, 0, array.size() - 1);
-		}
-
-		@Override
-		public void onChange() {
-			update();
-			this.fireContentsChanged(this, 0, array.size() - 1);			
-		}
-	}
-
-	@Override
-	public JComponent getComponent() {
 		return spane;
 	}
 

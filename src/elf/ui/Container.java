@@ -87,6 +87,21 @@ public interface Container extends Component {
 	PagePane addPagePane();
 	
 	/**
+	 * Add a split pane.
+	 * @param axis		One of Component.HORIZONTAL or Component.VERTICAL.
+	 * @return			Split pane.
+	 */
+	SplitPane addSplitPane(int axis);
+	
+	/**
+	 * Add a form.
+	 * @param style		Style of form.
+	 * @param action	Main action (called at validation).
+	 * @return			Added form.
+	 */
+	Form addForm(int style, Action action);
+	
+	/**
 	 * Remove a component from the container.
 	 * @param component		Removed component.
 	 */

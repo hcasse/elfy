@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 
 import elf.ui.ActionBar;
+import elf.ui.Form;
 import elf.ui.List;
 import elf.ui.PagePane;
+import elf.ui.SplitPane;
 import elf.ui.TextField;
 import elf.ui.TitleBar;
 import elf.ui.meta.Action;
@@ -138,8 +140,23 @@ public abstract class Container extends Component implements elf.ui.Container {
 
 	@Override
 	public PagePane addPagePane() {
-		// TODO Auto-generated method stub
-		return null;
+		elf.swing.PagePane pane = new elf.swing.PagePane();
+		add(pane);
+		return pane;
+	}
+
+	@Override
+	public SplitPane addSplitPane(int axis) {
+		elf.swing.SplitPane spane = new elf.swing.SplitPane(axis);
+		add(spane);
+		return spane;
+	}
+
+	@Override
+	public Form addForm(int style, Action action) {
+		elf.swing.Form form = new elf.swing.Form(style, action);
+		add(form);
+		return form;
 	}
 	
 }

@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,19 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+import elf.ui.meta.Entity;
 
 /**
- * Text field.
+ * A field is a widget that may be involved in a form.
+ * Mainly, it references an entity (whose label, icon, help may be extracted).
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T>, Field {
-	
+public interface Field {
+
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Get the variable.
+	 * @return	Variable.
 	 */
-	Var<T> get();
+	Entity getEntity();
 	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
 }

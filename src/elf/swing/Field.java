@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,32 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
-
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
+package elf.swing;
 
 /**
- * Text field.
+ * Component that is also a field.
  * @author casse
+ *
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T>, Field {
-	
-	/**
-	 * Get the current variable.
-	 * @return	Current variable.
-	 */
-	Var<T> get();
-	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
+public abstract class Field extends Component implements elf.ui.Field {
+
 }

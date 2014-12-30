@@ -17,8 +17,8 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.Var;
 
 /**
  * Abstract object for a list. 
@@ -30,13 +30,13 @@ public interface List<T> {
 	 * Get the current selector.
 	 * @return	Current selector.
 	 */
-	public SingleVar<T> getSelector();
+	public Var<T> getSelector();
 
 	/**
 	 * Set the selector data.
 	 * @param select	Selector data.
 	 */
-	public void setSelector(SingleVar<T> select);
+	public void setSelector(Var<T> select);
 
 	/**
 	 * Get the current collection.

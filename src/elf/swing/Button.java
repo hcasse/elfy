@@ -40,7 +40,9 @@ public class Button extends Component implements elf.ui.Button, ActionListener, 
 				button.setText(action.getLabel());
 				break;
 			case STYLE_ICON_TEXT:
-				button.setIcon(action.getIcon().get(Icon.NORMAL, Icon.TEXTUAL));
+				Icon icon = action.getIcon();
+				if(icon != null)
+					button.setIcon(icon.get(Icon.NORMAL, Icon.TEXTUAL));
 				button.setText(action.getLabel());
 				break;
 			case STYLE_ICON:

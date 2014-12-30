@@ -17,10 +17,10 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
 import java.util.LinkedList;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import elf.ui.I18N;
 import elf.ui.Icon;
@@ -34,7 +34,7 @@ import elf.ui.meta.Action;
 public class PagePane extends Component implements elf.ui.PagePane {
 	private final LinkedList<Page> stack = new LinkedList<Page>();
 	private Page page;
-	private JPanel pane;
+	private javax.swing.Box pane;
 	private Action back_action;
 	
 	@Override
@@ -45,14 +45,14 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	@Override
 	public void set(elf.ui.PagePane.Page set_page) {
 		Page page = (Page)set_page;
-		if(pane == null)
-			return;
-		if(this.page != null)
-			page.uninstall(pane);
+		if(pane != null) {
+			if(this.page != null)
+				this.page.uninstall(pane);
+			page.install(pane);
+			pane.revalidate();
+			pane.repaint();
+		}
 		this.page = page;
-		page.install(pane);
-		pane.revalidate();
-		pane.repaint();
 	}
 
 	@Override
@@ -60,7 +60,8 @@ public class PagePane extends Component implements elf.ui.PagePane {
 		Page page = (Page)set_page;
 		if(this.page != null) {
 			stack.push(this.page);
-			//back.update();
+			if(back_action != null)
+				back_action.update();
 		}
 		set(page);
 	}
@@ -69,14 +70,18 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	public void pop() {
 		Page page = stack.pop();
 		set(page);
-		//back.update();
+		if(back_action != null)
+			back_action.update();
 	}
 
 	@Override
 	public JComponent getComponent() {
 		if(pane == null) {
-			pane = new JPanel();
-			page.install(pane);
+			pane = javax.swing.Box.createHorizontalBox();
+			pane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+			pane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+			if(page != null)
+				page.install(pane);
 		}
 		return pane;
 	}
@@ -87,7 +92,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	 */
 	private static class Page extends elf.swing.Container implements elf.ui.PagePane.Page {
 
-		public void install(JPanel panel) {
+		public void install(javax.swing.Box panel) {
 			for(Component component: getComponents())
 				panel.add(component.getComponent());
 		}
@@ -97,9 +102,8 @@ public class PagePane extends Component implements elf.ui.PagePane {
 			return null;
 		}
 		
-		public void uninstall(JPanel panel) {
-			for(Component component: getComponents())
-				panel.remove(component.getComponent());			
+		public void uninstall(javax.swing.Box panel) {
+			panel.removeAll();
 		}
 		
 	}

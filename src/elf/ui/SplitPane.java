@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,30 +17,25 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
-import elf.ui.meta.Var;
-
 /**
- * Text field.
+ * Divide the view in two panes (horizontal or vertical) separated
+ * by a ruler that may be moved.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T>, Field {
+public interface SplitPane {
+
+	/**
+	 * Get the first pane. This pane is a box with same axis
+	 * as the split pane.
+	 * @return	First pane.
+	 */
+	Container getFirst();
 	
 	/**
-	 * Get the current variable.
-	 * @return	Current variable.
+	 * Get the second pane. This pane is a box with same axis
+	 * as the split pane.
+	 * @return	Second pane.
 	 */
-	Var<T> get();
+	Container getSecond();
 	
-	/**
-	 * Change the current variable.
-	 * @param var	New variable.
-	 */
-	void set(Var<T> var);
-	
-	/**
-	 * Set the adapter.
-	 * @param adapter	Set adapter.
-	 */
-	void setAdapter(StringAdapter<T> adapter);
 }

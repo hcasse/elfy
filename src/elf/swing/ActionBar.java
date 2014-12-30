@@ -17,6 +17,7 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
 import java.util.LinkedList;
 
 import javax.swing.BorderFactory;
@@ -46,7 +47,7 @@ public class ActionBar extends Component implements elf.ui.ActionBar {
 	private static final int[] left = {
 		NONE,
 		GLUE,
-		NONE,
+		GLUE,
 		GLUE
 	};
 	private static final int[] center = {
@@ -80,10 +81,14 @@ public class ActionBar extends Component implements elf.ui.ActionBar {
 		if(box == null) {
 			
 			// build the box
-			if(axis == HORIZONTAL)
+			if(axis == HORIZONTAL) {
 				box = Box.createHorizontalBox();
-			else
+				box.setMaximumSize(new Dimension(Short.MAX_VALUE, 10));
+			}
+			else {
 				box = Box.createVerticalBox();
+				box.setMaximumSize(new Dimension(10, Short.MAX_VALUE));
+			}
 			box.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
 			
 			// create the actions
@@ -96,7 +101,10 @@ public class ActionBar extends Component implements elf.ui.ActionBar {
 					addSeparation(center[align], box);
 				Button button = new Button(action, style);
 				buttons.add(button);
-				box.add(button.getComponent());
+				JComponent component = button.getComponent();
+				if(axis == VERTICAL)
+					component.setMaximumSize(new Dimension(Short.MAX_VALUE, 10));
+				box.add(component);
 			}
 			addSeparation(right[align], box);
 		}

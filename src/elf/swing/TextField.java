@@ -26,6 +26,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import elf.ui.StringAdapter;
+import elf.ui.meta.Entity;
 import elf.ui.meta.SingleVar;
 import elf.ui.meta.Var;
 
@@ -33,7 +34,7 @@ import elf.ui.meta.Var;
  * Text field for Swing implementation.
  * @author casse
  */
-public class TextField<T> extends Component implements elf.ui.TextField<T>, SingleVar.Listener<T> {
+public class TextField<T> extends Field implements elf.ui.TextField<T>, SingleVar.Listener<T> {
 	private Var<T> var;
 	private StringAdapter<T> adapter;
 	private JTextField field;
@@ -129,6 +130,11 @@ public class TextField<T> extends Component implements elf.ui.TextField<T>, Sing
 	public void setAdapter(StringAdapter<T> adapter) {
 		this.adapter = adapter;
 		updateVar();
+	}
+
+	@Override
+	public Entity getEntity() {
+		return var;
 	}
 	
 }
