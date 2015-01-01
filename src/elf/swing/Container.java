@@ -6,10 +6,12 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 
 import elf.ui.ActionBar;
+import elf.ui.CheckBox;
 import elf.ui.Form;
 import elf.ui.List;
 import elf.ui.PagePane;
 import elf.ui.SplitPane;
+import elf.ui.SubsetField;
 import elf.ui.TextField;
 import elf.ui.TitleBar;
 import elf.ui.meta.Action;
@@ -157,6 +159,20 @@ public abstract class Container extends Component implements elf.ui.Container {
 		elf.swing.Form form = new elf.swing.Form(style, action);
 		add(form);
 		return form;
+	}
+
+	@Override
+	public CheckBox addCheckBox(Var<Boolean> var) {
+		elf.swing.CheckBox cbox = new elf.swing.CheckBox(var);
+		add(cbox);
+		return cbox;
+	}
+
+	@Override
+	public <T> SubsetField<T> addSubsetField(CollectionVar<T> set) {
+		elf.swing.SubsetField<T> field = new elf.swing.SubsetField<T>(set);
+		add(field);
+		return field;
 	}
 	
 }

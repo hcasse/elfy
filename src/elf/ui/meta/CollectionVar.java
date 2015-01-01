@@ -20,14 +20,22 @@ package elf.ui.meta;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Vector;
 
 /**
  * Data collection providing model-observer pattern.
  * @author casse
  */
-public class CollectionVar<T> implements Iterable<T> {
+public class CollectionVar<T> extends AbstractEntity implements Iterable<T> {
 	Collection<T> coll;
 	LinkedList<Listener<T>> listeners = new LinkedList<Listener<T>>();
+	
+	/**
+	 * Empty collection variable.
+	 */
+	public CollectionVar() {
+		coll = new Vector<T>();
+	}
 	
 	/**
 	 * Build a data collection.

@@ -102,6 +102,20 @@ public interface Container extends Component {
 	Form addForm(int style, Action action);
 	
 	/**
+	 * Create a check box.
+	 * @param var	Boolean variable of the checkbox.
+	 * @return		Added checkbox.
+	 */
+	CheckBox addCheckBox(Var<Boolean> var);
+	
+	/**
+	 * Add a subset field.
+	 * @param set	Initial set.
+	 * @return		Created subset field.
+	 */
+	<T> SubsetField<T> addSubsetField(CollectionVar<T> set);
+	
+	/**
 	 * Remove a component from the container.
 	 * @param component		Removed component.
 	 */

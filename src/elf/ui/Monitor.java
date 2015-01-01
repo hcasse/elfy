@@ -24,7 +24,9 @@ package elf.ui;
  * @author casse
  */
 public interface Monitor {
-	public static final Monitor NULL = new TextMonitor();
+	public static final Monitor
+		NULL = new TextMonitor(),
+		STD = NULL;
 	
 	/**
 	 * Simple information to the user (display is not mandatory).

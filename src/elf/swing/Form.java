@@ -25,9 +25,14 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
+import elf.ui.CheckBox;
+import elf.ui.SubsetField;
 import elf.ui.TextField;
 import elf.ui.meta.Action;
+import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Var;
 
 public class Form extends Component implements elf.ui.Form {
@@ -35,6 +40,7 @@ public class Form extends Component implements elf.ui.Form {
 	private int enter_mode = ENTER_NEXT_AND_SUBMIT;
 	private LinkedList<Action> actions = new LinkedList<Action>();
 	private LinkedList<elf.swing.Field> fields = new LinkedList<elf.swing.Field>();
+	private boolean visible = true;
 	private JComponent component, first, last;
 	
 	public Form(int style, Action action) {
@@ -101,8 +107,6 @@ public class Form extends Component implements elf.ui.Form {
 	@Override
 	public JComponent getComponent() {
 		if(component == null) {
-			javax.swing.Box box = javax.swing.Box.createVerticalBox();
-			component = box;
 			
 			// build the form
 			JComponent form;
@@ -110,15 +114,26 @@ public class Form extends Component implements elf.ui.Form {
 				form = makeVertical();
 			else
 				form = makeTwoColumn();
-			box.add(form);
+			JScrollPane spane = new JScrollPane(form);
+			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			spane.setViewportBorder(null);
+			spane.getViewport().setOpaque(false);
 			
 			// build the buttons
-			ActionBar bar = new ActionBar();
-			bar.setStyle(button_style);
-			bar.setAlignment(button_alignment);
-			for(Action action: actions)
-				bar.add(action);
-			box.add(bar.getComponent());
+			if(!visible)
+				component = spane;
+			else {
+				javax.swing.Box box = javax.swing.Box.createVerticalBox();
+				component = box;
+				box.add(spane);
+				ActionBar bar = new ActionBar();
+				bar.setStyle(button_style);
+				bar.setAlignment(button_alignment);
+				for(Action action: actions)
+					bar.add(action);
+				box.add(bar.getComponent());				
+			}
 		}
 		return component;
 	}
@@ -177,4 +192,24 @@ public class Form extends Component implements elf.ui.Form {
 		first = null;
 		last = null;
 	}
+
+	@Override
+	public CheckBox addCheckBox(Var<Boolean> var) {
+		elf.swing.CheckBox cbox = new elf.swing.CheckBox(var);
+		fields.add(cbox);
+		return cbox;
+	}
+
+	@Override
+	public void setButtonVisible(boolean visible) {
+		this.visible = visible;
+	}
+	
+	@Override
+	public <T> SubsetField<T> addSubsetField(CollectionVar<T> set) {
+		elf.swing.SubsetField<T> field = new elf.swing.SubsetField<T>(set);
+		fields.add(field);
+		return field;
+	}
+	
 }

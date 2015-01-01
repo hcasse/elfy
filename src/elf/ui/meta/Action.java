@@ -38,7 +38,7 @@ public abstract class Action extends AbstractEntity {
 		
 	};
 	private LinkedList<Command> commands = new LinkedList<Command>();
-	private LinkedList<Dependency> deps = new LinkedList<Dependency>();
+	//private LinkedList<Dependency> deps = new LinkedList<Dependency>();
 
 	/**
 	 * Run the action.
@@ -75,7 +75,7 @@ public abstract class Action extends AbstractEntity {
 	 * @param dep	Added dependency.
 	 */
 	public void add(Dependency dep) {
-		deps.add(dep);
+		//deps.add(dep);
 	}
 	
 	/**
@@ -171,6 +171,7 @@ public abstract class Action extends AbstractEntity {
 		public DataCollectionDependency(Action action, CollectionVar<T> coll) {
 			super(action);
 			this.coll = coll;
+			coll.addListener(this);
 		}
 
 		@Override

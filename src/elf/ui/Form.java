@@ -18,6 +18,7 @@
 package elf.ui;
 
 import elf.ui.meta.Action;
+import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Var;
 
 /**
@@ -43,6 +44,20 @@ public interface Form extends Component {
 	<T> TextField<T> addTextField(Var<T> var);
 	
 	/**
+	 * Build a checkbox.
+	 * @param var	Variable of the checkbox.
+	 * @return		Added checkbox.
+	 */
+	CheckBox addCheckBox(Var<Boolean> var);
+
+	/**
+	 * Add a subset field.
+	 * @param set	Initial set.
+	 * @return		Created subset field.
+	 */
+	<T> SubsetField<T> addSubsetField(CollectionVar<T> set);
+	
+	/**
 	 * Add non-nominal action.
 	 * @param action	Added action.
 	 */
@@ -65,4 +80,10 @@ public interface Form extends Component {
 	 * @param mode	Enter key mode (one of ENTER_xxx).
 	 */
 	void setEnterMode(int mode);
+	
+	/**
+	 * Make the button visible or not.
+	 * @param visible	True for visible, false for invisible.
+	 */
+	void setButtonVisible(boolean visible);
 }
