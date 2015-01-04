@@ -43,4 +43,10 @@ public interface TextField<T> extends Component, SingleVar.Listener<T>, Field {
 	 * @param adapter	Set adapter.
 	 */
 	void setAdapter(StringAdapter<T> adapter);
+	
+	/**
+	 * Set the field read-only.
+	 * @param ro	Field read-only.
+	 */
+	void setReadOnly(boolean ro);
 }

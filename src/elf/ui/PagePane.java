@@ -24,7 +24,11 @@ import elf.ui.meta.Action;
  * @author casse
  */
 public interface PagePane extends Component {
-
+	public static final Listener NULL = new Listener() {
+		@Override public void onShow() { }
+		@Override public void onHide() { }
+	};
+	
 	/**
 	 * Add a new page.
 	 * @return	Added page.
@@ -60,6 +64,30 @@ public interface PagePane extends Component {
 	 */
 	public interface Page extends Container {
 	
+		/**
+		 * Set the page listener.
+		 * @param listener	Current page listener.
+		 */
+		void setListener(Listener listener);
+		
+	}
+	
+	/**
+	 * Listener of pane page.
+	 * @author casse
+	 */
+	public interface Listener {
+		
+		/**
+		 * Called when the page is shown.
+		 */
+		void onShow();
+		
+		/**
+		 * Called on page hide.
+		 */
+		void onHide();
+		
 	}
 	
 }

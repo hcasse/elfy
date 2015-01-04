@@ -15,38 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.swing;
+
+import javax.swing.JComponent;
+import javax.swing.JLabel;
 
 /**
- * Status bar with timed messages and scroll bar.
+ * Swing implementation of TextInfo.
  * @author casse
  */
-public interface StatusBar extends Component, Monitor {
-	public static final int
-		WAIT = 5,
-		FOREVER = Integer.MAX_VALUE;
+public class TextInfo extends Component implements elf.ui.TextInfo {
+	private String text;
+	private JLabel label;
+	
+	public TextInfo(String format) {
+		text = format;
+	}
+	
+	@Override
+	public void setText(String text) {
+		this.text = text;
+		if(label != null)
+			label.setText(text);
+	}
 
-	/**
-	 * Set the message display delay.
-	 * @param delay		Delay in seconds.
-	 */
-	public void setDelay(int delay);
-	
-	/**
-	 * Clear the displayed message.
-	 */
-	public void clear();
-	
-	/**
-	 * Display the given message (for usual time).
-	 * @param message		Message to display.
-	 */
-	public void set(String message);
-	
-	/**
-	 * Add a text information.
-	 * @param format	Format of text.
-	 * @param align		One of Component.LEFT or Component.RIGHT.
-	 */
-	public TextInfo addTextInfo(String format, int align);
+	@Override
+	public JComponent getComponent() {
+		if(label == null)
+			label = new JLabel(text);
+		return label;
+	}
+
 }

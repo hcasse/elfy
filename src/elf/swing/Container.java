@@ -1,9 +1,24 @@
+/*
+ * ElfCore library
+ * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package elf.swing;
 
 import java.util.Collection;
 import java.util.LinkedList;
-
-import javax.swing.JComponent;
 
 import elf.ui.ActionBar;
 import elf.ui.CheckBox;
@@ -11,8 +26,10 @@ import elf.ui.Form;
 import elf.ui.List;
 import elf.ui.PagePane;
 import elf.ui.SplitPane;
+import elf.ui.StatusBar;
 import elf.ui.SubsetField;
 import elf.ui.TextField;
+import elf.ui.TextInfo;
 import elf.ui.TitleBar;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
@@ -54,42 +71,10 @@ public abstract class Container extends Component implements elf.ui.Container {
 	}
 
 	@Override
-	public elf.ui.Container addBox(int direction) {
+	public elf.ui.Box addBox(int direction) {
 		Box box = new Box(direction);
 		add(box);
 		return box;
-	}
-
-	/**
-	 * Horizontal / vertical box.
-	 * @author casse
-	 */
-	public static class Box extends Container {
-		private int direction;
-		private javax.swing.Box box;
-
-		public Box(int direction) {
-			this.direction = direction;
-		}
-		
-		@Override
-		public JComponent getComponent() {
-			if(box == null) {
-				
-				// create the box
-				switch(direction) {
-				case HORIZONTAL:	box = javax.swing.Box.createHorizontalBox(); break;
-				case VERTICAL:		box = javax.swing.Box.createVerticalBox(); break;
-				default:			assert(false);
-				}
-				
-				// add the components
-				for(Component component: getComponents())
-					box.add(component.getComponent());
-			}
-			return box;
-		}
-
 	}
 
 	@Override
@@ -174,5 +159,19 @@ public abstract class Container extends Component implements elf.ui.Container {
 		add(field);
 		return field;
 	}
-	
+
+	@Override
+	public TextInfo addTextInfo(String format) {
+		elf.swing.TextInfo info = new elf.swing.TextInfo(format);
+		add(info);
+		return info;
+	}
+
+	@Override
+	public StatusBar addStatusBar() {
+		elf.swing.StatusBar sbar = new elf.swing.StatusBar();
+		add(sbar);
+		return sbar;
+	}
+
 }

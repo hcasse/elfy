@@ -17,6 +17,8 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
+
 import javax.swing.AbstractButton;
 import javax.swing.JComponent;
 
@@ -28,6 +30,11 @@ import elf.ui.meta.Entity;
  * @author casse
  */
 public abstract class Component implements elf.ui.Component {
+	static final Dimension
+		ZERO = new Dimension(0, 0),
+		HFILL = new Dimension(Short.MAX_VALUE, 0),
+		VFILL = new Dimension(0, Short.MAX_VALUE),
+		FILL = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
 	
 	/**
 	 * Get the matcing Swing component.

@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,35 +18,14 @@
 package elf.ui;
 
 /**
- * Status bar with timed messages and scroll bar.
+ * A box to arrange widgets in a linear way.
  * @author casse
  */
-public interface StatusBar extends Component, Monitor {
-	public static final int
-		WAIT = 5,
-		FOREVER = Integer.MAX_VALUE;
+public interface Box extends Container {
 
 	/**
-	 * Set the message display delay.
-	 * @param delay		Delay in seconds.
+	 * Add a filler object.
 	 */
-	public void setDelay(int delay);
+	void addFiller();
 	
-	/**
-	 * Clear the displayed message.
-	 */
-	public void clear();
-	
-	/**
-	 * Display the given message (for usual time).
-	 * @param message		Message to display.
-	 */
-	public void set(String message);
-	
-	/**
-	 * Add a text information.
-	 * @param format	Format of text.
-	 * @param align		One of Component.LEFT or Component.RIGHT.
-	 */
-	public TextInfo addTextInfo(String format, int align);
 }

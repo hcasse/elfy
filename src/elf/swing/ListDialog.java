@@ -152,7 +152,7 @@ public class ListDialog<T> extends JDialog {
 		JLabel label = new JLabel(comment);
 		label.setLabelFor(list);
 		listPane.add(label);
-		listPane.add(Box.createRigidArea(new Dimension(0,5)));
+		listPane.add(javax.swing.Box.createRigidArea(new Dimension(0,5)));
 		listPane.add(listScroller);
 		listPane.setBorder(BorderFactory.createEmptyBorder(10,10,10,10));
 
@@ -160,9 +160,9 @@ public class ListDialog<T> extends JDialog {
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new BoxLayout(buttonPane, BoxLayout.LINE_AXIS));
 		buttonPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 10, 10));
-		buttonPane.add(Box.createHorizontalGlue());
+		buttonPane.add(javax.swing.Box.createHorizontalGlue());
 		buttonPane.add(cancelButton);
-		buttonPane.add(Box.createRigidArea(new Dimension(10, 0)));
+		buttonPane.add(javax.swing.Box.createRigidArea(new Dimension(10, 0)));
 		buttonPane.add(setButton);
 
 		// set the frame

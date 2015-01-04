@@ -91,8 +91,10 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	 * @author casse
 	 */
 	private static class Page extends elf.swing.Container implements elf.ui.PagePane.Page {
-
+		Listener listener = NULL;
+		
 		public void install(javax.swing.Box panel) {
+			listener.onShow();
 			for(Component component: getComponents())
 				panel.add(component.getComponent());
 		}
@@ -103,7 +105,13 @@ public class PagePane extends Component implements elf.ui.PagePane {
 		}
 		
 		public void uninstall(javax.swing.Box panel) {
+			listener.onHide();
 			panel.removeAll();
+		}
+
+		@Override
+		public void setListener(Listener listener) {
+			this.listener = listener;
 		}
 		
 	}

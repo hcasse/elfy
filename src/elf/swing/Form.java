@@ -17,7 +17,9 @@
  */
 package elf.swing;
 
-import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
@@ -35,6 +37,10 @@ import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Var;
 
+/**
+ * Swing implementation of a form.
+ * @author casse
+ */
 public class Form extends Component implements elf.ui.Form {
 	private int style, button_style = Button.STYLE_ICON_TEXT, button_alignment = LEFT;
 	private int enter_mode = ENTER_NEXT_AND_SUBMIT;
@@ -56,19 +62,25 @@ public class Form extends Component implements elf.ui.Form {
 		
 		// build the panel
 		JPanel panel = new JPanel();
-		GridLayout layout = new GridLayout(fields.size(), 2);
+		GridBagLayout layout = new GridBagLayout();
 		panel.setLayout(layout);
-	
+		GridBagConstraints c = new GridBagConstraints();	
+
 		// build the fields
 		EnterListener listener = null;
 		if(enter_mode != ENTER_IGNORE)
 			listener = new EnterListener();
+		int i = 0;
 		for(elf.swing.Field field: fields) {
 			JLabel label = new JLabel(field.getEntity().getLabel());
 			label.setAlignmentX(1);
-			panel.add(label);
+			c.gridx = 0;
+			c.gridy = i;
+			panel.add(label, c);
 			last = field.getComponent();
-			panel.add(last);
+			c.gridx = 1;
+			c.gridy = i;
+			panel.add(last, c);
 			if(listener != null)
 				last.addKeyListener(listener);
 			if(first == null)
@@ -135,6 +147,8 @@ public class Form extends Component implements elf.ui.Form {
 				box.add(bar.getComponent());				
 			}
 		}
+		component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+		component.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		return component;
 	}
 

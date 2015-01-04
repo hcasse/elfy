@@ -17,6 +17,12 @@
  */
 package elf.swing;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Hashtable;
+
+import javax.swing.Timer;
+
 import elf.ui.View;
 import elf.ui.meta.Entity;
 
@@ -25,10 +31,56 @@ import elf.ui.meta.Entity;
  * @author casse
  */
 public class UI implements elf.ui.UI {
-
+	private Hashtable<Task, TaskTimer> timers = new Hashtable<Task, TaskTimer>();
+	
 	@Override
 	public View makeView(Entity entity) {
 		return new elf.swing.View(entity);
+	}
+
+	@Override
+	public void start(Task task) {
+		TaskTimer timer = timers.get(task);
+		if(timer == null)
+			timer = new TaskTimer(task);
+		timer.start();
+	}
+
+	@Override
+	public void stop(Task task) {
+		TaskTimer timer = timers.get(task);
+		if(timer != null)
+			timer.stop();
+	}
+	
+	private class TaskTimer implements ActionListener {
+		private Timer timer;
+		private Task task;
+		
+		public TaskTimer(Task task) {
+			this.task = task;
+		}
+		
+		public void start() {
+			if(timer != null)
+				return;
+			timer = new Timer((int)task.getPeriod(), this);
+			timer.setRepeats(task.isPeriodic());
+			timers.put(task, this);
+			timer.start();
+		}
+		
+		public void stop() {
+			timer.stop();
+			timers.remove(task);
+			timer = null;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			task.run();
+		}
+		
 	}
 
 }

@@ -32,4 +32,55 @@ public interface UI {
 	 */
 	View makeView(Entity entity);
 	
+	/**
+	 * Start a task.
+	 * @param task	Started task.
+	 */
+	void start(Task task);
+	
+	/**
+	 * Stop a task.
+	 * @param task	Stopped task.
+	 */
+	void stop(Task task);
+	
+	/**
+	 * Interface of programmable task.
+	 * @author casse
+	 */
+	public static abstract class Task {
+		private boolean periodic;
+		private long period;
+		
+		public Task(long period) {
+			this.period = period;
+		}
+		
+		public Task(long period, boolean periodic) {
+			this.period = period;
+			this.periodic = periodic;
+		}
+		
+		/**
+		 * Get current period.
+		 * @return	Period,.
+		 */
+		public long getPeriod() {
+			return period;
+		}
+		
+		/**
+		 * Task if the task is periodic.
+		 * @return	True for periodic, false else.
+		 */
+		public boolean isPeriodic() {
+			return periodic;
+		}
+		
+		/**
+		 * Called when the task start.
+		 */
+		public abstract void run();
+		
+	}
 }

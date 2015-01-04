@@ -207,6 +207,8 @@ public class List<T> extends Component implements elf.ui.List<T> {
 			// other configuration
 			spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			//spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+			spane.setPreferredSize(jlist.getPreferredSize());
 			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		}
 		return spane;

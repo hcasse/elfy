@@ -38,7 +38,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, SingleVa
 	private Var<T> var;
 	private StringAdapter<T> adapter;
 	private JTextField field;
-	private boolean break_rec = false;
+	private boolean break_rec = false, read_only = false;
 	
 	private Class<?> getGenericTypeArgument() {
 		return var.get().getClass();		
@@ -91,6 +91,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, SingleVa
 				@Override public void insertUpdate(DocumentEvent arg0) { updateSync(); }
 				@Override public void removeUpdate(DocumentEvent arg0) { updateSync(); }
 			});
+			field.setEditable(!read_only);
 			updateUI();
 		}
 		return field;
@@ -135,6 +136,13 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, SingleVa
 	@Override
 	public Entity getEntity() {
 		return var;
+	}
+
+	@Override
+	public void setReadOnly(boolean ro) {
+		read_only = ro;
+		if(field != null)
+			field.setEditable(!read_only);
 	}
 	
 }

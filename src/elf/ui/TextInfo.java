@@ -18,35 +18,16 @@
 package elf.ui;
 
 /**
- * Status bar with timed messages and scroll bar.
+ * Area to display text that cannot be edited by user
+ * but chanegd by the application.
  * @author casse
  */
-public interface StatusBar extends Component, Monitor {
-	public static final int
-		WAIT = 5,
-		FOREVER = Integer.MAX_VALUE;
+public interface TextInfo {
 
 	/**
-	 * Set the message display delay.
-	 * @param delay		Delay in seconds.
+	 * Change the displayed text.
+	 * @param text	Displayed text.
 	 */
-	public void setDelay(int delay);
+	void setText(String text);
 	
-	/**
-	 * Clear the displayed message.
-	 */
-	public void clear();
-	
-	/**
-	 * Display the given message (for usual time).
-	 * @param message		Message to display.
-	 */
-	public void set(String message);
-	
-	/**
-	 * Add a text information.
-	 * @param format	Format of text.
-	 * @param align		One of Component.LEFT or Component.RIGHT.
-	 */
-	public TextInfo addTextInfo(String format, int align);
 }

@@ -33,8 +33,8 @@ public class SplitPane extends Component implements elf.ui.SplitPane {
 
 	public SplitPane(int axis) {
 		this.axis = axis;
-		fst = new elf.swing.Container.Box(axis);
-		snd = new elf.swing.Container.Box(axis);		
+		fst = new elf.swing.Box(axis);
+		snd = new elf.swing.Box(axis);		
 	}
 	
 	@Override

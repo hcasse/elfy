@@ -39,7 +39,7 @@ public interface Container extends Component {
 	 * @param direction		Direction of box (either HORIZONTAL or VERTICAL).
 	 * @return
 	 */
-	Container addBox(int direction);
+	Box addBox(int direction);
 	
 	/**
 	 * Add a title bar.
@@ -114,6 +114,19 @@ public interface Container extends Component {
 	 * @return		Created subset field.
 	 */
 	<T> SubsetField<T> addSubsetField(CollectionVar<T> set);
+	
+	/**
+	 * Build a text information.
+	 * @param format	Format to size the text area.
+	 * @return			Built text information.
+	 */
+	TextInfo addTextInfo(String format);
+	
+	/**
+	 * Create and add a status bar.
+	 * @return	Built status bar.
+	 */
+	StatusBar addStatusBar();
 	
 	/**
 	 * Remove a component from the container.
