@@ -26,36 +26,20 @@ import elf.app.Configuration;
  * @author H. Cassé <casse@irit.fr>
  *
  * @param <T>	Stored data.
+ * @deprecated
  */
 public class SingleVar<T> extends Var<T> {
-	T value;
 	
 	/**
 	 * Build the data with default value.
 	 */
-	public SingleVar() { }
+	public SingleVar() { super(new Accessor.Store<T>()); }
 	
 	/**
 	 * Build the data with the given value.
 	 * @param value	Set value.
 	 */
-	public SingleVar(T value) { this.value = value; }
-	
-	/**
-	 * Get the value of the data.
-	 * @return	Data value.
-	 */
-	public final T get() { return value; }
-	
-	/**
-	 * Set the value of the data.
-	 * @param value		Set value.
-	 */
-	@Override
-	public void set(T value) {
-		this.value = value;
-		fireChange();
-	}
+	public SingleVar(T value) { super(new Accessor.Store<T>(value)); }
 	
 	/**
 	 * Variable from a configuration.

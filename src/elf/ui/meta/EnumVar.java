@@ -27,7 +27,7 @@ import elf.ui.I18N;
  * Variable for enumeration with the ability to produce label for enumerated values.
  * @author casse
  */
-public class EnumVar<T> extends SingleVar<T> {
+public class EnumVar<T> extends Var<T> {
 	private I18N i18n;
 	private Method method;
 	private boolean tested;
@@ -43,6 +43,15 @@ public class EnumVar<T> extends SingleVar<T> {
 	}
 	
 	/**
+	 * Build a an enumerated variable from an accessor.
+	 * @param accessor	Accessor to use.
+	 */
+	public EnumVar(Accessor<T> accessor) {
+		super(accessor);
+		i18n = I18N.STD;
+	}
+	
+	/**
 	 * Constructor from value and translation.
 	 * @param value		Current value.
 	 * @param i18n		Translation handle to translate values.
@@ -52,6 +61,16 @@ public class EnumVar<T> extends SingleVar<T> {
 		this.i18n = i18n;
 	}
 	
+	/**
+	 * Constructor from value and translation.
+	 * @param accessor	Accessor to use.
+	 * @param i18n		Translation handle to translate values.
+	 */
+	public EnumVar(Accessor<T> accessor, I18N i18n) {
+		super(accessor);
+		this.i18n = i18n;
+	}
+
 	/**
 	 * Get the label for an enumerated value and using the translation handle.
 	 * @param value		Value to get label for.

@@ -23,7 +23,8 @@ import java.util.Vector;
  * Common interface to variables.
  * @author casse
  */
-public abstract class Var<T> extends AbstractEntity {
+public class Var<T> extends AbstractEntity {
+	private Accessor<T> accessor;
 	private Vector<Listener<T>> listeners = new Vector<Listener<T>>();
 
 	/**
@@ -32,25 +33,62 @@ public abstract class Var<T> extends AbstractEntity {
 	 * @return			Built variable.
 	 */
 	public static <T> Var<T> make(T value) {
-		return new SingleVar<T>(value);
+		return new Var<T>(value);
+	}
+	
+	/**
+	 * Build an empty variable.
+	 */
+	public Var() {
+		this.accessor = new Accessor.Store<T>();
+	}
+	
+	/**
+	 * Build a variable storing a single value.
+	 * @param value		Stored value.
+	 */
+	public Var(T value) {
+		this.accessor = new Accessor.Store<T>(value);
+	}
+	
+	/**
+	 * Build a variable from an accessor.
+	 * @param accessor	Accessor to use.
+	 */
+	public Var(Accessor<T> accessor) {
+		this.accessor = accessor;
 	}
 	
 	protected void fireChange() {
 		for(Listener<T> listener : listeners)
 			listener.change(this);		
 	}
+	
+	/**
+	 * Change the accessor.
+	 * @param accessor	New accessor.
+	 */
+	public void setAccessor(Accessor<T> accessor) {
+		this.accessor = accessor;
+		fireChange();
+	}
 
 	/**
 	 * Get the value of the data.
 	 * @return	Data value.
 	 */
-	public abstract T get();
+	public T get() {
+		return accessor.get();
+	}
 	
 	/**
 	 * Set the value of the data.
 	 * @param value		Set value.
 	 */
-	public abstract void set(T value);
+	public void set(T value) {
+		accessor.set(value);
+		fireChange();
+	}
 	
 	/**
 	 * Add the given listener.

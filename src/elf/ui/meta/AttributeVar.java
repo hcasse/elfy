@@ -17,18 +17,17 @@
  */
 package elf.ui.meta;
 
-import java.lang.reflect.Field;
-
 /**
  * Variable on an attribute.
  * @author casse
+ * @deprecated	Use Var with Accessor.Attribute.
  */
 public class AttributeVar<T> extends Var<T> {
 	private Object object;
 	private String name;
-	private Field field;
 	
 	public AttributeVar(Object object, String name) {
+		super(new Accessor.Attribute<T>(object, name));
 		this.object = object;
 		this.name = name;
 	}
@@ -47,56 +46,7 @@ public class AttributeVar<T> extends Var<T> {
 	 */
 	public void setObject(Object object) {
 		this.object = object;
-		field = null;
-		fireChange();
-	}
-	
-	/**
-	 * Get the field.
-	 * @return	Field.
-	 */
-	private Field getField() {
-		if(field == null) {
-			try {
-				field = object.getClass().getField(name);
-			} catch (NoSuchFieldException e) {
-				System.err.println("ERROR: " + e.getLocalizedMessage());
-			} catch (SecurityException e) {
-				System.err.println("ERROR: " + e.getLocalizedMessage());
-			}
-		}
-		return field;
-	}
-	
-	/**
-	 * Get the field value.
-	 * @return	Field value.
-	 */
-	@SuppressWarnings("unchecked")
-	public T get() {
-		Field field = getField();
-		if(field != null)
-			try {
-				return (T)field.get(object);
-			} catch (IllegalArgumentException e) {
-				System.err.println("ERROR: " + e.getLocalizedMessage());
-			} catch (IllegalAccessException e) {
-				System.err.println("ERROR: " + e.getLocalizedMessage());
-			}
-		return null;
-	}
-
-	@Override
-	public void set(T value) {
-		Field field = getField();
-		try {
-			field.set(object, value);
-			fireChange();
-		} catch (IllegalArgumentException e) {
-			System.err.println("ERROR: " + e.getLocalizedMessage());
-		} catch (IllegalAccessException e) {
-			System.err.println("ERROR: " + e.getLocalizedMessage());
-		}
+		setAccessor(new Accessor.Attribute<T>(object, name));
 	}
 
 }
