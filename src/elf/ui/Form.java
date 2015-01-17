@@ -19,6 +19,7 @@ package elf.ui;
 
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
 /**
@@ -56,6 +57,13 @@ public interface Form extends Component {
 	 * @return		Created subset field.
 	 */
 	<T> SubsetField<T> addSubsetField(CollectionVar<T> set);
+	
+	/**
+	 * Add an enumeration field.
+	 * @param var	Field variable.
+	 * @return		Added field.
+	 */
+	<T> EnumField<T> addEnumField(EnumVar<T> var);
 	
 	/**
 	 * Add non-nominal action.

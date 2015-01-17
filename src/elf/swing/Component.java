@@ -17,9 +17,11 @@
  */
 package elf.swing;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.AbstractButton;
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
 import elf.ui.meta.Action;
@@ -35,6 +37,13 @@ public abstract class Component implements elf.ui.Component {
 		HFILL = new Dimension(Short.MAX_VALUE, 0),
 		VFILL = new Dimension(0, Short.MAX_VALUE),
 		FILL = new Dimension(Short.MAX_VALUE, Short.MAX_VALUE);
+	public static final Color
+		BLUE = Color.BLUE,
+		GREEN = Color.GREEN,
+		MAGENTA = Color.MAGENTA,
+		ORANGE = Color.ORANGE,
+		RED = Color.RED,
+		YELLOW = Color.YELLOW;
 	
 	/**
 	 * Get the matcing Swing component.
@@ -71,4 +80,12 @@ public abstract class Component implements elf.ui.Component {
 	public void dispose() {
 	}
 	
+	/**
+	 * Add a border around the component for debugging purpose.
+	 * @param component		Component to put border around.
+	 * @param color			Color of the border.
+	 */
+	protected void debugBorder(JComponent component, Color color) {
+		component.setBorder(BorderFactory.createLineBorder(color, 4));
+	}
 }

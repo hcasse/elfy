@@ -26,6 +26,15 @@ import java.util.Vector;
 public abstract class Var<T> extends AbstractEntity {
 	private Vector<Listener<T>> listeners = new Vector<Listener<T>>();
 
+	/**
+	 * Fast variable construction.
+	 * @param value		Value of the variable.
+	 * @return			Built variable.
+	 */
+	public static <T> Var<T> make(T value) {
+		return new SingleVar<T>(value);
+	}
+	
 	protected void fireChange() {
 		for(Listener<T> listener : listeners)
 			listener.change(this);		

@@ -31,10 +31,12 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import elf.ui.CheckBox;
+import elf.ui.EnumField;
 import elf.ui.SubsetField;
 import elf.ui.TextField;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
 /**
@@ -100,12 +102,17 @@ public class Form extends Component implements elf.ui.Form {
 			listener = new EnterListener();
 		for(elf.swing.Field field: fields) {
 			JLabel label = new JLabel(field.getEntity().getLabel());
+			label.setMaximumSize(HFILL);
+			label.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(label);
-			last = field.getComponent();
-			box.add(last);
+			JComponent component = field.getComponent();
+			component.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
+			box.add(component);
 			if(listener != null)
-				last.addKeyListener(listener);
-			if(first == null)
+				component.addKeyListener(listener);
+			if(!field.isReadOnly())
+				last = component;
+			if(first == null && last != null)
 				first = last;
 		}		
 		return box;
@@ -225,5 +232,12 @@ public class Form extends Component implements elf.ui.Form {
 		fields.add(field);
 		return field;
 	}
-	
+
+	@Override
+	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
+		elf.swing.EnumField<T> field = new  elf.swing.EnumField<T>(var);
+		fields.add(field);
+		return field;
+	}
+
 }

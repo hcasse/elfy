@@ -22,17 +22,27 @@ public class Box extends Container implements elf.ui.Box {
 	@Override
 	public JComponent getComponent() {
 		if(box == null) {
-			
-			// create the box
 			switch(direction) {
-			case HORIZONTAL:	box = javax.swing.Box.createHorizontalBox(); break;
-			case VERTICAL:		box = javax.swing.Box.createVerticalBox(); break;
-			default:			assert(false);
+			case HORIZONTAL:
+				box = javax.swing.Box.createHorizontalBox();
+				for(Component component: getComponents()) {
+					JComponent jc = component.getComponent();
+					jc.setAlignmentX(javax.swing.JComponent.LEFT_ALIGNMENT);
+					box.add(jc);
+				}
+				break;
+			case VERTICAL:
+				box = javax.swing.Box.createVerticalBox();
+				for(Component component: getComponents()) {
+					JComponent jc = component.getComponent();
+					jc.setAlignmentY(javax.swing.JComponent.TOP_ALIGNMENT);
+					box.add(jc);
+				}
+				break;
+			default:
+				assert(false);
 			}
 			
-			// add the components
-			for(Component component: getComponents())
-				box.add(component.getComponent());
 		}
 		return box;
 	}

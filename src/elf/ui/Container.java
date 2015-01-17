@@ -19,6 +19,7 @@ package elf.ui;
 
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
 /**
@@ -127,6 +128,39 @@ public interface Container extends Component {
 	 * @return	Built status bar.
 	 */
 	StatusBar addStatusBar();
+	
+	/**
+	 * Build a progress bar.
+	 * @param value		Current value.
+	 * @param min		Minimum.
+	 * @param max		Maximum.
+	 * @param axis		One of Component.HORIZONTAL or Component.VERTICAL.
+	 * @return			Built progress bar.
+	 */
+	ProgressBar addProgressBar(Var<Integer> value, int min, int max, int axis);
+	
+	/**
+	 * Build a progress bar.
+	 * @param value		Current value.
+	 * @param min		Minimum.
+	 * @param max		Maximum.
+	 * @param axis		One of Component.HORIZONTAL or Component.VERTICAL.
+	 * @return			Built progress bar.
+	 */
+	ProgressBar addProgressBar(Var<Integer> value, Var<Integer> min, Var<Integer> max, int axis);
+	
+	/**
+	 * Create a new text area.
+	 * @return	Created text area.
+	 */
+	TextArea addTextArea();
+	
+	/**
+	 * Add an enumeration field.
+	 * @param var	Variable handled by this field.
+	 * @return		Added field.
+	 */
+	<T> EnumField<T> addEnumField(EnumVar<T> var);
 	
 	/**
 	 * Remove a component from the container.

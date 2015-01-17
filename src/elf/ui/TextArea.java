@@ -17,24 +17,20 @@
  */
 package elf.ui;
 
-import elf.ui.meta.Entity;
-
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * Area to display text using HTML format.
  * @author casse
  */
-public interface Field {
+public interface TextArea {
 
 	/**
-	 * Get the variable.
-	 * @return	Variable.
+	 * Clear the area.
 	 */
-	Entity getEntity();
-
+	void clear();
+	
 	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
+	 * Add the given text to display.
+	 * @param text		Text may be plain text or HTML text.
 	 */
-	boolean isReadOnly();
+	void display(String text);
 }

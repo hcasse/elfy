@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,24 +17,10 @@
  */
 package elf.ui;
 
-import elf.ui.meta.Entity;
-
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * Field for enumerarion value (usually button with popup menu to select a value).
  * @author casse
  */
-public interface Field {
+public interface EnumField<T> extends Field {
 
-	/**
-	 * Get the variable.
-	 * @return	Variable.
-	 */
-	Entity getEntity();
-
-	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
-	 */
-	boolean isReadOnly();
 }

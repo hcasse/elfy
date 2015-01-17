@@ -22,17 +22,21 @@ import java.util.LinkedList;
 
 import elf.ui.ActionBar;
 import elf.ui.CheckBox;
+import elf.ui.EnumField;
 import elf.ui.Form;
 import elf.ui.List;
 import elf.ui.PagePane;
+import elf.ui.ProgressBar;
 import elf.ui.SplitPane;
 import elf.ui.StatusBar;
 import elf.ui.SubsetField;
+import elf.ui.TextArea;
 import elf.ui.TextField;
 import elf.ui.TextInfo;
 import elf.ui.TitleBar;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
 /**
@@ -172,6 +176,34 @@ public abstract class Container extends Component implements elf.ui.Container {
 		elf.swing.StatusBar sbar = new elf.swing.StatusBar();
 		add(sbar);
 		return sbar;
+	}
+
+	@Override
+	public ProgressBar addProgressBar(Var<Integer> value, int min, int max, int axis) {
+		elf.swing.ProgressBar bar = new elf.swing.ProgressBar(value, Var.make(min), Var.make(max), axis);
+		add(bar);
+		return bar;
+	}
+
+	@Override
+	public ProgressBar addProgressBar(Var<Integer> value, Var<Integer> min, Var<Integer> max, int axis) {
+		elf.swing.ProgressBar bar = new elf.swing.ProgressBar(value, min, max, axis);
+		add(bar);
+		return bar;
+	}
+
+	@Override
+	public TextArea addTextArea() {
+		elf.swing.TextArea area = new elf.swing.TextArea();
+		add(area);
+		return area;
+	}
+
+	@Override
+	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
+		elf.swing.EnumField<T> field = new  elf.swing.EnumField<T>(var);
+		add(field);
+		return field;
 	}
 
 }

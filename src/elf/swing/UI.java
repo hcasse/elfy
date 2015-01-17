@@ -43,6 +43,8 @@ public class UI implements elf.ui.UI {
 		TaskTimer timer = timers.get(task);
 		if(timer == null)
 			timer = new TaskTimer(task);
+		if(!task.isPeriodic())	// fix for one-shot timers
+			timer.stop();	
 		timer.start();
 	}
 
@@ -71,6 +73,8 @@ public class UI implements elf.ui.UI {
 		}
 		
 		public void stop() {
+			if(timer == null)
+				return;
 			timer.stop();
 			timers.remove(task);
 			timer = null;

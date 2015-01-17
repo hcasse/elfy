@@ -202,4 +202,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		value.clear();
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return false;
+	}
+
 }

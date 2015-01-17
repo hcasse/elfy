@@ -17,24 +17,29 @@
  */
 package elf.ui;
 
-import elf.ui.meta.Entity;
-
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * A bar that displays progress of an action.
  * @author casse
  */
-public interface Field {
-
+public interface ProgressBar extends Field {
+	
 	/**
-	 * Get the variable.
-	 * @return	Variable.
+	 * Change minimum value.
+	 * @param min	Minimum value.
 	 */
-	Entity getEntity();
-
+	void setMin(int min);
+	
 	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
+	 * change maximum value.
+	 * @param max	Maximum value.
 	 */
-	boolean isReadOnly();
+	void setMax(int max);
+	
+	/**
+	 * Set the text displayed in the bar.
+	 * The text may contain a %d that will be replaced by the current
+	 * percentage of bar.
+	 * @param format	Format string in bar.
+	 */
+	void setText(String format);
 }

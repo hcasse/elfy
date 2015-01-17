@@ -144,5 +144,10 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, SingleVa
 		if(field != null)
 			field.setEditable(!read_only);
 	}
+
+	@Override
+	public boolean isReadOnly() {
+		return read_only;
+	}
 	
 }

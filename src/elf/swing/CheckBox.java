@@ -84,4 +84,9 @@ public class CheckBox extends Field implements elf.ui.CheckBox {
 		cbox = null;
 	}
 
+	@Override
+	public boolean isReadOnly() {
+		return false;
+	}
+
 }

@@ -17,6 +17,8 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
+
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
@@ -41,8 +43,18 @@ public class TextInfo extends Component implements elf.ui.TextInfo {
 
 	@Override
 	public JComponent getComponent() {
-		if(label == null)
-			label = new JLabel(text);
+		if(label == null) {
+			label = new JLabel(text);	//text);
+			if(text == null || text.equals("")) {
+				// this computation is not a guaranty!
+				int h = label.getFont().getSize() * java.awt.Toolkit.getDefaultToolkit().getScreenResolution() / 72;
+				label.setMinimumSize(new Dimension(30, h));	// ensure size stability
+				label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+				label.setAlignmentY(JLabel.CENTER_ALIGNMENT);
+				label.setPreferredSize(new Dimension(Short.MAX_VALUE, h));
+				label.setMaximumSize(new Dimension(Short.MAX_VALUE, h));
+			}
+		}
 		return label;
 	}
 
