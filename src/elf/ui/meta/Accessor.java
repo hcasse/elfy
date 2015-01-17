@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import elf.app.AutoConfiguration;
 import elf.ui.Monitor;
 
 /**
@@ -278,5 +279,27 @@ public interface Accessor<T> {
 				}
 		}
 
+	}
+
+	/**
+	 * An attribute from a configuration.
+	 * @author casse
+	 *
+	 * @param <T>	Type of attribute.
+	 */
+	class Config<T> extends Attribute<T> {
+		private AutoConfiguration config;
+		
+		public Config(AutoConfiguration config, String name) {
+			super(config, name);
+			this.config = config;
+		}
+
+		@Override
+		public void set(T value) {
+			super.set(value);
+			config.modify();
+		}
+		
 	}
 }

@@ -17,14 +17,13 @@
  */
 package elf.ui;
 
-import elf.ui.meta.SingleVar;
 import elf.ui.meta.Var;
 
 /**
  * Text field.
  * @author casse
  */
-public interface TextField<T> extends Component, SingleVar.Listener<T>, Field {
+public interface TextField<T> extends Component, Var.Listener<T>, Field {
 	
 	/**
 	 * Get the current variable.

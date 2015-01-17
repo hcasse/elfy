@@ -31,7 +31,7 @@ public class AutoConfiguration {
 	/**
 	 * Record a modification.
 	 */
-	protected void modify() {
+	public void modify() {
 		conf.modify();
 	}
 }

@@ -34,7 +34,6 @@ import javax.swing.event.ListSelectionListener;
 
 import elf.ui.AbstractDisplayer;
 import elf.ui.Displayer;
-import elf.ui.meta.SingleVar;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Var;
 
@@ -43,7 +42,7 @@ import elf.ui.meta.Var;
  * @author casse
  */
 public class List<T> extends Component implements elf.ui.List<T> {
-	private Var<T> select = new SingleVar<T>();
+	private Var<T> select = new Var<T>();
 	private CollectionVar<T> coll;
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private Model model;

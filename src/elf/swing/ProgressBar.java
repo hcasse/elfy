@@ -22,7 +22,6 @@ import javax.swing.JProgressBar;
 
 import elf.ui.I18N;
 import elf.ui.meta.Entity;
-import elf.ui.meta.SingleVar;
 import elf.ui.meta.Var;
 
 /**
@@ -88,7 +87,7 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 	@Override
 	public void setMin(int min) {
 		this.min.removeListener(this);
-		this.min = new SingleVar<Integer>(min);
+		this.min = new Var<Integer>(min);
 		if(bar != null) {
 			this.min.addListener(this);
 			bar.setMinimum(min);
@@ -98,7 +97,7 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 	@Override
 	public void setMax(int max) {
 		this.min.removeListener(this);
-		this.min = new SingleVar<Integer>(max);
+		this.min = new Var<Integer>(max);
 		if(bar != null) {
 			this.max.addListener(this);
 			bar.setMaximum(max);
