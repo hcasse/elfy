@@ -41,6 +41,17 @@ public interface Accessor<T> {
 	 * @param value		Value to set.
 	 */
 	void set(T value);
+
+	/**
+	 * Linked variable to accessor.
+	 * @param var	Linked variable.
+	 */
+	void link(Var<T> var);
+	
+	/**
+	 * Unlink current variable from accessor.
+	 */
+	void unlink();
 	
 	/**
 	 * Accessor storing itself the data.
@@ -74,6 +85,57 @@ public interface Accessor<T> {
 		public void set(T value) {
 			this.value = value;
 		}
+
+		@Override
+		public void link(Var<T> var) {
+		}
+
+		@Override
+		public void unlink() {
+		}
+		
+	}
+	
+	/**
+	 * Common facilities for accessor to indirect data.
+	 * @author casse
+	 *
+	 * @param <T>	Type of indirect data.
+	 * @param <U>	Type of object.
+	 */
+	abstract class Indirect<T, U> implements Accessor<T>, Var.Listener<U> {
+		private Var<U> object;
+		private Var<T> var;
+	
+		public Indirect(Var<U> object) {
+			this.object = object;
+		}
+		
+		protected Object getObject() {
+			return object.get();
+		}
+
+		@Override
+		public void change(Var<U> data) {
+			if(var != null)
+				var.fireChange();
+		}
+
+		@Override
+		public void link(Var<T> var) {
+			if(var == null)
+				object.addListener(this);
+			this.var = var;
+		}
+
+		@Override
+		public void unlink() {
+			if(var != null) {
+				object.removeListener(this);
+				var = null;
+			}
+		}
+
 		
 	}
 	
@@ -82,9 +144,9 @@ public interface Accessor<T> {
 	 * @author casse
 	 *
 	 * @param <T>	Type of accessor.
+	 * @param <U>	Type of object.
 	 */
-	class Attribute<T> implements Accessor<T> {
-		private Object object;
+	class Attribute<T, U> extends Indirect<T, U> {
 		private String name;
 		private Field field;
 		private boolean tested;
@@ -94,8 +156,8 @@ public interface Accessor<T> {
 		 * @param object	Concerned object.
 		 * @param name		Attribute name.
 		 */
-		public Attribute(Object object, String name) {
-			this.object = object;
+		public Attribute(U object, String name) {
+			super(Var.make(object));
 			this.name = name;
 		}
 		
@@ -104,19 +166,32 @@ public interface Accessor<T> {
 		 * @param object	Concerned object.
 		 * @param field		Attribute itself.
 		 */
-		public Attribute(Object object, Field field) {
-			this.object = object;
-			this.name = field.getName();
+		public Attribute(U object, Field field) {
+			super(Var.make(object));
 			this.field = field;
 			tested = true;
 		}
 		
 		/**
-		 * Get the current object.
-		 * @return	Current object.
+		 * Build an attribute accessor.
+		 * @param object	Concerned object.
+		 * @param name		Attribute name.
 		 */
-		public Object getObject() {
-			return object;
+		public Attribute(Var<U> object, String name) {
+			super(object);
+			this.name = name;
+		}
+		
+		/**
+		 * Build an attribute accessor.
+		 * @param object	Concerned object.
+		 * @param field		Attribute itself.
+		 */
+		public Attribute(Var<U> object, Field field) {
+			super(object);
+			this.name = field.getName();
+			this.field = field;
+			tested = true;
 		}
 		
 		/**
@@ -127,7 +202,7 @@ public interface Accessor<T> {
 			if(!tested) {
 				tested = true;
 				try {
-					field = object.getClass().getDeclaredField(name);
+					field = getObject().getClass().getDeclaredField(name);
 				} catch (NoSuchFieldException e) {
 					System.err.println("ERROR: cannot get field " + name + ": " + e.getLocalizedMessage());
 				} catch (SecurityException e) {
@@ -145,7 +220,7 @@ public interface Accessor<T> {
 				return null;
 			else
 				try {
-					return (T)field.get(object);
+					return (T)field.get(getObject());
 				} catch (IllegalArgumentException e) {
 					System.err.println("ERROR: " + e.getLocalizedMessage());
 					return null;
@@ -160,14 +235,14 @@ public interface Accessor<T> {
 			getField();
 			if(field != null)
 				try {
-					field.set(object, value);
+					field.set(getObject(), value);
 				} catch (IllegalArgumentException e) {
 					System.err.println("ERROR: " + e.getLocalizedMessage());
 				} catch (IllegalAccessException e) {
 					System.err.println("ERROR: " + e.getLocalizedMessage());
 				}
 		}
-		
+
 	}
 	
 	/**
@@ -175,10 +250,10 @@ public interface Accessor<T> {
 	 * @author casse
 	 *
 	 * @param <T>	Type of accessed data.
+	 * @param <U>	Type of objects.
 	 */
-	class GetSet<T> implements Accessor<T> {
+	class GetSet<T, U> extends Indirect<T, U> {
 		private String name;
-		private Object object;
 		private Method setter, getter;
 		
 		/**
@@ -186,8 +261,8 @@ public interface Accessor<T> {
 		 * @param object	Object it is applied to.
 		 * @param name		Name of the field (suffixing the get and set methods).
 		 */
-		public GetSet(Object object, String name) {
-			this.object = object;
+		public GetSet(U object, String name) {
+			super(Var.make(object));
 			this.name = name;
 		}
 		
@@ -197,20 +272,34 @@ public interface Accessor<T> {
 		 * @param get		Getter method.
 		 * @param set		Setter method.
 		 */
-		public GetSet(Object object, Method get, Method set) {
-			this.object = object;
+		public GetSet(U object, Method get, Method set) {
+			super(Var.make(object));
 			this.getter = get;
 			this.setter = set;
 		}
 		
 		/**
-		 * Get the current object.
-		 * @return	Current object.
+		 * Build a setter variable.
+		 * @param object	Object it is applied to.
+		 * @param name		Name of the field (suffixing the get and set methods).
 		 */
-		public Object getObject() {
-			return object;
+		public GetSet(Var<U> object, String name) {
+			super(object);
+			this.name = name;
 		}
-
+		
+		/**
+		 * Build a setter variable.
+		 * @param object	Object providing get and set.
+		 * @param get		Getter method.
+		 * @param set		Setter method.
+		 */
+		public GetSet(Var<U> object, Method get, Method set) {
+			super(object);
+			this.getter = get;
+			this.setter = set;
+		}
+		
 		/**
 		 * Obtain the getter method.
 		 * @return	Getter method.
@@ -218,7 +307,7 @@ public interface Accessor<T> {
 		public Method getGetter() {
 			if(getter == null)
 				try {
-					getter = object.getClass().getDeclaredMethod("get" + name);
+					getter = getObject().getClass().getDeclaredMethod("get" + name);
 				} catch (NoSuchMethodException e) {
 					Monitor.STD.error("cannot get method get" + name + ": " + e.getLocalizedMessage());
 				} catch (SecurityException e) {
@@ -237,7 +326,7 @@ public interface Accessor<T> {
 				if(getter == null)
 					return null;
 				try {
-					setter = object.getClass().getDeclaredMethod("set" + name, getter.getReturnType());
+					setter = getObject().getClass().getDeclaredMethod("set" + name, getter.getReturnType());
 				} catch (NoSuchMethodException e) {
 					Monitor.STD.error("cannot get method set" + name + ": " + e.getLocalizedMessage());
 				} catch (SecurityException e) {
@@ -253,7 +342,7 @@ public interface Accessor<T> {
 			getGetter();
 			if(getter != null)
 				try {
-					return (T) getter.invoke(object);
+					return (T) getter.invoke(getObject());
 				} catch (IllegalAccessException e) {
 					Monitor.STD.error("cannot call " + getter.getName() + ": " + e.getLocalizedMessage());
 				} catch (IllegalArgumentException e) {
@@ -269,7 +358,7 @@ public interface Accessor<T> {
 			getSetter();
 			if(setter != null)
 				try {
-					setter.invoke(object, value);
+					setter.invoke(getObject(), value);
 				} catch (IllegalAccessException e) {
 					Monitor.STD.error("cannot call " + setter.getName() + ": " + e.getLocalizedMessage());
 				} catch (IllegalArgumentException e) {
@@ -287,7 +376,7 @@ public interface Accessor<T> {
 	 *
 	 * @param <T>	Type of attribute.
 	 */
-	class Config<T> extends Attribute<T> {
+	class Config<T> extends Attribute<T, AutoConfiguration> {
 		private AutoConfiguration config;
 		
 		public Config(AutoConfiguration config, String name) {

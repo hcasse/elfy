@@ -20,7 +20,7 @@ package elf.ui.canvas;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import elf.ui.meta.SingleVar;
+import elf.ui.meta.Var;
 import elf.ui.meta.CollectionVar;
 
 /**
@@ -28,7 +28,7 @@ import elf.ui.meta.CollectionVar;
  * @author casse
  */
 public class SelectionHandler implements Handler, MouseListener {
-	SingleVar<Item> current;
+	Var<Item> current;
 	CollectionVar<Item> selection;
 	Canvas canvas;
 	
@@ -37,7 +37,7 @@ public class SelectionHandler implements Handler, MouseListener {
 	 * @param current		Current item.
 	 * @param selection		Selection collection.
 	 */
-	public SelectionHandler(SingleVar<Item> current, CollectionVar<Item> selection) {
+	public SelectionHandler(Var<Item> current, CollectionVar<Item> selection) {
 		this.current = current;
 		this.selection = selection;
 	}

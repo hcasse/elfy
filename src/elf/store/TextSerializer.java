@@ -132,7 +132,17 @@ public class TextSerializer {
 	 * @return			Found serializer or null.
 	 */
 	public static Serializer get(Type type) {
-		return map.get(type);
+		Serializer s = map.get(type);
+		if(s == null) {
+			if(type instanceof Class) {
+				Class<?> clazz = (Class<?>)type;
+				if(clazz.isEnum()) {
+					s = new EnumSerializer(clazz);
+					map.put(clazz, s);
+				}
+			}
+		}
+		return s;
 	}
 	
 	/**
@@ -287,6 +297,37 @@ public class TextSerializer {
 			if(!m.matches())
 				throw new IOException("bad color value: " + text);
 			return new Color(Integer.parseInt(m.group(1), 16));
+		}
+		
+	}
+	
+	/**
+	 * Serializer for enumerated type.
+	 * @author casse
+	 */
+	private static class EnumSerializer extends StringSerializer {
+		private Class<?> clazz;
+		
+		/**
+		 * Serializer for an enumerated type.
+		 * @param clazz		Enumerated type.
+		 */
+		public EnumSerializer(Class<?> clazz) {
+			this.clazz = clazz;
+		}
+		
+		@Override
+		public String serialize(Object value) throws IOException {
+			return value.toString();
+		}
+
+		@Override
+		public Object unserialize(String text) throws IOException {
+			text = text.trim();
+			for(Object val: clazz.getEnumConstants())
+				if(val.toString().equalsIgnoreCase(text))
+					return val;
+			throw new IOException("unknown enumerated value for " + clazz.getName() + ": " + text);
 		}
 		
 	}

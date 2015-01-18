@@ -159,6 +159,9 @@ public class AutoStructuredSerializer {
 				load.end();
 				return array;
 			}
+			else if(clazz.isEnum()) {
+				
+			}
 		}
 		
 		// collections

@@ -21,7 +21,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import elf.ui.meta.SingleVar;
+import elf.ui.meta.Var;
 
 /**
  * Over-handler highlighting the item under.
@@ -29,14 +29,14 @@ import elf.ui.meta.SingleVar;
  *
  */
 public class HighlightOverHandler implements Handler, MouseMotionListener, MouseListener {
-	protected SingleVar<Item> data;
+	protected Var<Item> data;
 	protected Canvas canvas;
 	
 	/**
 	 * Create the highlight over handler.
 	 * @param data		Data item.
 	 */
-	public HighlightOverHandler(SingleVar<Item> data) {
+	public HighlightOverHandler(Var<Item> data) {
 		this.data = data;
 	}
 	

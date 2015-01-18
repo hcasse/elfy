@@ -27,7 +27,7 @@ public class AttributeVar<T> extends Var<T> {
 	private String name;
 	
 	public AttributeVar(Object object, String name) {
-		super(new Accessor.Attribute<T>(object, name));
+		super(new Accessor.Attribute<T, Object>(object, name));
 		this.object = object;
 		this.name = name;
 	}
@@ -46,7 +46,7 @@ public class AttributeVar<T> extends Var<T> {
 	 */
 	public void setObject(Object object) {
 		this.object = object;
-		setAccessor(new Accessor.Attribute<T>(object, name));
+		setAccessor(new Accessor.Attribute<T, Object>(object, name));
 	}
 
 }

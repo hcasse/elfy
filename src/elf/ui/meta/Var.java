@@ -19,6 +19,8 @@ package elf.ui.meta;
 
 import java.util.Vector;
 
+import elf.app.AutoConfiguration;
+
 /**
  * Common interface to variables.
  * @author casse
@@ -57,6 +59,7 @@ public class Var<T> extends AbstractEntity {
 	 */
 	public Var(Accessor<T> accessor) {
 		this.accessor = accessor;
+		accessor.link(this);
 	}
 	
 	protected void fireChange() {
@@ -69,7 +72,9 @@ public class Var<T> extends AbstractEntity {
 	 * @param accessor	New accessor.
 	 */
 	public void setAccessor(Accessor<T> accessor) {
+		this.accessor.unlink();
 		this.accessor = accessor;
+		this.accessor.link(this);
 		fireChange();
 	}
 
@@ -118,4 +123,53 @@ public class Var<T> extends AbstractEntity {
 		public void change(Var<T> data);
 	}
 	
+	/**
+	 * Build a variable based on get/set accessor.
+	 * @author casse
+	 *
+	 * @param <T>	Type of attribute.
+	 * @param <U>	Type of object.
+	 */
+	public static class GetterSetter<T, U> extends Var<T> {
+		
+		public GetterSetter(U object, String name) {
+			super(new Accessor.GetSet<T, U>(object, name));
+		}
+
+		public GetterSetter(Var<U> object, String name) {
+			super(new Accessor.GetSet<T, U>(object, name));
+		}
+	}
+	
+	/**
+	 * Build a variable based on an attribute accessor.
+	 * @author casse
+	 *
+	 * @param <T>	Type of attribute.
+	 * @param <T>	Type of object.
+	 */
+	public static class Attribute<T, U> extends Var<T> {
+		
+		public Attribute(U object, String name) {
+			super(new Accessor.Attribute<T, U>(object, name));
+		}
+		
+		public Attribute(Var<U> object, String name) {
+			super(new Accessor.Attribute<T, U>(object, name));
+		}
+	}
+	
+	/**
+	 * Build a variabled on an attribute in a configuration.
+	 * @author casse
+	 *
+	 * @param <T>		Type of the attribute.
+	 */
+	public static class Config<T> extends Var<T> {
+		
+		public Config(AutoConfiguration config, String name) {
+			super(new Accessor.Config<T>(config, name));
+		}
+		
+	}
 }

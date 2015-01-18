@@ -82,6 +82,7 @@ public abstract class Application extends Attributes {
 				config.load();
 			} catch (IOException e) {
 				System.out.println("ERROR: " + e.getLocalizedMessage());
+				e.printStackTrace();
 				return;
 			}
 		

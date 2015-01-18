@@ -202,9 +202,9 @@ public abstract class OldAction implements ActionListener {
 	 * @param <T>	Type of data.
 	 */
 	public class DataDependency<T> implements Dependency {
-		SingleVar<T> data;
+		Var<T> data;
 		
-		public DataDependency(SingleVar<T> data) { this.data = data; }
+		public DataDependency(Var<T> data) { this.data = data; }
 		
 		public void dependToMenuItem(JMenuItem item) {
 			data.addListener(new MenuItemListener<T>(item));
@@ -219,7 +219,7 @@ public abstract class OldAction implements ActionListener {
 	/**
 	 * Listener handling menu items.
 	 */
-	private class MenuItemListener<T> implements /*ChangeListener,*/ SingleVar.Listener<T> {
+	private class MenuItemListener<T> implements /*ChangeListener,*/ Var.Listener<T> {
 		JMenuItem item;
 		public MenuItemListener(JMenuItem item) { this.item = item; } 
 		//public void stateChanged(ChangeEvent e) { item.setEnabled(isEnabled()); }
@@ -231,7 +231,7 @@ public abstract class OldAction implements ActionListener {
 	 * @author casse
 	 * @param <T>
 	 */
-	private class ButtonListener<T> implements SingleVar.Listener<T> {
+	private class ButtonListener<T> implements Var.Listener<T> {
 		JButton button;
 		public ButtonListener(JButton button) { this.button = button; }
 		@Override public void change(Var<T> data) { button.setEnabled(isEnabled()); }

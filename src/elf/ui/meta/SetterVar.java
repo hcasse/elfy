@@ -36,7 +36,7 @@ public class SetterVar<T> extends Var<T> {
 	 * @param name		Name of the field (suffixing the get and set methods).
 	 */
 	public SetterVar(Object object, String name) {
-		super(new Accessor.GetSet<T>(object, name));
+		super(new Accessor.GetSet<T, Object>(object, name));
 		this.object = object;
 		this.name = name;
 	}
@@ -55,7 +55,7 @@ public class SetterVar<T> extends Var<T> {
 	 */
 	public void setObject(Object object) {
 		this.object = object;
-		setAccessor(new Accessor.GetSet<T>(object, name));
+		setAccessor(new Accessor.GetSet<T, Object>(object, name));
 	}
 	
 	public Method getGetter() {
