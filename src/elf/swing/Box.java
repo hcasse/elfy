@@ -7,32 +7,45 @@ import javax.swing.JComponent;
  * @author casse
  */
 public class Box extends Container implements elf.ui.Box {
-	private int direction;
+	private int axis;
 	private javax.swing.Box box;
+	private int align = CENTER;
 
 	@Override
 	public void addFiller() {
 		add(new Filler());
 	}
 
-	public Box(int direction) {
-		this.direction = direction;
+	public Box(int axis) {
+		this.axis = axis;
 	}
 	
 	@Override
 	public JComponent getComponent() {
 		if(box == null) {
-			switch(direction) {
+			switch(axis) {
+			
 			case HORIZONTAL:
 				box = javax.swing.Box.createHorizontalBox();
+				switch(align) {
+				case TOP:		box.setAlignmentY(0); break;
+				case CENTER:	box.setAlignmentY(0.5f); break;
+				case BOTTOM:	box.setAlignmentY(1); break;
+				}
 				for(Component component: getComponents()) {
 					JComponent jc = component.getComponent();
 					jc.setAlignmentX(javax.swing.JComponent.LEFT_ALIGNMENT);
 					box.add(jc);
 				}
 				break;
+				
 			case VERTICAL:
 				box = javax.swing.Box.createVerticalBox();
+				switch(align) {
+				case LEFT:		box.setAlignmentX(0); break;
+				case CENTER:	box.setAlignmentX(0.5f); break;
+				case RIGHT:		box.setAlignmentX(1); break;
+				}
 				for(Component component: getComponents()) {
 					JComponent jc = component.getComponent();
 					jc.setAlignmentY(javax.swing.JComponent.TOP_ALIGNMENT);
@@ -51,11 +64,16 @@ public class Box extends Container implements elf.ui.Box {
 
 		@Override
 		public JComponent getComponent() {
-			if(direction == HORIZONTAL)
+			if(axis == HORIZONTAL)
 				return new javax.swing.Box.Filler(ZERO, HFILL, HFILL);
 			else
 				return new javax.swing.Box.Filler(ZERO, VFILL, VFILL);
 		}
 		
+	}
+
+	@Override
+	public void setAlign(int align) {
+		this.align = align;
 	}
 }

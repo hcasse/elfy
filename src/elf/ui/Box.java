@@ -28,4 +28,10 @@ public interface Box extends Container {
 	 */
 	void addFiller();
 	
+	/**
+	 * Set the alignment of sub-components orthogonaly 
+	 * to the box axis.
+	 * @param align		One of LEFT, CENTER, RIGHT, TOP, BOTTOM.
+	 */
+	void setAlign(int align);
 }

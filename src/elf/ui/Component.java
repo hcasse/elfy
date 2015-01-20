@@ -28,7 +28,9 @@ public interface Component {
 		RIGHT = 2,
 		SPREAD = 3,
 		VERTICAL = 4,
-		HORIZONTAL = 5;
+		HORIZONTAL = 5,
+		TOP = 6,
+		BOTTOM = 7;
 
 	/**
 	 * Called to let the component dispose its resources.

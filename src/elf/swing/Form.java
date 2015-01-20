@@ -20,6 +20,7 @@ package elf.swing;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
@@ -29,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 import elf.ui.CheckBox;
 import elf.ui.EnumField;
@@ -63,30 +65,42 @@ public class Form extends Component implements elf.ui.Form {
 	private JComponent makeTwoColumn() {
 		
 		// build the panel
-		JPanel panel = new JPanel();
-		GridBagLayout layout = new GridBagLayout();
-		panel.setLayout(layout);
+		JPanel panel = new JPanel(new GridBagLayout());
+		//debugBorder(panel, BLUE);
 		GridBagConstraints c = new GridBagConstraints();	
-
+		c.ipadx = 4;
+		c.ipady = 4;
+		//c.fill = GridBagConstraints.HORIZONTAL;
+		c.weightx = 0;
+		c.weighty = 0.;
+		c.insets = new Insets(2, 2, 2, 2);
+		
 		// build the fields
 		EnterListener listener = null;
 		if(enter_mode != ENTER_IGNORE)
 			listener = new EnterListener();
 		int i = 0;
 		for(elf.swing.Field field: fields) {
-			JLabel label = new JLabel(field.getEntity().getLabel());
-			label.setAlignmentX(1);
+			JLabel label = new JLabel(field.getEntity().getLabel(), SwingConstants.RIGHT);
 			c.gridx = 0;
 			c.gridy = i;
+			c.anchor = GridBagConstraints.NORTHEAST;
+			//this.debugBorder(label, RED);
 			panel.add(label, c);
 			last = field.getComponent();
 			c.gridx = 1;
 			c.gridy = i;
+			c.anchor = GridBagConstraints.NORTHWEST;
+			c.weightx = 1.;
+			if(i == fields.size() - 1)
+				c.weighty = 1.;
 			panel.add(last, c);
+			c.weightx = 0.;
 			if(listener != null)
 				last.addKeyListener(listener);
 			if(first == null)
 				first = last;
+			i++;
 		}
 		return panel;
 	}
