@@ -84,6 +84,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.List
 					return label;
 				}
 			});
+			combo.addActionListener(this);
 			updateUI();
 		}
 		return combo;
@@ -112,7 +113,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.List
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(updating)
+		if(!updating)
 			updateVar();
 	}
 
