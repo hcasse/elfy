@@ -1,3 +1,98 @@
 ====== ReadMe ======
 
-Elf is an attempt to provide smart libraries to Java, particularly for application writing and Graphic User Interface (GUI).
+Elf is an attempt to provide smart libraries to Java, particularly for application writing and
+Graphic User Interface (GUI).
+
+Elf is delivered under LGPL license mainly meaning that the use is free but the copyright belongs
+to its writer and therefore th" shipped license file must be delivered too.
+
+Elf is designed to let the application to be OS-agnostic: the details about processing for a particular
+platform will be supported by Elf.
+
+
+===== Application =====
+
+Elf comes with an Application class that provide several facilities and particularly to maintain easily
+(save and load) a configuration. Particularly, the AutoConfiguration class is able to save
+to a configuration file and to restore the fields found in the user configuration class,
+freeing the application writer from the details and the portability of such an processing.
+
+To do this, Elf provide a set of classes to obtain OS characteristics, in an OS independent,
+like storage of configuration, temporary files, etc and automatic serialization classes to text
+and XML.
+
+
+===== GUI =====
+
+The GUI of Elf is divided in two layers: a logical layer and a graphic layer.
+ 
+==== Logical Layer ====
+
+The logical layer allows to organize the applications independently of the future UI (User Interface).
+In terms of logical layer, the application is structured as:
+  * variables that contains values handled by the application,
+  * actions that launch processing on the values above.
+
+These items proposes an uniform to provide labels, icons, help text, verification, etc and so on.
+By itself, variables and actions free the user from lots of tuning when the UI is built.
+
+In addition, they are designed to simplify maintaining the consistency of the application. For example,
+a hard work to do is the activation of buttons, menus, etc according the value of UI. Lots of code
+must inserted to detect when the value changes and to convert this change as activation for buttons, menus, etc.
+
+In Elf, it is utterly. Let's say that we a value ''text'' and a button ''do it'' that is only activated
+when the text is not empty. We will just write:
+<code java>
+Var<String> text = new Var<String>("");
+Action doit = new Action() {
+	@Override String getLabel() { return "Do it!"; }
+	@Override boolean isEnabled() { return !"".equals(text.get()); }
+	@Override void run() { /* do something here */ }
+};
+doit.add(text);
+</code>
+
+The last line specially says: the state of button ''doit'' depends on ''text''. For any change in ''text'',
+the UI component implementing ''doit'' must be updated. It works for as many values as required.
+
+It works the same when several UI component displays the same value: when the value is changed,
+the other UI component will be updated to maintain the consistency of the GUI. Using variable
+requires only two methods:
+  * get() -- to get the current value,
+  * set(value) -- to change the store value.
+
+Variable may be single value as in the example above but they may be also single attribute publicly
+accessible or attributes accessible using getter and setter. In the latter cases, the attributes
+themselves will be modified by Elf. Thus, the structure of the underlying model is as little impacted
+as needed by Elf.
+
+ In addition, as actions, variable supports labels, icons, help text reducing the tuning work of the UI.
+ 
+ ==== UI Layer ====
+ 
+ The UI layer provides just UI components with the ability to handle variables and actions.
+ The key ideas includes:
+   * minimum tuning when the GUI is designed (most of default processing is handled by Elf),
+   * independence to the host OS: UI is produced from an instance of class UI obtained from
+     the OS instance and the UI object is adapted to the actual host OS.
+ 
+ As you may notice, Elf UI components are (a) much simpler than the usual UI component because the focus
+ is on the speed, portability and easiness of UI building and (b) sometimes more expressive because
+ Elf targets semantics of UI rather the graphic details.
+ 
+ 
+ ===== Copyright =====
+ 
+ Elf is using the XOM library provided [[http://www.xom.nu/|here]]. Thanks.
+ 
+ Icons have been provided by [[FindIcons|http://findicons.com/]] and published as GPL or right free.
+ 
+ 
+ ===== Information =====
+ 
+ Take a look to the Javadoc for more details on the provided classes.
+ 
+ For any problem, do not hesitate to contact me at hugues.casse at laposte.net.
+   
+
+
