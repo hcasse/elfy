@@ -19,6 +19,7 @@ package elf.os;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import elf.data.Version;
 import elf.store.FileStorage;
@@ -112,5 +113,13 @@ public class OS {
 	 */
 	public UI getUI() {
 		return null;
+	}
+	
+	/**
+	 * Open the given URL in the system browser.
+	 * @param url			URL to open.
+	 * @throws IOException	Thrown if there is an error.
+	 */
+	public void browse(URL url) throws IOException {
 	}
 }

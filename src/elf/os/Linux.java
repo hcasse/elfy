@@ -18,6 +18,8 @@
 package elf.os;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -89,6 +91,17 @@ public class Linux extends OS {
 			}
 		}
 		return ui;
+	}
+
+	@Override
+	public void browse(URL url) throws IOException {
+		try {
+			java.awt.Desktop.getDesktop().browse(url.toURI());
+		} catch (IOException e) {
+			throw new IOException("cannot open browser", e);
+		} catch (URISyntaxException e) {
+			throw new IOException("cannot open browser", e);
+		}
 	}
 
 }

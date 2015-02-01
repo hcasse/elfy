@@ -18,7 +18,6 @@
 package elf.swing;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
@@ -26,6 +25,8 @@ import javax.swing.JTextPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkEvent.EventType;
 import javax.swing.event.HyperlinkListener;
+
+import elf.os.OS;
 
 /**
  * TextArea implementation in Swing.
@@ -35,6 +36,7 @@ public class TextArea extends Component implements elf.ui.TextArea {
 	private JTextPane pane;
 	private JScrollPane spane;
 	private StringBuffer text = new StringBuffer();
+	private View view;
 
 	@Override
 	public void clear() {
@@ -51,6 +53,7 @@ public class TextArea extends Component implements elf.ui.TextArea {
 	@Override
 	public JComponent getComponent(View view) {
 		if(spane == null) {
+			this.view = view;
 			pane = new JTextPane();
 			pane.setContentType("text/html");
 			pane.setEditable(false);
@@ -59,11 +62,9 @@ public class TextArea extends Component implements elf.ui.TextArea {
 				@Override public void hyperlinkUpdate(HyperlinkEvent event) {
 					if(event.getEventType() == EventType.ACTIVATED)
 						try {
-							java.awt.Desktop.getDesktop().browse(event.getURL().toURI());
-						} catch (IOException e) {
-							System.err.println("INTERNAL ERROR: " + e.getLocalizedMessage());
-						} catch (URISyntaxException e) {
-							System.err.println("INTERNAL ERROR: " + e.getLocalizedMessage());
+							OS.os.browse(event.getURL());
+						} catch (IOException exn) {
+							TextArea.this.view.getMonitor().error(exn.getLocalizedMessage());
 						}
 				}
 			});
