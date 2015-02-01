@@ -64,7 +64,7 @@ public class Form extends Component implements elf.ui.Form {
 	 * Make a two-column form.
 	 * @return	Built form.
 	 */
-	private JComponent makeTwoColumn(UI ui) {
+	private JComponent makeTwoColumn(View view) {
 		
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
@@ -87,7 +87,7 @@ public class Form extends Component implements elf.ui.Form {
 			c.gridy = i;
 			c.anchor = GridBagConstraints.NORTHEAST;
 			panel.add(label, c);
-			last = field.getComponent(ui);
+			last = field.getComponent(view);
 			c.gridx = 1;
 			c.gridy = i;
 			c.anchor = GridBagConstraints.NORTHWEST;
@@ -105,7 +105,7 @@ public class Form extends Component implements elf.ui.Form {
 		return panel;
 	}
 	
-	private JComponent makeVertical(UI ui) {
+	private JComponent makeVertical(View view) {
 		
 		// build the box
 		javax.swing.Box box = javax.swing.Box.createVerticalBox();
@@ -120,7 +120,7 @@ public class Form extends Component implements elf.ui.Form {
 			label.setMaximumSize(HFILL);
 			label.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(label);
-			JComponent component = field.getComponent(ui);
+			JComponent component = field.getComponent(view);
 			component.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(component);
 			if(listener != null)
@@ -139,15 +139,15 @@ public class Form extends Component implements elf.ui.Form {
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(component == null) {
 			
 			// build the form
 			JComponent form;
 			if(style == STYLE_VERTICAL)
-				form = makeVertical(ui);
+				form = makeVertical(view);
 			else
-				form = makeTwoColumn(ui);
+				form = makeTwoColumn(view);
 			JScrollPane spane = new JScrollPane(form);
 			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -166,7 +166,7 @@ public class Form extends Component implements elf.ui.Form {
 				bar.setAlignment(button_alignment);
 				for(Action action: actions)
 					bar.add(action);
-				box.add(bar.getComponent(ui));				
+				box.add(bar.getComponent(view));				
 			}
 		}
 		component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));

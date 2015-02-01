@@ -34,7 +34,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	private Page page;
 	private javax.swing.Box pane;
 	private Action back_action;
-	private UI ui;
+	private View view;
 	
 	@Override
 	public Page addPage() {
@@ -47,7 +47,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 		if(pane != null) {
 			if(this.page != null)
 				this.page.uninstall(pane);
-			page.install(ui, pane);
+			page.install(view, pane);
 			pane.revalidate();
 			pane.repaint();
 		}
@@ -74,14 +74,14 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(pane == null) {
-			this.ui = ui;
+			this.view = view;
 			pane = javax.swing.Box.createHorizontalBox();
 			pane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			pane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			if(page != null)
-				page.install(ui, pane);
+				page.install(view, pane);
 		}
 		return pane;
 	}
@@ -93,14 +93,14 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	private static class Page extends elf.swing.Container implements elf.ui.PagePane.Page {
 		Listener listener = NULL;
 		
-		public void install(UI ui, javax.swing.Box panel) {
+		public void install(View view, javax.swing.Box panel) {
 			listener.onShow();
 			for(Component component: getComponents())
-				panel.add(component.getComponent(ui));
+				panel.add(component.getComponent(view));
 		}
 		
 		@Override
-		public JComponent getComponent(UI ui) {
+		public JComponent getComponent(View view) {
 			return null;
 		}
 		

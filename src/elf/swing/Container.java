@@ -210,22 +210,22 @@ public abstract class Container extends Component implements elf.ui.Container {
 	}
 
 	@Override
-	public void add(Icon icon) {
+	public void add(elf.ui.Icon icon) {
 		add(new Image(icon));
 	}
 
 	public static class Image extends Component {
-		private Icon icon;
+		private elf.ui.Icon icon;
 		private JLabel label;
 		
-		public Image(Icon icon) {
+		public Image(elf.ui.Icon icon) {
 			this.icon = icon;
 		}
 
 		@Override
-		public JComponent getComponent(UI ui) {
+		public JComponent getComponent(View view) {
 			if(label == null)
-				label = new JLabel(icon.get(Icon.NORMAL, Icon.ORIGINAL));
+				label = new JLabel(view.getIcon(icon).get(Icon.NORMAL, Icon.ORIGINAL));
 			return label;
 		}
 

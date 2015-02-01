@@ -31,9 +31,9 @@ public class Button extends Component implements elf.ui.Button, ActionListener, 
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(button == null) {
-			this.ui = ui;
+			this.ui = view.getUI();
 			
 			// build the UI
 			button = new JButton();

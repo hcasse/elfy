@@ -82,13 +82,13 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(bar == null) {
 			bar = Box.createHorizontalBox();
 			for(Action action: lefts) {
 				Button button = new Button(action, Button.STYLE_ICON);
 				buttons.add(button);
-				bar.add(button.getComponent(ui));
+				bar.add(button.getComponent(view));
 			}
 			
 			// prepare title
@@ -102,7 +102,7 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 			for(Action action: rights) {
 				Button button = new Button(action, Button.STYLE_ICON);
 				buttons.add(button);
-				bar.add(button.getComponent(ui));
+				bar.add(button.getComponent(view));
 			}
 			
 			// add menu if needed
@@ -110,10 +110,10 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 				popup = new JPopupMenu();
 				for(Action action: menus) {
 					MenuItem item = new MenuItem(action);
-					popup.add(item.getComponent(ui));
+					popup.add(item.getComponent(view));
 					buttons.add(item);
 				}
-				button = new JButton(ui.getIcon(elf.ui.Icon.MENU).get(Icon.NORMAL, Icon.TOOLBAR));
+				button = new JButton(view.getIcon(elf.ui.Icon.MENU).get(Icon.NORMAL, Icon.TOOLBAR));
 				button.addActionListener(new ActionListener() {
 					@Override public void actionPerformed(ActionEvent event) {
 				        popup.show(button, 0, button.getBounds().height);

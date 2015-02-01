@@ -21,7 +21,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import elf.data.Version;
-import elf.swing.Icon;
+import elf.ui.Dialog;
+import elf.ui.Icon;
 import elf.ui.Box;
 import elf.ui.Component;
 import elf.ui.I18N;
@@ -167,7 +168,8 @@ public abstract class Application extends AbstractEntity {
 		
 		@Override
 		public void run() {
-			View dialog = view.makeDialog(this);
+			Dialog dialog = view.makeDialog(this);
+			dialog.addOk();
 			Box hbox = dialog.addBox(Component.HORIZONTAL);
 			
 			// add the logo
@@ -175,19 +177,38 @@ public abstract class Application extends AbstractEntity {
 			if(logo != null)
 				hbox.add(logo);
 			
-			// add the text
+			// prepare the text
 			StringBuffer buf = new StringBuffer();
-			TextArea text = hbox.addTextArea();
-			buf.append("<h1>");
-			buf.append(getLabel());
-			buf.append("</h1>");
+			buf.append("<big>");buf.append(Application.this.getLabel());buf.append("</big>");
 			String[] authors = getAuthors();
-			/*if(authors != null) {
-				buf.append("<h2>" + I18N.STD.t("Authors") + "</h2><ul>");
-				for(String author: authors);
-					buf.append("<li>" + author + "</li>");
-			}*/
+			if(authors != null) {
+				buf.append("<p><b>" + I18N.STD.t("Authors") + "</b></p><ul>");
+				for(String author: authors) {
+					buf.append("<li>");
+					buf.append(author);
+					buf.append("</li>");
+				}
+				buf.append("</ul>");
+			}
+			String site = getSite();
+			if(site != null) {
+				buf.append("<p><a href=\"");
+				buf.append(site);
+				buf.append("\">website</a></p>");
+			}
+			String license = getLicense();
+			if(license != null) {
+				buf.append("<p>");
+				buf.append(license);
+				buf.append("</p>");
+			}
+
+			// build the text
+			TextArea text = hbox.addTextArea();
+			text.display(buf.toString());
 			
+			// display the dialog
+			dialog.show();
 		}
 
 		@Override

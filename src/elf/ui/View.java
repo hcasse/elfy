@@ -58,5 +58,5 @@ public interface View extends Container {
 	 * @param entity	Entity to get label and icon.
 	 * @return			Built dialog.
 	 */
-	public View makeDialog(Entity entity);
+	public Dialog makeDialog(Entity entity);
 }

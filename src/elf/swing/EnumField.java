@@ -61,7 +61,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.List
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(combo == null) {
 			
 			// fill the values

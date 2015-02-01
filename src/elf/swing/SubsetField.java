@@ -154,7 +154,7 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	}
 	
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(spane == null) {
 			box = Box.createVerticalBox();
 			init();

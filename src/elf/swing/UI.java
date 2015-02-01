@@ -1,5 +1,5 @@
 /*
- * ElfCore library
+ * Elfy library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
@@ -101,7 +100,6 @@ public class UI implements elf.ui.UI {
 	 */
 	public Icon getBroken() {
 		if(broken == null) {
-			URL url;
 			try {
 				Image image = ImageIO.read(elf.ui.Icon.BROKEN.getURL());
 				broken = new Icon.Image(image);			

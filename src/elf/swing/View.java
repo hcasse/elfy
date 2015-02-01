@@ -57,7 +57,7 @@ public class View extends Container implements elf.ui.View {
 			
 			// prepare the sub-components
 			for(Component component: getComponents())
-				frame.getContentPane().add(component.getComponent(ui));
+				frame.getContentPane().add(component.getComponent(this));
 			
 			// prepare the frame
 			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -91,7 +91,7 @@ public class View extends Container implements elf.ui.View {
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		return null;
 	}
 
@@ -175,9 +175,18 @@ public class View extends Container implements elf.ui.View {
 	public UI getUI() {
 		return ui;
 	}
+	
+	/**
+	 * Get swing icon.
+	 * @param icon	UI icon.
+	 * @return	Swing icon.
+	 */
+	public Icon getIcon(elf.ui.Icon icon) {
+		return ui.getIcon(icon);
+	}
 
 	@Override
-	public elf.ui.View makeDialog(Entity entity) {
+	public elf.ui.Dialog makeDialog(Entity entity) {
 		return new Dialog(this, entity);
 	}
 }

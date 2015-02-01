@@ -38,12 +38,12 @@ public class MenuItem extends Component implements ActionListener, Action.Comman
 	}
 	
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(menu == null) {
 			menu = new JMenuItem();
 			prepareButton(menu, action);
 			menu.setText(action.getLabel());
-			Icon icon = ui.getIcon(action.getIcon());
+			Icon icon = view.getIcon(action.getIcon());
 			if(icon != null)
 				menu.setIcon(icon.get(Icon.NORMAL, Icon.TEXTUAL));
 			menu.addActionListener(this);

@@ -29,13 +29,15 @@ public class Icon {
 	public static final Icon NULL = new Icon();
 	public static final Icon
 		BACK 		= STD.get("back"),
-		MENU 		= STD.get("menu"),
-		QUIT 		= STD.get("quit"),
-		INFO 		= STD.get("info"),
-		WARNING		= STD.get("warning"),
+		BROKEN		= STD.get("broken"),
+		CANCEL		= STD.get("cancel"),
 		ERROR		= STD.get("error"),
 		HELP		= STD.get("help"),
-		BROKEN		= STD.get("broken");
+		INFO 		= STD.get("info"),
+		MENU 		= STD.get("menu"),
+		OK			= STD.get("ok"),
+		QUIT 		= STD.get("quit"),
+		WARNING		= STD.get("warning");
 
 	private URL url;
 

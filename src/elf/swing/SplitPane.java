@@ -48,14 +48,14 @@ public class SplitPane extends Component implements elf.ui.SplitPane {
 	}
 
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(spane == null) {
 			int jaxis;
 			if(axis == HORIZONTAL)
 				jaxis = JSplitPane.VERTICAL_SPLIT;
 			else
 				jaxis = JSplitPane.HORIZONTAL_SPLIT;
-			spane = new JSplitPane(jaxis, fst.getComponent(ui), snd.getComponent(ui));
+			spane = new JSplitPane(jaxis, fst.getComponent(view), snd.getComponent(view));
 		}
 		return spane;
 	}

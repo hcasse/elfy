@@ -19,9 +19,12 @@ package elf.swing;
 
 import java.util.Collection;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 
+import elf.ui.I18N;
+import elf.ui.Icon;
 import elf.ui.Monitor;
 import elf.ui.SelectionDialog;
 import elf.ui.meta.Action;
@@ -31,18 +34,23 @@ import elf.ui.meta.Entity;
  * Dialog view.
  * @author casse
  */
-public class Dialog extends Container implements elf.ui.View {
+public class Dialog extends Container implements elf.ui.Dialog {
 	private Entity entity;
 	private View parent;
 	private JDialog dialog;
+	private boolean result;
+	private ActionBar tb = new ActionBar();
 	
 	public Dialog(View parent, Entity entity) {
 		this.parent = parent;
 		this.entity = entity;
+		tb.setAlignment(RIGHT);
+		tb.setStyle(Button.STYLE_ICON_TEXT);
+		tb.setAxis(HORIZONTAL);
 	}
 	
 	@Override
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		return null;
 	}
 
@@ -50,9 +58,14 @@ public class Dialog extends Container implements elf.ui.View {
 	public void show() {
 		if(dialog == null) {
 			dialog = new JDialog(parent.getFrame(), entity.getLabel(), true);
+			javax.swing.Box box = javax.swing.Box.createVerticalBox();
+			box.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+			dialog.add(box);
 			for(Component component: getComponents())
-				dialog.add(component.getComponent(parent.getUI()));
+				box.add(component.getComponent(parent));
+			box.add(tb.getComponent(parent));
 		}
+		dialog.pack();
 		dialog.setVisible(true);
 	}
 
@@ -82,7 +95,7 @@ public class Dialog extends Container implements elf.ui.View {
 	}
 
 	@Override
-	public elf.ui.View makeDialog(Entity entity) {
+	public elf.ui.Dialog makeDialog(Entity entity) {
 		return parent.makeDialog(entity);
 	}
 
@@ -90,6 +103,38 @@ public class Dialog extends Container implements elf.ui.View {
 	public void dispose() {
 		super.dispose();
 		dialog = null;
+	}
+
+	@Override
+	public void add(Action action) {
+		tb.add(action);
+	}
+
+	@Override
+	public void addOk() {
+		tb.add(new Action() {
+			@Override public void run() { result = true; dialog.setVisible(false); }
+			@Override public String getLabel() { return I18N.STD.t("Ok"); }
+			@Override public String getHelp() { return I18N.STD.t("Close and validate the dialog action"); }
+			@Override public Icon getIcon() { return Icon.OK; }
+		});
+	}
+ 
+	@Override
+	public void addCancel() {
+		tb.add(new Action() {
+			@Override public void run() { result = false; dialog.setVisible(false); }
+			@Override public String getLabel() { return I18N.STD.t("Cancel"); }
+			@Override public String getHelp() { return I18N.STD.t("Close but cancel the dialog action"); }
+			@Override public Icon getIcon() { return Icon.OK; }
+		});
+	}
+
+	@Override
+	public boolean run() {
+		result = false;
+		show();
+		return result;
 	}
 
 }

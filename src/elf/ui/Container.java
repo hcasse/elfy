@@ -17,7 +17,7 @@
  */
 package elf.ui;
 
-import elf.swing.Icon;
+import elf.ui.Icon;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.EnumVar;

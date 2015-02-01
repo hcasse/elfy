@@ -82,7 +82,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	 * Get it as a component.
 	 * @return	Swing component.
 	 */
-	public JComponent getComponent(UI ui) {
+	public JComponent getComponent(View view) {
 		if(field == null) {
 			field = new JTextField();
 			field.getDocument().addDocumentListener(new DocumentListener() {
