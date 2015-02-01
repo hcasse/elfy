@@ -20,6 +20,9 @@ package elf.swing;
 import java.util.Collection;
 import java.util.LinkedList;
 
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
 import elf.ui.ActionBar;
 import elf.ui.CheckBox;
 import elf.ui.EnumField;
@@ -206,4 +209,30 @@ public abstract class Container extends Component implements elf.ui.Container {
 		return field;
 	}
 
+	@Override
+	public void add(Icon icon) {
+		add(new Image(icon));
+	}
+
+	public static class Image extends Component {
+		private Icon icon;
+		private JLabel label;
+		
+		public Image(Icon icon) {
+			this.icon = icon;
+		}
+
+		@Override
+		public JComponent getComponent(UI ui) {
+			if(label == null)
+				label = new JLabel(icon.get(Icon.NORMAL, Icon.ORIGINAL));
+			return label;
+		}
+
+		@Override
+		public void dispose() {
+			label = null;
+		}
+		
+	}
 }

@@ -17,10 +17,16 @@
  */
 package elf.swing;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 
+import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
 import elf.ui.View;
@@ -31,11 +37,13 @@ import elf.ui.meta.Entity;
  * @author casse
  */
 public class UI implements elf.ui.UI {
+	private Hashtable<elf.ui.Icon, WeakReference<Icon> > icons = new Hashtable<elf.ui.Icon, WeakReference<Icon> >(); 
 	private Hashtable<Task, TaskTimer> timers = new Hashtable<Task, TaskTimer>();
+	private Icon broken;
 	
 	@Override
 	public View makeView(Entity entity) {
-		return new elf.swing.View(entity);
+		return new elf.swing.View(this, entity);
 	}
 
 	@Override
@@ -87,4 +95,48 @@ public class UI implements elf.ui.UI {
 		
 	}
 
+	/**
+	 * Get the broken icon.
+	 * @return	Icon for broken image.
+	 */
+	public Icon getBroken() {
+		if(broken == null) {
+			URL url;
+			try {
+				Image image = ImageIO.read(elf.ui.Icon.BROKEN.getURL());
+				broken = new Icon.Image(image);			
+			} catch (IOException e) {
+				System.err.println("ERROR: no broken icon");
+			}
+			icons.put(elf.ui.Icon.BROKEN, new WeakReference<Icon>(broken));
+		}
+		return broken;
+	}
+
+	/**
+	 * Get Swing icon for an UI icon.
+	 * @param icon	Icon to get.
+	 * @return		Swing icon.
+	 */
+	Icon getIcon(elf.ui.Icon icon) {
+		if(icon == null)
+			return null;
+		Icon sicon = null;
+		WeakReference<Icon> ref = icons.get(icon);
+		if(ref != null)
+			sicon = ref.get();
+		if(sicon == null) {
+			try {
+				Image image = ImageIO.read(icon.getURL());
+				sicon = new Icon.Image(image);
+			} catch (MalformedURLException e) {
+				sicon = getBroken();
+			} catch (IOException e) {
+				sicon = getBroken();
+			}
+			icons.put(icon, new WeakReference<Icon>(sicon));	
+		}
+		return sicon;
+	}
+	
 }

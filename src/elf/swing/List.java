@@ -168,7 +168,7 @@ public class List<T> extends Component implements elf.ui.List<T> {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(spane == null) {
 			jlist = new JList<T>();
 			model = new Model();

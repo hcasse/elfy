@@ -10,7 +10,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import elf.ui.Icon;
+import elf.swing.Icon;
 
 /**
  * Automatization of action management.

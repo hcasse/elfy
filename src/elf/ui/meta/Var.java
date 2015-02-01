@@ -104,6 +104,14 @@ public class Var<T> extends AbstractEntity {
 	}
 	
 	/**
+	 * Listen the current variable and trigger entity event on the given entity.
+	 * @param entity	Entity to signal.
+	 */
+	public void listenForEntity(Entity entity) {
+		addListener(new EntityPropagator<T>(entity));
+	}
+	
+	/**
 	 * Remove the given listener.
 	 * @param listener	Removed listener.
 	 */
@@ -169,6 +177,26 @@ public class Var<T> extends AbstractEntity {
 		
 		public Config(AutoConfiguration config, String name) {
 			super(new Accessor.Config<T>(config, name));
+		}
+		
+	}
+	
+	/**
+	 * Listener propagating change on variable to entity lookup.
+	 * @author casse
+	 *
+	 * @param <T>	Type of variable value.
+	 */
+	public static class EntityPropagator<T> implements Listener<T> {
+		Entity entity;
+		
+		public EntityPropagator(Entity entity) {
+			this.entity = entity;
+		}
+		
+		@Override
+		public void change(Var<T> data) {
+			entity.fireEntityChange();
 		}
 		
 	}

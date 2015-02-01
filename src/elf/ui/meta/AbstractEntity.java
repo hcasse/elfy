@@ -17,6 +17,8 @@
  */
 package elf.ui.meta;
 
+import java.util.LinkedList;
+
 import elf.ui.Icon;
 
 /**
@@ -24,6 +26,7 @@ import elf.ui.Icon;
  * @author casse
  */
 public class AbstractEntity implements Entity {
+	private LinkedList<Listener> listeners = new LinkedList<Listener>();
 
 	@Override
 	public String getLabel() {
@@ -48,6 +51,22 @@ public class AbstractEntity implements Entity {
 	@Override
 	public Icon getIcon() {
 		return null;
+	}
+
+	@Override
+	public void addListener(Listener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void removeListener(Listener listener) {
+		listeners.remove(listener);
+	}
+
+	@Override
+	public void fireEntityChange() {
+		for(Listener listener: listeners)
+			listener.onChange(this);
 	}
 
 }

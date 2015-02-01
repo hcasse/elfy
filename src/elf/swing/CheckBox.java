@@ -46,7 +46,7 @@ public class CheckBox extends Field implements elf.ui.CheckBox {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(cbox == null) {
 			cbox = new JCheckBox();
 			cbox.addItemListener(new ItemListener() {

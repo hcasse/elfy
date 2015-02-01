@@ -47,9 +47,10 @@ public abstract class Component implements elf.ui.Component {
 	
 	/**
 	 * Get the matcing Swing component.
+	 * @param ui TODO
 	 * @return	Swing Component.
 	 */
-	public abstract JComponent getComponent();
+	public abstract JComponent getComponent(UI ui);
 
 	/**
 	 * Initialize button for an entity.

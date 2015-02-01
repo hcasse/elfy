@@ -77,7 +77,7 @@ public class ActionBar extends Component implements elf.ui.ActionBar {
 	}
 	
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(box == null) {
 			
 			// build the box
@@ -101,7 +101,7 @@ public class ActionBar extends Component implements elf.ui.ActionBar {
 					addSeparation(center[align], box);
 				Button button = new Button(action, style);
 				buttons.add(button);
-				JComponent component = button.getComponent();
+				JComponent component = button.getComponent(ui);
 				if(axis == VERTICAL)
 					component.setMaximumSize(new Dimension(Short.MAX_VALUE, 10));
 				box.add(component);

@@ -3,6 +3,7 @@ package elf.ui;
 import java.util.Collection;
 
 import elf.ui.meta.Action;
+import elf.ui.meta.Entity;
 
 /**
  * A view is a facility letting the user interact graphically with the application.
@@ -51,4 +52,11 @@ public interface View extends Container {
 	 * @return				Built selection dialog.
 	 */
 	public <T> SelectionDialog<T> makeSelectionDialog(String message, String title, Collection<T> collection);
+	
+	/**
+	 * Build a modal dialog.
+	 * @param entity	Entity to get label and icon.
+	 * @return			Built dialog.
+	 */
+	public View makeDialog(Entity entity);
 }

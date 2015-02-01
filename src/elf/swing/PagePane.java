@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 
 import elf.ui.I18N;
-import elf.ui.Icon;
-import elf.ui.IconManager;
 import elf.ui.meta.Action;
 
 /**
@@ -36,6 +34,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	private Page page;
 	private javax.swing.Box pane;
 	private Action back_action;
+	private UI ui;
 	
 	@Override
 	public Page addPage() {
@@ -48,7 +47,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 		if(pane != null) {
 			if(this.page != null)
 				this.page.uninstall(pane);
-			page.install(pane);
+			page.install(ui, pane);
 			pane.revalidate();
 			pane.repaint();
 		}
@@ -75,13 +74,14 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(pane == null) {
+			this.ui = ui;
 			pane = javax.swing.Box.createHorizontalBox();
 			pane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			pane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			if(page != null)
-				page.install(pane);
+				page.install(ui, pane);
 		}
 		return pane;
 	}
@@ -93,14 +93,14 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	private static class Page extends elf.swing.Container implements elf.ui.PagePane.Page {
 		Listener listener = NULL;
 		
-		public void install(javax.swing.Box panel) {
+		public void install(UI ui, javax.swing.Box panel) {
 			listener.onShow();
 			for(Component component: getComponents())
-				panel.add(component.getComponent());
+				panel.add(component.getComponent(ui));
 		}
 		
 		@Override
-		public JComponent getComponent() {
+		public JComponent getComponent(UI ui) {
 			return null;
 		}
 		
@@ -122,7 +122,7 @@ public class PagePane extends Component implements elf.ui.PagePane {
 			back_action = new Action() {
 				@Override public void run() { pop(); }
 				@Override public String getLabel() { return I18N.STD.t("Back"); }
-				@Override public Icon getIcon() { return IconManager.STD.get(IconManager.ICON_BACK); }
+				@Override public elf.ui.Icon getIcon() { return elf.ui.Icon.BACK; }
 				@Override public boolean isEnabled() { return !stack.isEmpty(); }
 			};
 		return back_action;

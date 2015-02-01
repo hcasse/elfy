@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
-import elf.ui.Icon;
 import elf.ui.meta.Action;
 
 /**
@@ -39,12 +38,12 @@ public class MenuItem extends Component implements ActionListener, Action.Comman
 	}
 	
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(menu == null) {
 			menu = new JMenuItem();
 			prepareButton(menu, action);
 			menu.setText(action.getLabel());
-			Icon icon = action.getIcon();
+			Icon icon = ui.getIcon(action.getIcon());
 			if(icon != null)
 				menu.setIcon(icon.get(Icon.NORMAL, Icon.TEXTUAL));
 			menu.addActionListener(this);

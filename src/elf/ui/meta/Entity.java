@@ -24,34 +24,65 @@ import elf.ui.Icon;
  * @author casse
  */
 public interface Entity {
+	
 	/**
 	 * Get the label of the action.
 	 * @return	Action label.
 	 */
-	public String getLabel();
+	String getLabel();
 	
 	/**
 	 * Get the help string for the action.
 	 * @return	Help string.
 	 */
-	public String getHelp();
+	String getHelp();
 	
 	/**
 	 * Get the mnemonic of the action.
 	 * @return	Mnemonic (or 0 if no mnemonic).
 	 */
-	public int getMnemonic();
+	int getMnemonic();
 	
 	/**
 	 * Get the control-character of the action.
 	 * @return	Control character.
 	 */
-	public int getControl();
+	int getControl();
 
 	/**
 	 * Get an icon for the action.
 	 * @return	Matching icon.
 	 */
-	public Icon getIcon();
+	Icon getIcon();
 	
+	/**
+	 * Add a listener to the entity.
+	 * @param listener	Added listener.	
+	 */
+	void addListener(Listener listener);
+	
+	/**
+	 * Remove a listener.
+	 * @param listener	Removed listener.
+	 */
+	void removeListener(Listener listener);
+	
+	/**
+	 * Fire a change event on the entity.
+	 */
+	void fireEntityChange();
+	
+	/**
+	 * Listener of entity change event.
+	 * @author casse
+	 */
+	interface Listener {
+		
+		/**
+		 * Called when an entity attribute is changed.
+		 * @param entity	Changed entity.
+		 */
+		void onChange(Entity entity);
+		
+	}
 }

@@ -69,7 +69,7 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 	}
 	
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(bar == null) {
 			bar = new JProgressBar(axis == HORIZONTAL ? JProgressBar.HORIZONTAL : JProgressBar.VERTICAL, min.get(), max.get());
 			bar.setValue(var.get());

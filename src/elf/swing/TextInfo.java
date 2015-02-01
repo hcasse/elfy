@@ -42,7 +42,7 @@ public class TextInfo extends Component implements elf.ui.TextInfo {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(label == null) {
 			label = new JLabel(text);	//text);
 			if(text == null || text.equals("")) {

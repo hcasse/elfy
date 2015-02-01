@@ -19,9 +19,9 @@ package elf.ui.meta;
 
 import java.util.LinkedList;
 
-import elf.ui.I18N;
 import elf.ui.Icon;
-import elf.ui.IconManager;
+//import elf.swing.IconManager;
+import elf.ui.I18N;
 
 /**
  * An action in the UI.
@@ -34,11 +34,10 @@ public abstract class Action extends AbstractEntity {
 	public static final Action QUIT = new Action() {
 		@Override public void run() { System.exit(0); }
 		@Override public String getLabel() { return I18N.STD.t("Quit"); }
-		@Override public Icon getIcon() { return IconManager.STD.get(IconManager.ICON_QUIT); }
+		@Override public Icon getIcon() { return Icon.QUIT; }
 		
 	};
 	private LinkedList<Command> commands = new LinkedList<Command>();
-	//private LinkedList<Dependency> deps = new LinkedList<Dependency>();
 
 	/**
 	 * Run the action.

@@ -40,11 +40,13 @@ public class View extends Container implements elf.ui.View {
 	private JFrame frame;
 	private Action close_action = Action.QUIT;
 	private Monitor monitor;
+	private UI ui;
 	
-	public View(Entity entity) {
+	public View(UI ui, Entity entity) {
+		this.ui = ui;
 		this.entity = entity;
 	}
-		
+	
 	/**
 	 * Get the current JFrame.
 	 * @return	Current JFrame.
@@ -55,7 +57,7 @@ public class View extends Container implements elf.ui.View {
 			
 			// prepare the sub-components
 			for(Component component: getComponents())
-				frame.getContentPane().add(component.getComponent());
+				frame.getContentPane().add(component.getComponent(ui));
 			
 			// prepare the frame
 			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -89,7 +91,7 @@ public class View extends Container implements elf.ui.View {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		return null;
 	}
 
@@ -164,5 +166,18 @@ public class View extends Container implements elf.ui.View {
 			init = value;
 		}
 		
+	}
+	
+	/**
+	 * Get parent UI.
+	 * @return	Parent UI.
+	 */
+	public UI getUI() {
+		return ui;
+	}
+
+	@Override
+	public elf.ui.View makeDialog(Entity entity) {
+		return new Dialog(this, entity);
 	}
 }

@@ -38,6 +38,7 @@ import elf.ui.SubsetField;
 import elf.ui.TextField;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
+import elf.ui.meta.Entity;
 import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
@@ -50,6 +51,7 @@ public class Form extends Component implements elf.ui.Form {
 	private int enter_mode = ENTER_NEXT_AND_SUBMIT;
 	private LinkedList<Action> actions = new LinkedList<Action>();
 	private LinkedList<elf.swing.Field> fields = new LinkedList<elf.swing.Field>();
+	private LinkedList<Label> labels = new LinkedList<Label>();
 	private boolean visible = true;
 	private JComponent component, first, last;
 	
@@ -62,15 +64,13 @@ public class Form extends Component implements elf.ui.Form {
 	 * Make a two-column form.
 	 * @return	Built form.
 	 */
-	private JComponent makeTwoColumn() {
+	private JComponent makeTwoColumn(UI ui) {
 		
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
-		//debugBorder(panel, BLUE);
 		GridBagConstraints c = new GridBagConstraints();	
 		c.ipadx = 4;
 		c.ipady = 4;
-		//c.fill = GridBagConstraints.HORIZONTAL;
 		c.weightx = 0;
 		c.weighty = 0.;
 		c.insets = new Insets(2, 2, 2, 2);
@@ -81,13 +81,13 @@ public class Form extends Component implements elf.ui.Form {
 			listener = new EnterListener();
 		int i = 0;
 		for(elf.swing.Field field: fields) {
-			JLabel label = new JLabel(field.getEntity().getLabel(), SwingConstants.RIGHT);
+			Label label = new Label(field, true);
+			labels.add(label);
 			c.gridx = 0;
 			c.gridy = i;
 			c.anchor = GridBagConstraints.NORTHEAST;
-			//this.debugBorder(label, RED);
 			panel.add(label, c);
-			last = field.getComponent();
+			last = field.getComponent(ui);
 			c.gridx = 1;
 			c.gridy = i;
 			c.anchor = GridBagConstraints.NORTHWEST;
@@ -105,7 +105,7 @@ public class Form extends Component implements elf.ui.Form {
 		return panel;
 	}
 	
-	private JComponent makeVertical() {
+	private JComponent makeVertical(UI ui) {
 		
 		// build the box
 		javax.swing.Box box = javax.swing.Box.createVerticalBox();
@@ -115,11 +115,12 @@ public class Form extends Component implements elf.ui.Form {
 		if(enter_mode != ENTER_IGNORE)
 			listener = new EnterListener();
 		for(elf.swing.Field field: fields) {
-			JLabel label = new JLabel(field.getEntity().getLabel());
+			Label label = new Label(field, false);
+			labels.add(label);
 			label.setMaximumSize(HFILL);
 			label.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(label);
-			JComponent component = field.getComponent();
+			JComponent component = field.getComponent(ui);
 			component.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(component);
 			if(listener != null)
@@ -138,15 +139,15 @@ public class Form extends Component implements elf.ui.Form {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(component == null) {
 			
 			// build the form
 			JComponent form;
 			if(style == STYLE_VERTICAL)
-				form = makeVertical();
+				form = makeVertical(ui);
 			else
-				form = makeTwoColumn();
+				form = makeTwoColumn(ui);
 			JScrollPane spane = new JScrollPane(form);
 			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -165,7 +166,7 @@ public class Form extends Component implements elf.ui.Form {
 				bar.setAlignment(button_alignment);
 				for(Action action: actions)
 					bar.add(action);
-				box.add(bar.getComponent());				
+				box.add(bar.getComponent(ui));				
 			}
 		}
 		component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
@@ -223,6 +224,9 @@ public class Form extends Component implements elf.ui.Form {
 	@Override
 	public void dispose() {
 		super.dispose();
+		for(Label label: labels)
+			label.dispose();
+		labels.clear();
 		component = null;
 		first = null;
 		last = null;
@@ -254,4 +258,33 @@ public class Form extends Component implements elf.ui.Form {
 		return field;
 	}
 
+	/**
+	 * Label specialization with entity change support.
+	 * @author casse
+	 */
+	private static class Label extends JLabel implements Entity.Listener {
+		private static final long serialVersionUID = 1L;
+		private Field field;
+		
+		public Label(Field field, boolean right) {
+			super("", right ? SwingConstants.RIGHT : SwingConstants.LEFT);
+			this.field = field;
+			field.getEntity().addListener(this);
+			configure();
+		}
+		
+		private void configure() {
+			this.setText(field.getEntity().getLabel());
+		}
+		
+		public void dispose() {
+			field.getEntity().removeListener(this);
+		}
+		
+		@Override
+		public void onChange(Entity entity) {
+			configure();
+		}
+		
+	}
 }

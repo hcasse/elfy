@@ -69,6 +69,14 @@ public abstract class LateLoader<T, I> {
 	}
 	
 	/**
+	 * Test if the data has been loaded.
+	 * @return	True for loaded, false else.
+	 */
+	public boolean isLoaded() {
+		return state == LOADED;
+	}
+	
+	/**
 	 * Get the identifier of the object.
 	 * @return	Object identifier.
 	 */

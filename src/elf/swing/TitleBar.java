@@ -29,8 +29,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPopupMenu;
 
-import elf.ui.Icon;
-import elf.ui.IconManager;
 import elf.ui.meta.Action;
 
 /**
@@ -84,13 +82,13 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(bar == null) {
 			bar = Box.createHorizontalBox();
 			for(Action action: lefts) {
 				Button button = new Button(action, Button.STYLE_ICON);
 				buttons.add(button);
-				bar.add(button.getComponent());
+				bar.add(button.getComponent(ui));
 			}
 			
 			// prepare title
@@ -104,7 +102,7 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 			for(Action action: rights) {
 				Button button = new Button(action, Button.STYLE_ICON);
 				buttons.add(button);
-				bar.add(button.getComponent());
+				bar.add(button.getComponent(ui));
 			}
 			
 			// add menu if needed
@@ -112,10 +110,10 @@ public class TitleBar extends Component implements elf.ui.TitleBar  {
 				popup = new JPopupMenu();
 				for(Action action: menus) {
 					MenuItem item = new MenuItem(action);
-					popup.add(item.getComponent());
+					popup.add(item.getComponent(ui));
 					buttons.add(item);
 				}
-				button = new JButton(IconManager.STD.get(Factory.ICON_MENU).get(Icon.NORMAL, Icon.TOOLBAR));
+				button = new JButton(ui.getIcon(elf.ui.Icon.MENU).get(Icon.NORMAL, Icon.TOOLBAR));
 				button.addActionListener(new ActionListener() {
 					@Override public void actionPerformed(ActionEvent event) {
 				        popup.show(button, 0, button.getBounds().height);

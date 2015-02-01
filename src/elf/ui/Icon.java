@@ -1,6 +1,6 @@
 /*
- * ElfCore tool
- * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
+ * Elfy tool
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,182 +17,104 @@
  */
 package elf.ui;
 
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
- * An icon in the Orchid meaning, that is an image, with different display
- * flavours according the current component state. 
- * @author H. Cassé
+ * Represents an image used in the UI (for button menus, etc).
+ * @author casse
  */
-public interface Icon {
-	public static final int
-		NORMAL = 0x00,
-		SELECTED = 0x01,
-		DISABLED = 0x02;
-	public static final int
-		TEXTUAL = 0,
-		TOOLBAR = 1,
-		DESKTOP = 2;
-	public static final int
-		MAX_TEXTUAL = 16,
-		MAX_TOOLBAR = 24,
-		MAX_DESKTOP = 32;
-	public static final Icon NULL = new Null();
-	public static final Icon BROKEN = Image.getBroken();
+public class Icon {
+	public static final Manager STD = makeSTD();
+	public static final Icon NULL = new Icon();
+	public static final Icon
+		BACK 		= STD.get("back"),
+		MENU 		= STD.get("menu"),
+		QUIT 		= STD.get("quit"),
+		INFO 		= STD.get("info"),
+		WARNING		= STD.get("warning"),
+		ERROR		= STD.get("error"),
+		HELP		= STD.get("help"),
+		BROKEN		= STD.get("broken");
+
+	private URL url;
 
 	/**
-	 * Get an icon according the given state.
-	 * @param state		OR'ed composition of SELECTED, DISABLED, etc.
-	 * @return			Matching icon (null if there is no icon).
+	 * Build STD manager.
+	 * @return	STD manager.
 	 */
-	public javax.swing.Icon get(int state);
-	
-	/**
-	 * Get an icon according the given state.
-	 * @param state		OR'ed composition of SELECTED, DISABLED, etc.
-	 * @param size		One of TEXTUAL, TOOLBAR, DESKTOP
-	 * @return			Matching icon (null if there is no icon).
-	 */
-	public javax.swing.Icon get(int state, int size);
-	
-	/**
-	 * Null icon. 
-	 */
-	public class Null implements Icon {
-
-		@Override
-		public javax.swing.Icon get(int state) {
-			return null;
-		}
-
-		@Override
-		public javax.swing.Icon get(int state, int size) {
-			return null;
-		}
-		
-	}
-	
-	/**
-	 * Implementation of an icon with a single image.
-	 * @author H. Cassé
-	 */
-	public class Simple implements Icon {
-		javax.swing.Icon icon;		
-		
-		public Simple(javax.swing.Icon icon) {
-			this.icon = icon;
-		}
-		
-		@Override
-		public javax.swing.Icon get(int state) {
-			return get(state, TEXTUAL);
-		}
-
-		@Override
-		public javax.swing.Icon get(int state, int size) {
-			if(state == 0)
-				return icon;
-			else
+	private static Manager makeSTD() {
+		if(System.getenv("ELFY_DEV") == null) 
+			return new Manager(Icon.class.getResource("/pix/"));
+		else
+			try {
+				return new Manager(new URL(Icon.class.getResource("."), "../../pix/"));
+			} catch (MalformedURLException e) {
+				System.err.println("INTERNAL ERROR: no standard icons");
 				return null;
-		}
-		
+			}
 	}
 	
 	/**
-	 * Icon based on an AWT image.
+	 * Null icon constructor.
+	 */
+	private Icon() {
+	}
+	
+	/**
+	 * Build a new icon.
+	 */
+	public Icon(URL url) {
+		this.url = url;
+	}
+	
+	/**
+	 * Get URL pf the icon
+	 * @return	Icon URL.
+	 */
+	public URL getURL() {
+		return url;
+	}
+
+	/**
+	 * An icon manager provide automatic access to icon by name
+	 * and automatic storage (avoiding duplication). The icon manager
+	 * allows also to automatically load the icon from any file system.
 	 * @author casse
 	 */
-	public static class Image implements Icon {
-		java.awt.Image image;
-		int w, h;
-		javax.swing.Icon textual, toolbar, desktop;		
-
-		public Image(java.awt.Image image) {
-			this.image = image;
-			w = image.getWidth(null);
-			h = image.getHeight(null);
+	public static class Manager {
+		private URL base;
+		
+		/**
+		 * Build the icon manager.
+		 * @param base	Base to find back icons.
+		 */
+		public Manager(URL base) {
+			this.base = base;
 		}
 		
-		@Override
-		public javax.swing.Icon get(int state) {
-			return get(state, TEXTUAL);
-		}
-
-		@Override
-		public javax.swing.Icon get(int state, int size) {
-			if(state != 0)
-				return null;
-			switch(size) {
-			case TOOLBAR:
-				return getToolbar();
-			case DESKTOP:
-				return getDesktop();
-			case TEXTUAL:
-			default:
-				return getTextual();
-			}
-		}
-
 		/**
-		 * Get the textual form of the icon.
-		 * @return		Textual form.
+		 * Build an icon by its name.
+		 * @param name	Icon name.
+		 * @return		Loaded icon or null.
 		 */
-		private javax.swing.Icon getTextual() {
-			if(textual == null) {
-				if(h <= MAX_TEXTUAL)
-					textual = new javax.swing.ImageIcon(image);
-				else
-					textual = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_TEXTUAL / h,
-								MAX_TEXTUAL,
-								java.awt.Image.SCALE_SMOOTH));
-			}
-			return textual;
-		}
-
-		/**
-		 * Get the toolbar form of the icon.
-		 * @return		Textual form.
-		 */
-		private javax.swing.Icon getToolbar() {
-			if(toolbar == null) {
-				if(MAX_TEXTUAL < h && h <= MAX_TOOLBAR)
-					toolbar = new javax.swing.ImageIcon(image);
-				else
-					toolbar = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_TOOLBAR / h,
-								MAX_TOOLBAR,
-								java.awt.Image.SCALE_SMOOTH));
-			}
-			return toolbar;
-		}
-
-		/**
-		 * Get the desktop form of the icon.
-		 * @return		Desktop form.
-		 */
-		private javax.swing.Icon getDesktop() {
-			if(toolbar == null) {
-				if(MAX_TOOLBAR < h && h <= MAX_DESKTOP)
-					toolbar = new javax.swing.ImageIcon(image);
-				else
-					toolbar = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_DESKTOP / h,
-								MAX_DESKTOP,
-								java.awt.Image.SCALE_SMOOTH));
-			}
-			return toolbar;
-		}
-
-		public static Image getBroken() {
+		public Icon get(String name) {
 			try {
-				return new Image(ImageIO.read(Image.class.getResourceAsStream("broken.png")));
-			} catch (IOException e) {
-				return null;
+				return new Icon(new URL(base, name + ".png"));
+			} catch (MalformedURLException e) {
+				System.err.println("INTERNAL ERROR: icon: " + e.getLocalizedMessage());
+				return getBroken();
 			}
 		}
+		
+		/**
+		 * Get the broken icon.
+		 * @return	Broken icon.
+		 */
+		public Icon getBroken() {
+			return BROKEN;
+		}
+		
 	}
-	
+
 }

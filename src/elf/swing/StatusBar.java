@@ -117,11 +117,11 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(box == null) {
 			box = Box.createHorizontalBox();
 			for(elf.swing.TextInfo info: left)
-				box.add(info.getComponent());
+				box.add(info.getComponent(null));
 			label = new JLabel();
 			label.setAlignmentX(0);
 			label.setBorder(BorderFactory.createLoweredSoftBevelBorder());
@@ -132,7 +132,7 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 			label.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
 			for(elf.swing.TextInfo info: right) {
 				box.add(Box.createHorizontalStrut(4));
-				JComponent component = info.getComponent(); 
+				JComponent component = info.getComponent(null); 
 				box.add(component);
 				component.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 			}

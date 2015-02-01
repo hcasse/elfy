@@ -17,6 +17,7 @@
  */
 package elf.ui;
 
+import elf.swing.Icon;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.EnumVar;
@@ -161,6 +162,12 @@ public interface Container extends Component {
 	 * @return		Added field.
 	 */
 	<T> EnumField<T> addEnumField(EnumVar<T> var);
+	
+	/**
+	 * Add an icon.
+	 * @param icon	Icon to display.
+	 */
+	void add(Icon icon);
 	
 	/**
 	 * Remove a component from the container.

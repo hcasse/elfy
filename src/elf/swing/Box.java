@@ -21,7 +21,7 @@ public class Box extends Container implements elf.ui.Box {
 	}
 	
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(box == null) {
 			switch(axis) {
 			
@@ -33,7 +33,7 @@ public class Box extends Container implements elf.ui.Box {
 				case BOTTOM:	box.setAlignmentY(1); break;
 				}
 				for(Component component: getComponents()) {
-					JComponent jc = component.getComponent();
+					JComponent jc = component.getComponent(ui);
 					jc.setAlignmentX(javax.swing.JComponent.LEFT_ALIGNMENT);
 					box.add(jc);
 				}
@@ -47,7 +47,7 @@ public class Box extends Container implements elf.ui.Box {
 				case RIGHT:		box.setAlignmentX(1); break;
 				}
 				for(Component component: getComponents()) {
-					JComponent jc = component.getComponent();
+					JComponent jc = component.getComponent(ui);
 					jc.setAlignmentY(javax.swing.JComponent.TOP_ALIGNMENT);
 					box.add(jc);
 				}
@@ -63,7 +63,7 @@ public class Box extends Container implements elf.ui.Box {
 	private class Filler extends Component {
 
 		@Override
-		public JComponent getComponent() {
+		public JComponent getComponent(UI ui) {
 			if(axis == HORIZONTAL)
 				return new javax.swing.Box.Filler(ZERO, HFILL, HFILL);
 			else

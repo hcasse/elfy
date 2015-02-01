@@ -20,21 +20,21 @@ package elf.app;
 import java.io.IOException;
 import java.util.LinkedList;
 
-import elf.data.Attribute;
-import elf.data.Attributes;
 import elf.data.Version;
+import elf.swing.Icon;
+import elf.ui.Box;
+import elf.ui.Component;
+import elf.ui.I18N;
+import elf.ui.TextArea;
+import elf.ui.View;
+import elf.ui.meta.AbstractEntity;
+import elf.ui.meta.Action;
 
 /**
  * Provide common facilities required by an application.
  * @author casse
  */
-public abstract class Application extends Attributes {
-	public static final Attribute<String>
-		AUTHOR = new Attribute<String>("elf.app.Application.AUTHOR"),
-		DESCRIPTION = new Attribute<String>("elf.app.Application.DESCRIPTION"),
-		LICENSE = new Attribute<String>("elf.app.Application.LICENSE"),
-		SITE = new Attribute<String>("elf.app.Application.SITE");
-
+public abstract class Application extends AbstractEntity {
 	private String name;
 	private Version version;
 	LinkedList<Configuration> configs = new LinkedList<Configuration>();
@@ -108,5 +108,97 @@ public abstract class Application extends Attributes {
 				return;
 			}
 	}
+
+	/**
+	 * Get license.
+	 * @return	License.
+	 */
+	public String getLicense() {
+		return null;
+	}
+
+	/**
+	 * Get the site of the application.
+	 * @return	Application site.
+	 */
+	public String getSite() {
+		return null;
+	}
+
+	/**
+	 * Get authors.
+	 * @return	Authors array.
+	 */
+	public String[] getAuthors() {
+		return null;
+	}
+
+	/**
+	 * Get the icon of the application.
+	 * @return	Application icon.
+	 */
+	public Icon getLogo() {
+		return null;
+	}
+
+	@Override
+	public String getLabel() {
+		return getName() + " " + getVersion();
+	}
+
+	/**
+	 * Get the action providing an "about' dialog on the application.
+	 * @return
+	 */
+	public Action getAboutAction(View view) {
+		return new AboutAction(view);
+	}
 	
+	/**
+	 * Action displaying a model "about" dialog.
+	 * @author casse
+	 */
+	private class AboutAction extends Action {
+		private View view;
+		
+		public AboutAction(View view) {
+			this.view = view;
+		}
+		
+		@Override
+		public void run() {
+			View dialog = view.makeDialog(this);
+			Box hbox = dialog.addBox(Component.HORIZONTAL);
+			
+			// add the logo
+			Icon logo = getLogo();
+			if(logo != null)
+				hbox.add(logo);
+			
+			// add the text
+			StringBuffer buf = new StringBuffer();
+			TextArea text = hbox.addTextArea();
+			buf.append("<h1>");
+			buf.append(getLabel());
+			buf.append("</h1>");
+			String[] authors = getAuthors();
+			/*if(authors != null) {
+				buf.append("<h2>" + I18N.STD.t("Authors") + "</h2><ul>");
+				for(String author: authors);
+					buf.append("<li>" + author + "</li>");
+			}*/
+			
+		}
+
+		@Override
+		public String getLabel() {
+			return I18N.STD.t("About Application");
+		}
+
+		@Override
+		public elf.ui.Icon getIcon() {
+			return elf.ui.Icon.INFO;
+		}
+		
+	}
 }

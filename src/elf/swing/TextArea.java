@@ -43,7 +43,7 @@ public class TextArea extends Component implements elf.ui.TextArea {
 	}
 
 	@Override
-	public JComponent getComponent() {
+	public JComponent getComponent(UI ui) {
 		if(spane == null) {
 			pane = new JTextPane();
 			pane.setContentType("text/html");
