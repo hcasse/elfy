@@ -33,7 +33,7 @@ import java.util.Properties;
  * @author casse
  */
 public class I18N {
-	public static final String PREFIX = "../../i18n/", SUFFIX = ".txt";
+	public static final String PREFIX = "/i18n/", SUFFIX = ".txt";
 	public static final I18N STD = new I18N("std", new Locale[] { Locale.getDefault() });
 	private Properties props = new Properties();
 	
