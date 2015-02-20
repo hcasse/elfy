@@ -28,4 +28,9 @@ public class AbstractDisplayer<T> implements Displayer<T> {
 		return value.toString();
 	}
 
+	@Override
+	public Icon getIcon(T value) {
+		return null;
+	}
+
 }

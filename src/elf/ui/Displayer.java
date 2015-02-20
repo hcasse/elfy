@@ -31,4 +31,11 @@ public interface Displayer<T> {
 	 */
 	public String asString(T value);
 	
+	/**
+	 * Get the icon associated with the value.
+	 * @param value		Value.
+	 * @return			Associated icon or null.
+	 */
+	public Icon getIcon(T value);
+	
 }

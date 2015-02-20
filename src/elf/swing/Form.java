@@ -54,6 +54,7 @@ public class Form extends Component implements elf.ui.Form {
 	private LinkedList<Label> labels = new LinkedList<Label>();
 	private boolean visible = true;
 	private JComponent component, first, last;
+	private View view;
 	
 	public Form(int style, Action action) {
 		this.style = style;
@@ -141,6 +142,7 @@ public class Form extends Component implements elf.ui.Form {
 	@Override
 	public JComponent getComponent(View view) {
 		if(component == null) {
+			this.view = view;
 			
 			// build the form
 			JComponent form;
@@ -262,7 +264,7 @@ public class Form extends Component implements elf.ui.Form {
 	 * Label specialization with entity change support.
 	 * @author casse
 	 */
-	private static class Label extends JLabel implements Entity.Listener {
+	private class Label extends JLabel implements Entity.Listener {
 		private static final long serialVersionUID = 1L;
 		private Field field;
 		
@@ -275,6 +277,9 @@ public class Form extends Component implements elf.ui.Form {
 		
 		private void configure() {
 			this.setText(field.getEntity().getLabel());
+			elf.ui.Icon icon = field.getEntity().getIcon();
+			if(icon != null)
+				this.setIcon(view.getIcon(icon).get(Icon.NORMAL, Icon.TEXTUAL));
 		}
 		
 		public void dispose() {

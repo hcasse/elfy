@@ -124,6 +124,7 @@ public class View extends Container implements elf.ui.View {
 		private Vector<T> collection = new Vector<T>();
 		private Displayer<T> displayer = new Displayer<T>() {
 			@Override public String asString(T value) { return value.toString(); }
+			@Override public elf.ui.Icon getIcon(T value) { return null; }
 		};
 		private T init;
 		

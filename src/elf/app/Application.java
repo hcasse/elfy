@@ -182,19 +182,24 @@ public abstract class Application extends AbstractEntity {
 			buf.append("<big>");buf.append(Application.this.getLabel());buf.append("</big>");
 			String[] authors = getAuthors();
 			if(authors != null) {
-				buf.append("<p><b>" + I18N.STD.t("Authors") + "</b></p><ul>");
+				buf.append("<p><b>" + I18N.STD.t("Authors: ") + "</b>");
+				boolean first = true;
 				for(String author: authors) {
-					buf.append("<li>");
+					if(first)
+						first = false;
+					else
+						buf.append(", ");
 					buf.append(author);
-					buf.append("</li>");
 				}
-				buf.append("</ul>");
+				buf.append("</p>");
 			}
 			String site = getSite();
 			if(site != null) {
-				buf.append("<p><a href=\"");
+				buf.append("<p><b><a href=\"");
 				buf.append(site);
-				buf.append("\">website</a></p>");
+				buf.append("\"><img src=\"");
+				buf.append(Icon.WEBSITE.getURL());
+				buf.append("\" width=\"20\" height=\"20\" align=\"middle\" border=\"0\" hspace=\"4\"/> website</a></b></p>");
 			}
 			String license = getLicense();
 			if(license != null) {

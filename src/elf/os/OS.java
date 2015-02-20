@@ -1,5 +1,5 @@
 /*
- * ElfCore library
+ * Elfy library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ public class OS {
 	private static OS findOS() {
 		 String name = System.getProperty("os.name").toLowerCase();
 		 if(name.indexOf("win") >= 0)
-			 return new OS();	// Windows
+			 return new Windows();	// Windows
 		 else if(name.indexOf("mac") >= 0)
 			 return new Linux();	// should be fixed
 		 else if(name.indexOf("nix") >= 0 || name.indexOf("nux") >= 0 || name.indexOf("aix") > 0 )
@@ -71,7 +71,7 @@ public class OS {
 	 */
 	public Storage getConfigStore(String app, String ressource) {
 		if(config_path == null)
-			config_path = new Path(System.getProperty("user.dir"));
+			config_path = new Path(System.getProperty("user.home"));
 		return new FileStorage(config_path + File.separator + app + File.separator + ressource);
 	}
 	

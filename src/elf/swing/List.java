@@ -48,6 +48,7 @@ public class List<T> extends Component implements elf.ui.List<T> {
 	private Model model;
 	private JList<T> jlist;
 	private JScrollPane spane;
+	private View view;
 
 	/**
 	 * Build a list.
@@ -170,6 +171,7 @@ public class List<T> extends Component implements elf.ui.List<T> {
 	@Override
 	public JComponent getComponent(View view) {
 		if(spane == null) {
+			this.view = view;
 			jlist = new JList<T>();
 			model = new Model();
 			coll.addListener(model);
@@ -198,6 +200,9 @@ public class List<T> extends Component implements elf.ui.List<T> {
 					java.awt.Component r = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
 					@SuppressWarnings("unchecked")
 					T object = (T)value;
+					elf.ui.Icon icon = display.getIcon(object);
+					if(icon != null)
+						this.setIcon(List.this.view.getIcon(icon).get(elf.swing.Icon.NORMAL, elf.swing.Icon.TEXTUAL));
 					setText(display.asString(object));
 					return r;
 				}

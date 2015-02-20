@@ -37,7 +37,8 @@ public class Icon {
 		MENU 		= STD.get("menu"),
 		OK			= STD.get("ok"),
 		QUIT 		= STD.get("quit"),
-		WARNING		= STD.get("warning");
+		WARNING		= STD.get("warning"),
+		WEBSITE		= STD.get("website");
 
 	private URL url;
 

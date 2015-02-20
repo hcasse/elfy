@@ -1,2 +1,11 @@
 Quit=Quitter
 Back=Précédent
+Authors=Auteurs
+About\ Application=A propos de l'application
+Ok=Ok
+Close\ and\ validate\ the\ dialog\ action=Ferme et valide l'action de ce dialogue
+Cancel=Abandonner
+Close\ but\ cancel\ the\ dialog\ action=Ferme le dialogue et abandonne l'action
+WARNING:=ATTENTION:
+ERROR:=ERREUR:
+FATAL:=FATAL:
