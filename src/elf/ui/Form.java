@@ -20,6 +20,7 @@ package elf.ui;
 import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.EnumVar;
+import elf.ui.meta.Factory;
 import elf.ui.meta.Var;
 
 /**
@@ -36,6 +37,12 @@ public interface Form extends Component {
 		ENTER_SUBMIT = 1,				/** Enter key causes submission of the form. */
 		ENTER_NEXT = 2,					/** Enter key causes focus to next field. */
 		ENTER_NEXT_AND_SUBMIT = 3;		/** Enter key causes focus to next field and submission on last field. */
+
+	/**
+	 * Set the style of the form.
+	 * @param style		Set style.
+	 */
+	void setStyle(int style);
 	
 	/**
 	 * Add a text field.
@@ -72,6 +79,13 @@ public interface Form extends Component {
 	void addAction(Action action);
 	
 	/**
+	 * Add an action that is considered as the main action, that is,
+	 * it will be activated when the <enter> key is pressed.
+	 * @param action	Added action.
+	 */
+	void addMainAction(Action action);
+	
+	/**
 	 * Set the style of the buttons.
 	 * @param style		Button style (one of Button.STYLE_xxx).
 	 */
@@ -94,4 +108,33 @@ public interface Form extends Component {
 	 * @param visible	True for visible, false for invisible.
 	 */
 	void setButtonVisible(boolean visible);
+	
+	/**
+	 * Get the current factory.
+	 * @return	Form factory.
+	 */
+	Factory getFactory();
+	
+	/**
+	 * Set the form factory.
+	 * @param factory	New factory.
+	 */
+	void setFactory(Factory factory);
+	
+	/**
+	 * Add a field for the given variable.
+	 * @param var				Variable to create variable with.
+	 * @return					Created field.
+	 * @throws NoFieldError		Thrown when no field exists for the given variable.
+	 */
+	Field addField(Var<?> var) throws NoFieldError;
+	
+	public static class NoFieldError extends Error {
+		private static final long serialVersionUID = 7405394642587268219L;
+
+		public NoFieldError(String msg) {
+			super(msg);
+		}
+		
+	}
 }

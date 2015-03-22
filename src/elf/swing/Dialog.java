@@ -17,6 +17,7 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
 import java.util.Collection;
 
 import javax.swing.BorderFactory;
@@ -34,7 +35,7 @@ import elf.ui.meta.Entity;
  * Dialog view.
  * @author casse
  */
-public class Dialog extends Container implements elf.ui.Dialog {
+public class Dialog extends Container implements elf.ui.GenericDialog {
 	private Entity entity;
 	private View parent;
 	private JDialog dialog;
@@ -66,6 +67,7 @@ public class Dialog extends Container implements elf.ui.Dialog {
 			box.add(tb.getComponent(parent));
 		}
 		dialog.pack();
+		dialog.setSize(new Dimension(100, 100));
 		dialog.setVisible(true);
 	}
 
@@ -95,7 +97,7 @@ public class Dialog extends Container implements elf.ui.Dialog {
 	}
 
 	@Override
-	public elf.ui.Dialog makeDialog(Entity entity) {
+	public elf.ui.GenericDialog makeDialog(Entity entity) {
 		return parent.makeDialog(entity);
 	}
 
@@ -126,7 +128,7 @@ public class Dialog extends Container implements elf.ui.Dialog {
 			@Override public void run() { result = false; dialog.setVisible(false); }
 			@Override public String getLabel() { return I18N.STD.t("Cancel"); }
 			@Override public String getHelp() { return I18N.STD.t("Close but cancel the dialog action"); }
-			@Override public Icon getIcon() { return Icon.OK; }
+			@Override public Icon getIcon() { return Icon.CANCEL; }
 		});
 	}
 
@@ -135,6 +137,11 @@ public class Dialog extends Container implements elf.ui.Dialog {
 		result = false;
 		show();
 		return result;
+	}
+
+	@Override
+	public View getView() {
+		return parent;
 	}
 
 }

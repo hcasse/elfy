@@ -135,4 +135,8 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 			bar.setString(getBarString());
 	}
 
+	@Override
+	public void setValidity(boolean validity) {
+	}
+
 }

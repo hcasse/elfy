@@ -30,6 +30,7 @@ import elf.ui.Displayer;
 import elf.ui.Monitor;
 import elf.ui.meta.Action;
 import elf.ui.meta.Entity;
+import elf.ui.meta.Factory;
 
 /**
  * Swing version of view.
@@ -41,10 +42,19 @@ public class View extends Container implements elf.ui.View {
 	private Action close_action = Action.QUIT;
 	private Monitor monitor;
 	private UI ui;
+	private Factory factory = Factory.DEF;
 	
 	public View(UI ui, Entity entity) {
 		this.ui = ui;
 		this.entity = entity;
+	}
+	
+	/**
+	 * Get the viewer factory.
+	 * @return	Viewer factory.
+	 */
+	public Factory getFactory() {
+		return factory;
 	}
 	
 	/**
@@ -113,6 +123,33 @@ public class View extends Container implements elf.ui.View {
 	}
 
 	/**
+	 * Get parent UI.
+	 * @return	Parent UI.
+	 */
+	public UI getUI() {
+		return ui;
+	}
+	
+	/**
+	 * Get swing icon.
+	 * @param icon	UI icon.
+	 * @return	Swing icon.
+	 */
+	public Icon getIcon(elf.ui.Icon icon) {
+		return ui.getIcon(icon);
+	}
+
+	@Override
+	public elf.ui.GenericDialog makeDialog(Entity entity) {
+		return new Dialog(this, entity);
+	}
+
+	@Override
+	public View getView() {
+		return this;
+	}
+
+	/**
 	 * Implementation of selection dialog.
 	 * @author casse
 	 *
@@ -169,25 +206,4 @@ public class View extends Container implements elf.ui.View {
 		
 	}
 	
-	/**
-	 * Get parent UI.
-	 * @return	Parent UI.
-	 */
-	public UI getUI() {
-		return ui;
-	}
-	
-	/**
-	 * Get swing icon.
-	 * @param icon	UI icon.
-	 * @return	Swing icon.
-	 */
-	public Icon getIcon(elf.ui.Icon icon) {
-		return ui.getIcon(icon);
-	}
-
-	@Override
-	public elf.ui.Dialog makeDialog(Entity entity) {
-		return new Dialog(this, entity);
-	}
 }

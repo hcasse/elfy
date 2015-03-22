@@ -13,7 +13,7 @@ import elf.ui.meta.Entity;
  * Swing implementation of a button.
  * @author casse
  */
-public class Button extends Component implements elf.ui.Button, ActionListener, Action.Command, Entity.Listener {
+public class Button extends Component implements elf.ui.Button, ActionListener, Action.Command, Entity.EntityListener {
 	private Action action;
 	private int style;
 	private JButton button;

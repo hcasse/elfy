@@ -20,10 +20,11 @@ package elf.ui;
 import elf.ui.meta.Action;
 
 /**
- * Interface provided by generic dialogs.
+ * Minimal interface of dialog.
  * @author casse
  */
-public interface Dialog extends View {
+public interface Dialog extends Container {
+
 
 	/**
 	 * Add an action to the dialog button bar.
@@ -46,4 +47,5 @@ public interface Dialog extends View {
 	 * @return	True if the Ok button is pushed, false else.
 	 */
 	boolean run();
+
 }

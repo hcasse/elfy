@@ -24,6 +24,7 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 
+import elf.ui.Monitor;
 import elf.ui.meta.Action;
 import elf.ui.meta.Entity;
 
@@ -44,9 +45,18 @@ public abstract class Component implements elf.ui.Component {
 		ORANGE = Color.ORANGE,
 		RED = Color.RED,
 		YELLOW = Color.YELLOW;
+	Parent parent;
+
+	/**
+	 * Get the parent of the component.
+	 * @return	Component container.
+	 */
+	public Parent getParent() {
+		return parent;
+	}
 	
 	/**
-	 * Get the matcing Swing component.
+	 * Get the matching Swing component.
 	 * @param view TODO
 	 * @return	Swing Component.
 	 */
@@ -60,9 +70,6 @@ public abstract class Component implements elf.ui.Component {
 	protected void prepareEntity(AbstractButton component, Entity entity) {
 		if(entity.getHelp() != null)
 			component.setToolTipText(entity.getHelp());
-		/*Icon i = entity.getIcon();
-		if(i != null)
-			component.setIcon(i.get(Icon.NORMAL, Icon.TEXTUAL));*/		
 		if(entity.getMnemonic() != 0)
 			component.setMnemonic(entity.getMnemonic());
 	}
@@ -89,4 +96,18 @@ public abstract class Component implements elf.ui.Component {
 	protected void debugBorder(JComponent component, Color color) {
 		component.setBorder(BorderFactory.createLineBorder(color, 4));
 	}
+
+	@Override
+	public Monitor getMonitor() {
+		return getParent().getMonitor();
+	}
+
+	/**
+	 * Get the owner view.
+	 * @return	Parent view.
+	 */
+	public View getView() {
+		return getParent().getView();
+	}
+	
 }

@@ -26,6 +26,7 @@ import javax.swing.JLabel;
 import elf.ui.ActionBar;
 import elf.ui.CheckBox;
 import elf.ui.EnumField;
+import elf.ui.ErrorManager;
 import elf.ui.Form;
 import elf.ui.List;
 import elf.ui.PagePane;
@@ -46,7 +47,7 @@ import elf.ui.meta.Var;
  * Swing implementation of container.
  * @author casse
  */
-public abstract class Container extends Component implements elf.ui.Container {
+public abstract class Container extends Parent implements elf.ui.Container {
 	private LinkedList<Component> content = new LinkedList<Component>();
 
 	/**
@@ -60,35 +61,17 @@ public abstract class Container extends Component implements elf.ui.Container {
 	/**
 	 * Add a component.
 	 * @param component		Added component.
+	 * @return				Current component (composition purpose).
 	 */
-	protected void add(Component component) {
+	protected <T extends Component> T add(T component) {
 		content.add(component);
+		super.addChild(component);
+		return component;
 	}
 	
 	@Override
-	public elf.ui.Button addButton(Action action, int style) {
-		Button button = new Button(action, style); 
-		add(button);
-		return button;
-	}
-
-	@Override
 	public void remove(elf.ui.Component component) {
 		content.remove(component);
-	}
-
-	@Override
-	public elf.ui.Box addBox(int direction) {
-		Box box = new Box(direction);
-		add(box);
-		return box;
-	}
-
-	@Override
-	public TitleBar addTitleBar() {
-		elf.swing.TitleBar bar = new elf.swing.TitleBar();
-		add(bar);
-		return bar;
 	}
 
 	@Override
@@ -98,115 +81,98 @@ public abstract class Container extends Component implements elf.ui.Container {
 	}
 
 	@Override
+	public elf.ui.Button addButton(Action action, int style) {
+		return add(new Button(action, style)); 
+	}
+
+	@Override
+	public elf.ui.Box addBox(int direction) {
+		return add(new Box(direction));
+	}
+
+	@Override
+	public TitleBar addTitleBar() {
+		return add(new elf.swing.TitleBar());
+	}
+
+	@Override
 	public ActionBar addActionBar() {
-		elf.swing.ActionBar bar = new elf.swing.ActionBar();
-		add(bar);
-		return bar;
+		return add(new elf.swing.ActionBar());
 	}
 
 	@Override
 	public <T> TextField<T> addTextField(T init) {
-		elf.swing.TextField<T> field = new elf.swing.TextField<T>(init);
-		add(field);
-		return field;
+		return add(new elf.swing.TextField<T>(init));
 	}
 
 	@Override
 	public <T> TextField<T> addTextField(Var<T> var) {
-		elf.swing.TextField<T> field = new elf.swing.TextField<T>(var);
-		add(field);
-		return field;
+		return add(new elf.swing.TextField<T>(var));
 	}
 
 	@Override
 	public <T> List<T> addList() {
-		elf.swing.List<T> list = new elf.swing.List<T>();
-		add(list);
-		return list;
+		return add(new elf.swing.List<T>());
 	}
 
 	@Override
 	public <T> List<T> addList(CollectionVar<T> collection) {
-		elf.swing.List<T> list = new elf.swing.List<T>(collection);
-		add(list);
-		return list;
+		return add(new elf.swing.List<T>(collection));
 	}
 
 	@Override
 	public PagePane addPagePane() {
-		elf.swing.PagePane pane = new elf.swing.PagePane();
-		add(pane);
-		return pane;
+		return add(new elf.swing.PagePane());
 	}
 
 	@Override
 	public SplitPane addSplitPane(int axis) {
-		elf.swing.SplitPane spane = new elf.swing.SplitPane(axis);
-		add(spane);
-		return spane;
+		return add(new elf.swing.SplitPane(axis));
 	}
 
 	@Override
-	public Form addForm(int style, Action action) {
-		elf.swing.Form form = new elf.swing.Form(style, action);
-		add(form);
-		return form;
+	public Form addForm() {
+		return add(new elf.swing.Form(getView().getFactory()));
 	}
 
 	@Override
 	public CheckBox addCheckBox(Var<Boolean> var) {
-		elf.swing.CheckBox cbox = new elf.swing.CheckBox(var);
-		add(cbox);
-		return cbox;
+		return add(new elf.swing.CheckBox(var));
 	}
 
 	@Override
 	public <T> SubsetField<T> addSubsetField(CollectionVar<T> set) {
-		elf.swing.SubsetField<T> field = new elf.swing.SubsetField<T>(set);
-		add(field);
-		return field;
+		return add(new elf.swing.SubsetField<T>(set));
 	}
 
 	@Override
 	public TextInfo addTextInfo(String format) {
-		elf.swing.TextInfo info = new elf.swing.TextInfo(format);
-		add(info);
-		return info;
+		return add(new elf.swing.TextInfo(format));
 	}
 
 	@Override
 	public StatusBar addStatusBar() {
-		elf.swing.StatusBar sbar = new elf.swing.StatusBar();
-		add(sbar);
-		return sbar;
+		return add(new elf.swing.StatusBar());
 	}
 
 	@Override
 	public ProgressBar addProgressBar(Var<Integer> value, int min, int max, int axis) {
-		elf.swing.ProgressBar bar = new elf.swing.ProgressBar(value, Var.make(min), Var.make(max), axis);
-		add(bar);
-		return bar;
+		return add(new elf.swing.ProgressBar(value, Var.make(min), Var.make(max), axis));
 	}
 
 	@Override
 	public ProgressBar addProgressBar(Var<Integer> value, Var<Integer> min, Var<Integer> max, int axis) {
-		elf.swing.ProgressBar bar = new elf.swing.ProgressBar(value, min, max, axis);
-		add(bar);
-		return bar;
+		return add(new elf.swing.ProgressBar(value, min, max, axis));
 	}
 
 	@Override
 	public TextArea addTextArea() {
-		elf.swing.TextArea area = new elf.swing.TextArea();
-		add(area);
-		return area;
+		return add(new elf.swing.TextArea());
 	}
 
 	@Override
 	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
-		elf.swing.EnumField<T> field = new  elf.swing.EnumField<T>(var);
-		add(field);
-		return field;
+		return add(new  elf.swing.EnumField<T>(var));
 	}
 
 	@Override
@@ -234,5 +200,10 @@ public abstract class Container extends Component implements elf.ui.Container {
 			label = null;
 		}
 		
+	}
+
+	@Override
+	public ErrorManager addErrorManager() {
+		return add(new elf.swing.ErrorManager());
 	}
 }

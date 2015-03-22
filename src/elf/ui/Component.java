@@ -33,6 +33,12 @@ public interface Component {
 		BOTTOM = 7;
 
 	/**
+	 * Get the monitor of the component.
+	 * @return	Component monitor.
+	 */
+	public Monitor getMonitor();
+	
+	/**
 	 * Called to let the component dispose its resources.
 	 */
 	public void dispose();

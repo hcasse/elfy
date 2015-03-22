@@ -98,10 +98,9 @@ public interface Container extends Component {
 	/**
 	 * Add a form.
 	 * @param style		Style of form.
-	 * @param action	Main action (called at validation).
 	 * @return			Added form.
 	 */
-	Form addForm(int style, Action action);
+	Form addForm();
 	
 	/**
 	 * Create a check box.
@@ -168,6 +167,12 @@ public interface Container extends Component {
 	 * @param icon	Icon to display.
 	 */
 	void add(Icon icon);
+	
+	/**
+	 * Add an error manager to the current container.
+	 * @return		Created error manager.
+	 */
+	ErrorManager addErrorManager();
 	
 	/**
 	 * Remove a component from the container.

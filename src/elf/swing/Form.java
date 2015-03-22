@@ -23,6 +23,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.beans.Transient;
 import java.util.LinkedList;
 
 import javax.swing.JComponent;
@@ -40,25 +41,29 @@ import elf.ui.meta.Action;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Entity;
 import elf.ui.meta.EnumVar;
+import elf.ui.meta.Factory;
 import elf.ui.meta.Var;
 
 /**
  * Swing implementation of a form.
  * @author casse
  */
-public class Form extends Component implements elf.ui.Form {
-	private int style, button_style = Button.STYLE_ICON_TEXT, button_alignment = LEFT;
+public class Form extends Parent implements elf.ui.Form {
+	private int style = STYLE_TWO_COLUMN,
+				button_style = Button.STYLE_ICON_TEXT,
+				button_alignment = LEFT;
 	private int enter_mode = ENTER_NEXT_AND_SUBMIT;
+	private Action main_action;
 	private LinkedList<Action> actions = new LinkedList<Action>();
 	private LinkedList<elf.swing.Field> fields = new LinkedList<elf.swing.Field>();
 	private LinkedList<Label> labels = new LinkedList<Label>();
 	private boolean visible = true;
 	private JComponent component, first, last;
 	private View view;
+	private Factory factory;
 	
-	public Form(int style, Action action) {
-		this.style = style;
-		actions.add(action);
+	public Form(Factory factory) {
+		this.factory = factory;
 	}
 
 	/**
@@ -69,6 +74,8 @@ public class Form extends Component implements elf.ui.Form {
 		
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
+		panel.setPreferredSize(new Dimension(100, 100));
+		panel.setMaximumSize(new Dimension(100, 100));
 		GridBagConstraints c = new GridBagConstraints();	
 		c.ipadx = 4;
 		c.ipady = 4;
@@ -103,6 +110,7 @@ public class Form extends Component implements elf.ui.Form {
 				first = last;
 			i++;
 		}
+		debugBorder(panel, BLUE);
 		return panel;
 	}
 	
@@ -137,6 +145,8 @@ public class Form extends Component implements elf.ui.Form {
 	@Override
 	public void addAction(Action action) {
 		actions.addLast(action);
+		if(main_action == null)
+			main_action = action;
 	}
 
 	@Override
@@ -218,11 +228,11 @@ public class Form extends Component implements elf.ui.Form {
 			// submission
 			if(enter_mode == ENTER_SUBMIT
 			||(enter_mode == ENTER_NEXT_AND_SUBMIT && e.getComponent() == last)) 
-				if(actions.getFirst().isEnabled())
-					actions.getFirst().run();
+				if(main_action != null && main_action.isEnabled())
+					main_action.run();
 		}	
 	}
-
+	
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -234,11 +244,10 @@ public class Form extends Component implements elf.ui.Form {
 		last = null;
 	}
 
-	@Override
-	public CheckBox addCheckBox(Var<Boolean> var) {
-		elf.swing.CheckBox cbox = new elf.swing.CheckBox(var);
-		fields.add(cbox);
-		return cbox;
+	protected <T extends Field> T add(T field) {
+		fields.add(field);
+		addChild(field);
+		return field;
 	}
 
 	@Override
@@ -247,24 +256,25 @@ public class Form extends Component implements elf.ui.Form {
 	}
 	
 	@Override
+	public CheckBox addCheckBox(Var<Boolean> var) {
+		return add(new elf.swing.CheckBox(var));
+	}
+
+	@Override
 	public <T> SubsetField<T> addSubsetField(CollectionVar<T> set) {
-		elf.swing.SubsetField<T> field = new elf.swing.SubsetField<T>(set);
-		fields.add(field);
-		return field;
+		return add(new elf.swing.SubsetField<T>(set));
 	}
 
 	@Override
 	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
-		elf.swing.EnumField<T> field = new  elf.swing.EnumField<T>(var);
-		fields.add(field);
-		return field;
+		return add(new  elf.swing.EnumField<T>(var));
 	}
 
 	/**
 	 * Label specialization with entity change support.
 	 * @author casse
 	 */
-	private class Label extends JLabel implements Entity.Listener {
+	private class Label extends JLabel implements Entity.EntityListener {
 		private static final long serialVersionUID = 1L;
 		private Field field;
 		
@@ -291,5 +301,34 @@ public class Form extends Component implements elf.ui.Form {
 			configure();
 		}
 		
+	}
+
+	@Override
+	public void setStyle(int style) {
+		this.style = style;
+	}
+
+	@Override
+	public Factory getFactory() {
+		return factory;
+	}
+
+	@Override
+	public void setFactory(Factory factory) {
+		this.factory = factory;
+	}
+
+	@Override
+	public elf.ui.Field addField(Var<?> var) throws NoFieldError {
+		Factory.Maker maker = factory.get(var.get().getClass());
+		if(maker == null)
+			throw new NoFieldError("no field for " + var.getLabel());
+		return add((Field)maker.make(this, var));
+	}
+
+	@Override
+	public void addMainAction(Action action) {
+		actions.add(action);
+		main_action = action;
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,33 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.ui.meta;
 
-import elf.ui.meta.Entity;
+import java.util.Vector;
 
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * Abstract implementation of a listener.
  * @author casse
  */
-public interface Field {
+public class AbstractListenable extends AbstractEntity implements Listenable {
+	private Vector<Listenable.Listener> listeners = new Vector<Listenable.Listener>();
+
+	@Override
+	public void add(Listenable.Listener listener) {
+		listeners.add(listener);
+	}
+
+	@Override
+	public void remove(Listenable.Listener listener) {
+		listeners.remove(listener);
+	}
 
 	/**
-	 * Get the variable.
-	 * @return	Variable.
+	 * Called to update all listeners.
 	 */
-	Entity getEntity();
-
-	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
-	 */
-	boolean isReadOnly();
-	
-	/**
-	 * Set the validity of the field.
-	 * If set to false, display is highlighted to show error.
-	 * @param validity	True for valid, false for invalid.
-	 */
-	void setValidity(boolean validity);
+	protected void fireListenableChange() {
+		for(Listenable.Listener listener: listeners)
+			listener.update(this);
+	}
 }
+

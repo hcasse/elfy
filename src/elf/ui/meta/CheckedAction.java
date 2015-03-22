@@ -1,6 +1,6 @@
 /*
- * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Elfy library
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,33 +15,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.ui.meta;
 
-import elf.ui.meta.Entity;
+import java.util.LinkedList;
+
 
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * Represents an action that is guarded by a list of checks.
  * @author casse
  */
-public interface Field {
-
-	/**
-	 * Get the variable.
-	 * @return	Variable.
-	 */
-	Entity getEntity();
-
-	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
-	 */
-	boolean isReadOnly();
+public abstract class CheckedAction extends Action {
+	private LinkedList<Check> checks = new LinkedList<Check>(); 
 	
 	/**
-	 * Set the validity of the field.
-	 * If set to false, display is highlighted to show error.
-	 * @param validity	True for valid, false for invalid.
+	 * Add a check to drive this action.
+	 * @param check		Added check.
 	 */
-	void setValidity(boolean validity);
+	public void add(Check check) {
+		add((Listenable)check);
+		checks.add(check);
+	}
+
+	@Override
+	public boolean isEnabled() {
+		for(Check check: checks)
+			if(!check.isChecked())
+				return false;
+		return true;
+	}
+	
 }

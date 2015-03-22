@@ -88,4 +88,8 @@ public class Monitor implements elf.ui.Monitor {
 		return success;
 	}
 
+	@Override
+	public void clear() {
+	}
+
 }

@@ -35,7 +35,6 @@ public abstract class Action extends AbstractEntity {
 		@Override public void run() { System.exit(0); }
 		@Override public String getLabel() { return I18N.STD.t("Quit"); }
 		@Override public Icon getIcon() { return Icon.QUIT; }
-		
 	};
 	private LinkedList<Command> commands = new LinkedList<Command>();
 
@@ -86,6 +85,14 @@ public abstract class Action extends AbstractEntity {
 	}
 	
 	/**
+	 * Add a dependency on a listenable object.
+	 * @param listenable	Listenable to be dependent on.
+	 */
+	public void add(Listenable listenable) {
+		add(new ListenableDependency(this, listenable));
+	}
+	
+	/**
 	 * Add a dependency to a collection of data.
 	 * @param d	Added dependency.
 	 */
@@ -132,6 +139,25 @@ public abstract class Action extends AbstractEntity {
 		 */
 		protected void update() {
 			action.update();
+		}
+		
+	}
+	
+	/**
+	 * Dependendency on a listenable.
+	 * @author casse
+	 *
+	 */
+	public static class ListenableDependency extends Dependency implements Listenable.Listener {
+
+		public ListenableDependency(Action action, Listenable listenable) {
+			super(action);
+			listenable.add(this);
+		}
+
+		@Override
+		public void update(Listenable obs) {
+			update();
 		}
 		
 	}

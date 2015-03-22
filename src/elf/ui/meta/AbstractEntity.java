@@ -26,7 +26,7 @@ import elf.ui.Icon;
  * @author casse
  */
 public class AbstractEntity implements Entity {
-	private LinkedList<Listener> listeners = new LinkedList<Listener>();
+	private LinkedList<EntityListener> listeners = new LinkedList<EntityListener>();
 
 	@Override
 	public String getLabel() {
@@ -54,18 +54,18 @@ public class AbstractEntity implements Entity {
 	}
 
 	@Override
-	public void addListener(Listener listener) {
+	public void addListener(EntityListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removeListener(Listener listener) {
+	public void removeListener(EntityListener listener) {
 		listeners.remove(listener);
 	}
 
 	@Override
 	public void fireEntityChange() {
-		for(Listener listener: listeners)
+		for(EntityListener listener: listeners)
 			listener.onChange(this);
 	}
 

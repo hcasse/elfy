@@ -29,6 +29,11 @@ public interface Monitor {
 		STD = NULL;
 	
 	/**
+	 * Clear the current message. 
+	 */
+	void clear();
+	
+	/**
 	 * Simple information to the user (display is not mandatory).
 	 * @param message	Message to display.
 	 */
@@ -66,5 +71,5 @@ public interface Monitor {
 	 * @return	True if there is no error in the job, false else (info and warning are not counted as errors).
 	 */
 	boolean end();
-	
+
 }

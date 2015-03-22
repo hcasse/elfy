@@ -17,17 +17,14 @@
  */
 package elf.ui.meta;
 
-import java.util.Vector;
-
 import elf.app.AutoConfiguration;
 
 /**
  * Common interface to variables.
  * @author casse
  */
-public class Var<T> extends AbstractEntity {
+public class Var<T> extends AbstractListenable {
 	private Accessor<T> accessor;
-	private Vector<Listener<T>> listeners = new Vector<Listener<T>>();
 
 	/**
 	 * Fast variable construction.
@@ -61,10 +58,12 @@ public class Var<T> extends AbstractEntity {
 		this.accessor = accessor;
 		accessor.link(this);
 	}
-	
-	protected void fireChange() {
-		for(Listener<T> listener : listeners)
-			listener.change(this);		
+
+	/**
+	 * Called when the variable is modified.
+	 */
+	public void fireChange() {
+		fireListenableChange();
 	}
 	
 	/**
@@ -100,7 +99,7 @@ public class Var<T> extends AbstractEntity {
 	 * @param listener	Listener to add.
 	 */
 	public void addListener(Listener<T> listener) {
-		listeners.add(listener);
+		add(new ListenerSupport(listener));
 	}
 	
 	/**
@@ -108,7 +107,7 @@ public class Var<T> extends AbstractEntity {
 	 * @param entity	Entity to signal.
 	 */
 	public void listenForEntity(Entity entity) {
-		addListener(new EntityPropagator<T>(entity));
+		add(new EntityPropagator<T>(entity));
 	}
 	
 	/**
@@ -116,7 +115,7 @@ public class Var<T> extends AbstractEntity {
 	 * @param listener	Removed listener.
 	 */
 	public void removeListener(Listener<T> listener) {
-		listeners.remove(listener);
+		remove(new ListenerSupport(listener));
 	}
 	
 	/**
@@ -182,12 +181,32 @@ public class Var<T> extends AbstractEntity {
 	}
 	
 	/**
+	 * Provide support for variable listener based on listenable listeners.
+	 * @author casse
+	 *
+	 * @param <T>	Type of variable.
+	 */
+	public class ListenerSupport implements Listenable.Listener {
+		Listener<T> listener;
+		
+		public ListenerSupport(Listener<T> listener) {
+			this.listener = listener;
+		}
+		
+		@Override
+		public void update(Listenable obs) {
+			listener.change(Var.this);
+		}
+		
+	}
+	
+	/**
 	 * Listener propagating change on variable to entity lookup.
 	 * @author casse
 	 *
 	 * @param <T>	Type of variable value.
 	 */
-	public static class EntityPropagator<T> implements Listener<T> {
+	public static class EntityPropagator<T> implements Listenable.Listener {
 		Entity entity;
 		
 		public EntityPropagator(Entity entity) {
@@ -195,7 +214,7 @@ public class Var<T> extends AbstractEntity {
 		}
 		
 		@Override
-		public void change(Var<T> data) {
+		public void update(Listenable obs) {
 			entity.fireEntityChange();
 		}
 		

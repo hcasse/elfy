@@ -89,4 +89,8 @@ public class CheckBox extends Field implements elf.ui.CheckBox {
 		return false;
 	}
 
+	@Override
+	public void setValidity(boolean validity) {
+	}
+
 }

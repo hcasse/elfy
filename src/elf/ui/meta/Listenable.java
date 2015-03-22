@@ -1,6 +1,6 @@
 /*
  * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,33 +15,37 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
-
-import elf.ui.meta.Entity;
+package elf.ui.meta;
 
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * Common interface for piece application whose update is observable.
  * @author casse
  */
-public interface Field {
+public interface Listenable {
 
 	/**
-	 * Get the variable.
-	 * @return	Variable.
+	 * Interface implemented by entities that may observe the entity.
+	 * @author casse
 	 */
-	Entity getEntity();
-
-	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
-	 */
-	boolean isReadOnly();
+	interface Listener {
+		
+		/**
+		 * Called each time a change arises on the current observable.
+		 * @param obs	Changed observer.	
+		 */
+		void update(Listenable obs);
+	}
 	
 	/**
-	 * Set the validity of the field.
-	 * If set to false, display is highlighted to show error.
-	 * @param validity	True for valid, false for invalid.
+	 * Add a listener.
+	 * @param listener	Added listener.
 	 */
-	void setValidity(boolean validity);
+	void add(Listener listener);
+	
+	/**
+	 * Remove a listener.
+	 * @param listener	Removed listener.
+	 */
+	void remove(Listener listener);
+	
 }

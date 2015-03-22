@@ -38,6 +38,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	private StringAdapter<T> adapter;
 	private JTextField field;
 	private boolean break_rec = false, read_only = false;
+	private Color back, inv = new Color(0xF1C7C7);
 	
 	private Class<?> getGenericTypeArgument() {
 		return var.get().getClass();		
@@ -85,6 +86,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	public JComponent getComponent(View view) {
 		if(field == null) {
 			field = new JTextField();
+			back = field.getBackground();
 			field.getDocument().addDocumentListener(new DocumentListener() {
 				@Override public void changedUpdate(DocumentEvent arg0) { updateSync(); }
 				@Override public void insertUpdate(DocumentEvent arg0) { updateSync(); }
@@ -147,6 +149,16 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	@Override
 	public boolean isReadOnly() {
 		return read_only;
+	}
+
+	@Override
+	public void setValidity(boolean validity) {
+		if(field != null) {
+			if(validity)
+				field.setBackground(back);
+			else
+				field.setBackground(inv);
+		}
 	}
 	
 }

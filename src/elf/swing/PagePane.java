@@ -29,7 +29,7 @@ import elf.ui.meta.Action;
  * Swing implementation of page pane.
  * @author casse
  */
-public class PagePane extends Component implements elf.ui.PagePane {
+public class PagePane extends Parent implements elf.ui.PagePane {
 	private final LinkedList<Page> stack = new LinkedList<Page>();
 	private Page page;
 	private javax.swing.Box pane;
@@ -38,7 +38,9 @@ public class PagePane extends Component implements elf.ui.PagePane {
 	
 	@Override
 	public Page addPage() {
-		return new Page();
+		Page page = new Page();
+		this.addChild(page);
+		return page;
 	}
 
 	@Override

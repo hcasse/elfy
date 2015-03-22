@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import elf.data.Version;
-import elf.ui.Dialog;
+import elf.ui.GenericDialog;
 import elf.ui.Icon;
 import elf.ui.Box;
 import elf.ui.Component;
@@ -168,7 +168,7 @@ public abstract class Application extends AbstractEntity {
 		
 		@Override
 		public void run() {
-			Dialog dialog = view.makeDialog(this);
+			GenericDialog dialog = view.makeDialog(this);
 			dialog.addOk();
 			Box hbox = dialog.addBox(Component.HORIZONTAL);
 			

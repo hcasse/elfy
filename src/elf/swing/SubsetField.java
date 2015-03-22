@@ -207,4 +207,8 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		return false;
 	}
 
+	@Override
+	public void setValidity(boolean validity) {
+	}
+
 }

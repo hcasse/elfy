@@ -1,6 +1,6 @@
 /*
- * ElfCore library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Elfy library
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,33 +15,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
-
-import elf.ui.meta.Entity;
+package elf.swing;
 
 /**
- * A field is a widget that may be involved in a form.
- * Mainly, it references an entity (whose label, icon, help may be extracted).
+ * A component containing children components.
  * @author casse
  */
-public interface Field {
+public abstract class Parent extends Component {
 
 	/**
-	 * Get the variable.
-	 * @return	Variable.
+	 * Add a component to the parent (parent is just responsible for the back link).
+	 * @param component		Added component.
+	 * @return				Same component (convenience).
 	 */
-	Entity getEntity();
-
-	/**
-	 * Test if the field is read-only.
-	 * @return	True if read-only, false else.
-	 */
-	boolean isReadOnly();
+	protected Component addChild(Component component) {
+		component.parent = this;
+		return component;
+	}
 	
-	/**
-	 * Set the validity of the field.
-	 * If set to false, display is highlighted to show error.
-	 * @param validity	True for valid, false for invalid.
-	 */
-	void setValidity(boolean validity);
 }

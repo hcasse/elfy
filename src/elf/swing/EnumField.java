@@ -117,4 +117,8 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.List
 			updateVar();
 	}
 
+	@Override
+	public void setValidity(boolean validity) {
+	}
+
 }

@@ -147,5 +147,5 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 		label = null;
 		message = null;
 	}
-	
+
 }

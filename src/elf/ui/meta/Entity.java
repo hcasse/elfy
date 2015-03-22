@@ -59,13 +59,13 @@ public interface Entity {
 	 * Add a listener to the entity.
 	 * @param listener	Added listener.	
 	 */
-	void addListener(Listener listener);
+	void addListener(EntityListener listener);
 	
 	/**
 	 * Remove a listener.
 	 * @param listener	Removed listener.
 	 */
-	void removeListener(Listener listener);
+	void removeListener(EntityListener listener);
 	
 	/**
 	 * Fire a change event on the entity.
@@ -76,7 +76,7 @@ public interface Entity {
 	 * Listener of entity change event.
 	 * @author casse
 	 */
-	interface Listener {
+	interface EntityListener {
 		
 		/**
 		 * Called when an entity attribute is changed.

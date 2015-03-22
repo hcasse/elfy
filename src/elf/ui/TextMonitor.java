@@ -59,4 +59,8 @@ public class TextMonitor implements Monitor {
 		return succeeded;
 	}
 
+	@Override
+	public void clear() {
+	}
+
 }
