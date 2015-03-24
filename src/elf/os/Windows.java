@@ -43,7 +43,6 @@ public class Windows extends OS {
 		
 		// build the path
 		Path app_path = config_path.append(app);
-		System.out.println("DEBUG: config_path = " + app_path);
 		if(!app_path.exists())
 			try {
 				app_path.makeAsDir();

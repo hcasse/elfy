@@ -1,11 +1,32 @@
+/*
+ * Elfy library
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package elf.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.LineMetrics;
+import java.beans.Transient;
 
-import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,7 +62,7 @@ public class ErrorManager extends Container implements elf.ui.ErrorManager, elf.
 	// state
 	private int style = DEFAULT, pos = BOTTOM, timeout = 5;
 	private Color back;
-	private javax.swing.Box main;
+	private JPanel main;
 	private JPanel epanel;
 	private JLabel label;
 	private View view;
@@ -52,22 +73,21 @@ public class ErrorManager extends Container implements elf.ui.ErrorManager, elf.
 	 * @param level		Level of error.
 	 * @param message	Message to display (null for clear).
 	 */
-	void display(int level, String message) {
+	private void display(int level, String message) {
 		
 		// prepare error panel if needed
 		if(label == null) {
-			label = new JLabel("coucou");
-			//epanel = new JPanel();
-			//epanel.add(label);
-			//main.add(epanel);
-			main.add(label);
-			debugBorder(label, MAGENTA);
+			label = new ErrorLabel();
+			epanel = new JPanel();
+			epanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+			epanel.add(label);
+			main.add(epanel, pos == TOP ? BorderLayout.NORTH : BorderLayout.SOUTH);
 			back = main.getBackground();
 		}
 		
 		// hide panel if needed
 		if((style & FOLDED) != 0)
-			epanel.setVisible(message != null);
+			epanel.setVisible(message != null && !message.equals(""));
 		
 		// set the background color
 		if((style & COLORED) != 0) {
@@ -88,13 +108,13 @@ public class ErrorManager extends Container implements elf.ui.ErrorManager, elf.
 		
 		// if needed set timed
 		if((style & TIMED) != 0) {
-			if(message == null) {
+			if(message == null || message.equals("")) {
 				if(timer != null)
 					timer.stop();
 			}
 			else {
 				if(timer == null)
-					timer = new Timer(timeout, new ActionListener() {
+					timer = new Timer(timeout * 1000, new ActionListener() {
 						@Override public void actionPerformed(ActionEvent arg0) { clear(); }
 					});
 				timer.start();
@@ -112,12 +132,13 @@ public class ErrorManager extends Container implements elf.ui.ErrorManager, elf.
 	public JComponent getComponent(View view) {
 		if(main == null) {
 			this.view = view;
-			main = new javax.swing.Box(BoxLayout.Y_AXIS);
-			//main.setLayout(new BorderLayout());
+			//main = new javax.swing.Box(BoxLayout.Y_AXIS);
+			main = new JPanel();
+			main.setLayout(new BorderLayout());
 			for(Component component: getComponents())
 				main.add(component.getComponent(view), BorderLayout.CENTER);
 			clear();
-			debugBorder(main, GREEN);
+			//debugBorder(main, GREEN);
 		}
 		return main;
 	}
@@ -185,4 +206,35 @@ public class ErrorManager extends Container implements elf.ui.ErrorManager, elf.
 		return this;
 	}
 
+	/**
+	 * Label to display an error.
+	 * @author casse
+	 */
+	private class ErrorLabel extends JLabel {
+		private static final long serialVersionUID = 1L;
+
+		@Override
+		@Transient
+		public Dimension getPreferredSize() {
+			Graphics2D g = (Graphics2D)getGraphics();
+			
+			// get text dimension
+			Dimension d;
+			if(!getText().equals(""))
+				d = super.getPreferredSize();
+			else {
+				LineMetrics m = getFont().getLineMetrics("M", g.getFontRenderContext());
+				d = new Dimension(10, (int)m.getHeight());						
+			}
+			
+			// fix with icon if required
+			if((style & ICON) != 0) {
+				d.width += Icon.MAX_TEXTUAL;
+				d.height = Math.max(d.height, Icon.MAX_TEXTUAL);
+			}
+			return d;
+		}
+
+		
+	}
 }

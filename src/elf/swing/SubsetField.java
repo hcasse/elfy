@@ -159,7 +159,6 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 			box = Box.createVerticalBox();
 			init();
 			spane = new JScrollPane(box);
-			spane.setPreferredSize(FILL);
 			spane.setMaximumSize(FILL);
 
 			// listener for subset

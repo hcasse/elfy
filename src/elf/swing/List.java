@@ -94,7 +94,6 @@ public class List<T> extends Component implements elf.ui.List<T> {
 
 	@Override
 	public void setCollection(CollectionVar<T> coll) {
-		System.err.println("DEBUG: setCollection(" + coll.getCollection() + ")");
 		coll.removeListener(model);
 		this.coll = coll;
 		coll.addListener(model);

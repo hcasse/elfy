@@ -1,5 +1,5 @@
 /*
- * ElfCore library
+ * Elfy library
  * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -74,8 +74,8 @@ public class Form extends Parent implements elf.ui.Form {
 		
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
-		panel.setPreferredSize(new Dimension(100, 100));
-		panel.setMaximumSize(new Dimension(100, 100));
+		//panel.setPreferredSize(new Dimension(100, 100));
+		//panel.setMaximumSize(new Dimension(100, 100));
 		GridBagConstraints c = new GridBagConstraints();	
 		c.ipadx = 4;
 		c.ipady = 4;
@@ -102,7 +102,9 @@ public class Form extends Parent implements elf.ui.Form {
 			c.weightx = 1.;
 			if(i == fields.size() - 1)
 				c.weighty = 1.;
+			c.fill = GridBagConstraints.HORIZONTAL;
 			panel.add(last, c);
+			c.fill = GridBagConstraints.NONE;
 			c.weightx = 0.;
 			if(listener != null)
 				last.addKeyListener(listener);
@@ -110,7 +112,6 @@ public class Form extends Parent implements elf.ui.Form {
 				first = last;
 			i++;
 		}
-		debugBorder(panel, BLUE);
 		return panel;
 	}
 	
@@ -160,7 +161,10 @@ public class Form extends Parent implements elf.ui.Form {
 				form = makeVertical(view);
 			else
 				form = makeTwoColumn(view);
-			JScrollPane spane = new JScrollPane(form);
+			JScrollPane spane = new JScrollPane(form) {
+				private static final long serialVersionUID = 1L;
+				@Override @Transient public Dimension getMinimumSize() { return super.getPreferredSize(); }
+			};
 			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			spane.setViewportBorder(null);
@@ -181,7 +185,7 @@ public class Form extends Parent implements elf.ui.Form {
 				box.add(bar.getComponent(view));				
 			}
 		}
-		component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
+		//component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		component.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		return component;
 	}

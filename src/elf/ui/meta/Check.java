@@ -44,6 +44,7 @@ public abstract class Check extends AbstractListenable implements Listenable.Lis
 		this.vars = vars;
 		this.message = message;
 		state = check();
+		startListening();
 	}
 	
 	/**

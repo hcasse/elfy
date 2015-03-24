@@ -1,5 +1,5 @@
 /*
- * ElfCore library
+ * Elfy library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
