@@ -27,6 +27,7 @@ import elf.ui.Icon;
 import elf.ui.Monitor;
 import elf.ui.SelectionDialog;
 import elf.ui.meta.Action;
+import elf.ui.meta.ActionShield;
 import elf.ui.meta.Entity;
 
 /**
@@ -107,7 +108,9 @@ public class Dialog extends Container implements elf.ui.GenericDialog {
 
 	@Override
 	public void add(Action action) {
-		tb.add(action);
+		tb.add(new ActionShield(action) {
+			@Override public void run() { super.run(); dialog.setVisible(false); }
+		});
 	}
 
 	@Override

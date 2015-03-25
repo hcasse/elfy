@@ -28,6 +28,9 @@ public class ActionShield extends Action {
 	
 	public ActionShield(Action action) {
 		this.action = action;
+		action.add(new Command() { 
+			@Override public void enable(boolean enabled) { update(); }
+		});
 	}
 	
 	@Override public void run() { action.run(); }
@@ -37,7 +40,7 @@ public class ActionShield extends Action {
 	@Override public int getMnemonic() { return action.getMnemonic(); }
 	@Override public int getControl() { return action.getControl(); }
 	@Override public Icon getIcon() { return action.getIcon(); }
-	@Override public void addListener(EntityListener listener) { action.addListener(listener); }
-	@Override public void removeListener(EntityListener listener) { action.removeListener(listener); }
+	@Override public void add(EntityListener listener) { action.add(listener); }
+	@Override public void remove(EntityListener listener) { action.remove(listener); }
 
 }

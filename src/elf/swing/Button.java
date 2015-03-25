@@ -22,7 +22,7 @@ public class Button extends Component implements elf.ui.Button, ActionListener, 
 	public Button(Action action, int style) {
 		this.action = action;
 		this.style = style;
-		action.addListener(this);
+		action.add(this);
 	}
 	
 	@Override
