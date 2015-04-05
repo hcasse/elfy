@@ -29,8 +29,9 @@ public interface Dialog extends Container {
 	/**
 	 * Add an action to the dialog button bar.
 	 * @param action	Added action.
+	 * @return			Action including the given one and the closure of the dialog.
 	 */
-	void add(Action action);
+	Action add(Action action);
 	
 	/**
 	 * Add OK button to the dialog button bar.

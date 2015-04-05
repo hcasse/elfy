@@ -60,4 +60,14 @@ public interface View extends Container {
 	 */
 	public GenericDialog makeDialog(Entity entity);
 	
+	/**
+	 * Make an action with validation: a dialog is open to let
+	 * the user validate the action. It is used for undoeable action
+	 * like final deletion.
+	 * @param action	Action to validate.
+	 * @param message	Message to display for the action (if null, it will be replaced by a standard message).
+	 * @return			Meta-action supporting validation when activated. 
+	 */
+	public Action makeValidatedAction(Action action, Entity message);
+	
 }

@@ -45,7 +45,7 @@ public class SingleVar<T> extends Var<T> {
 	 * Variable from a configuration.
 	 * @author casse
 	 */
-	public static class FromConfig<T> implements Listener<T> {
+	public static class FromConfig<T> implements ChangeListener<T> {
 		private Configuration config;
 		private String name;
 		private Field field;

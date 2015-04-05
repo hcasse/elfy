@@ -98,7 +98,7 @@ public class Var<T> extends AbstractListenable {
 	 * Add the given listener.
 	 * @param listener	Listener to add.
 	 */
-	public void addListener(Listener<T> listener) {
+	public void addChangeListener(ChangeListener<T> listener) {
 		add(new ListenerSupport(listener));
 	}
 	
@@ -114,14 +114,14 @@ public class Var<T> extends AbstractListenable {
 	 * Remove the given listener.
 	 * @param listener	Removed listener.
 	 */
-	public void removeListener(Listener<T> listener) {
+	public void removeChangeListener(ChangeListener<T> listener) {
 		remove(new ListenerSupport(listener));
 	}
 	
 	/**
 	 * Listener to record change in the data.
 	 */
-	public interface Listener<T> {
+	public interface ChangeListener<T> {
 		
 		/**
 		 * Called each time the data has been changed.
@@ -187,9 +187,9 @@ public class Var<T> extends AbstractListenable {
 	 * @param <T>	Type of variable.
 	 */
 	public class ListenerSupport implements Listenable.Listener {
-		Listener<T> listener;
+		ChangeListener<T> listener;
 		
-		public ListenerSupport(Listener<T> listener) {
+		public ListenerSupport(ChangeListener<T> listener) {
 			this.listener = listener;
 		}
 		

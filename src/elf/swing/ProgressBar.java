@@ -28,7 +28,7 @@ import elf.ui.meta.Var;
  * Swing implementation of ProgressBar.
  * @author casse
  */
-public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listener<Integer> {
+public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.ChangeListener<Integer> {
 	private Var<Integer> var, min, max;
 	private int axis;
 	private JProgressBar bar;
@@ -73,9 +73,9 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 		if(bar == null) {
 			bar = new JProgressBar(axis == HORIZONTAL ? JProgressBar.HORIZONTAL : JProgressBar.VERTICAL, min.get(), max.get());
 			bar.setValue(var.get());
-			var.addListener(this);
-			max.addListener(this);
-			min.addListener(this);
+			var.addChangeListener(this);
+			max.addChangeListener(this);
+			min.addChangeListener(this);
 			if(axis == HORIZONTAL) {
 				bar.setStringPainted(true);
 				bar.setString(getBarString());
@@ -86,20 +86,20 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 
 	@Override
 	public void setMin(int min) {
-		this.min.removeListener(this);
+		this.min.removeChangeListener(this);
 		this.min = new Var<Integer>(min);
 		if(bar != null) {
-			this.min.addListener(this);
+			this.min.addChangeListener(this);
 			bar.setMinimum(min);
 		}
 	}
 
 	@Override
 	public void setMax(int max) {
-		this.min.removeListener(this);
+		this.min.removeChangeListener(this);
 		this.min = new Var<Integer>(max);
 		if(bar != null) {
-			this.max.addListener(this);
+			this.max.addChangeListener(this);
 			bar.setMaximum(max);
 		}
 	}
@@ -108,9 +108,9 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Listen
 	public void dispose() {
 		super.dispose();
 		bar = null;
-		var.removeListener(this);
-		min.removeListener(this);
-		max.removeListener(this);
+		var.removeChangeListener(this);
+		min.removeChangeListener(this);
+		max.removeChangeListener(this);
 	}
 
 	@Override

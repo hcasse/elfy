@@ -17,6 +17,7 @@
  */
 package elf.ui.meta;
 
+import elf.ui.Component;
 import elf.ui.Monitor;
 
 /**
@@ -28,6 +29,7 @@ import elf.ui.Monitor;
  *
  */
 public abstract class Check extends AbstractListenable implements Listenable.Listener {
+	private Component component;
 	private Monitor monitor;
 	private Listenable[] vars;
 	private boolean state;
@@ -35,12 +37,12 @@ public abstract class Check extends AbstractListenable implements Listenable.Lis
 
 	/**
 	 * Build a check.
-	 * @param monitor	Monitor to display message to.
+	 * @param component	Checked component.
 	 * @param message	Message in case of check failure.
 	 * @param vars		Variable whose check depends to.
 	 */
-	public Check(Monitor monitor, String message, Listenable... vars) {
-		this.monitor = monitor;
+	public Check(Component component, String message, Listenable... vars) {
+		this.component = component;
 		this.vars = vars;
 		this.message = message;
 		state = check();
@@ -82,6 +84,8 @@ public abstract class Check extends AbstractListenable implements Listenable.Lis
 		boolean new_state = check();
 		if(new_state != state) {
 			state = new_state;
+			if(monitor == null)
+				monitor = component.getMonitor();
 			if(state)
 				monitor.clear();
 			else

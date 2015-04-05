@@ -52,7 +52,7 @@ public class CheckBox extends Field implements elf.ui.CheckBox {
 			cbox.addItemListener(new ItemListener() {
 				@Override public void itemStateChanged(ItemEvent arg0) { updateVar(); }
 			});
-			var.addListener(new Var.Listener<Boolean>() {
+			var.addChangeListener(new Var.ChangeListener<Boolean>() {
 				@Override public void change(Var<Boolean> data) { updateUI(); }
 			});
 			updateUI();

@@ -33,7 +33,7 @@ import elf.ui.meta.Var;
  * Text field for Swing implementation.
  * @author casse
  */
-public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Listener<T> {
+public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.ChangeListener<T> {
 	private Var<T> var;
 	private StringAdapter<T> adapter;
 	private JTextField field;
@@ -57,7 +57,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	@Override
 	public void dispose() {
 		super.dispose();
-		var.removeListener(this);
+		var.removeChangeListener(this);
 		field = null;
 	}
 	
@@ -69,9 +69,9 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.List
 	@Override
 	public void set(Var<T> var) {
 		if(var != null)
-			var.removeListener(this);
+			var.removeChangeListener(this);
 		this.var = var;
-		var.addListener(this);
+		var.addChangeListener(this);
 	}
 	
 	@Override

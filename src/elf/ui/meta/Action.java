@@ -69,19 +69,11 @@ public abstract class Action extends AbstractEntity {
 	}
 	
 	/**
-	 * Add a dependency.
-	 * @param dep	Added dependency.
-	 */
-	public void add(Dependency dep) {
-		//deps.add(dep);
-	}
-	
-	/**
 	 * Add a dependency to data.
 	 * @param d
 	 */
 	public<T> void add(Var<T> d) {
-		add(new DataDependency<T>(this, d));
+		new DataDependency<T>(this, d);
 	}
 	
 	/**
@@ -89,7 +81,7 @@ public abstract class Action extends AbstractEntity {
 	 * @param listenable	Listenable to be dependent on.
 	 */
 	public void add(Listenable listenable) {
-		add(new ListenableDependency(this, listenable));
+		new ListenableDependency(this, listenable);
 	}
 	
 	/**
@@ -97,7 +89,16 @@ public abstract class Action extends AbstractEntity {
 	 * @param d	Added dependency.
 	 */
 	public<T> void add(CollectionVar<T> d) {
-		add(new DataCollectionDependency<T>(this, d));
+		new DataCollectionDependency<T>(this, d);
+	}
+	
+	/**
+	 * Add dependency on several listenables.
+	 * @param listenables	Listenables to depend on.
+	 */
+	public void dependOn(Listenable... listenables) {
+		for(Listenable listenable: listenables)
+			new ListenableDependency(this, listenable);
 	}
 	
 	/**
@@ -168,13 +169,13 @@ public abstract class Action extends AbstractEntity {
 	 *
 	 * @param <T>	Type of data.
 	 */
-	public static class DataDependency<T> extends Dependency implements Var.Listener<T> {
+	public static class DataDependency<T> extends Dependency implements Var.ChangeListener<T> {
 		Var<T> data;
 		
 		public DataDependency(Action action, Var<T> data) {
 			super(action);
 			this.data = data;
-			data.addListener(this);
+			data.addChangeListener(this);
 		}
 
 		@Override

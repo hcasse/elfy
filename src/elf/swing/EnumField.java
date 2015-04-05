@@ -36,7 +36,7 @@ import elf.ui.meta.Var;
  * Swing implementation of an enumeration field.
  * @author casse
  */
-public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Listener<T>, ActionListener {
+public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.ChangeListener<T>, ActionListener {
 	private EnumVar<T> var;
 	private JComboBox<?> combo;
 	private Vector<T> values;

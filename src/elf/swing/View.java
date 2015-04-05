@@ -29,6 +29,7 @@ import javax.swing.JOptionPane;
 import elf.ui.Displayer;
 import elf.ui.Monitor;
 import elf.ui.meta.Action;
+import elf.ui.meta.ActionShield;
 import elf.ui.meta.Entity;
 import elf.ui.meta.Factory;
 
@@ -114,7 +115,7 @@ public class View extends Container implements elf.ui.View {
 
 	@Override
 	public boolean showConfirmDialog(String message, String title) {
-		return JOptionPane.showConfirmDialog(frame, message, title,  JOptionPane.YES_NO_OPTION) == 0;
+		return 0 == JOptionPane.showConfirmDialog(frame, message, title,  JOptionPane.YES_NO_OPTION);
 	}
 
 	@Override
@@ -202,6 +203,33 @@ public class View extends Container implements elf.ui.View {
 		@Override
 		public void setInitial(T value) {
 			init = value;
+		}
+		
+	}
+
+	@Override
+	public Action makeValidatedAction(Action action, Entity message) {
+		return new ValidatedAction(action, message);
+	}
+	
+	/**
+	 * Swing implementation of validated action.
+	 * @author casse
+	 */
+	private class ValidatedAction extends ActionShield {
+		private Entity message;
+		
+		public ValidatedAction(Action action, Entity message) {
+			super(action);
+			this.message = message;
+			if(message == null)
+				;
+		}
+
+		@Override
+		public void run() {
+			if(View.this.showConfirmDialog(message.getLabel(), getLabel()))
+				super.run();
 		}
 		
 	}

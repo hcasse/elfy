@@ -40,7 +40,7 @@ public class Button extends Component implements elf.ui.Button, ActionListener, 
 			configure();
 			
 			// put the dependency
-			action.add(this);	
+			action.addEntityListener(this);	
 			button.addActionListener(this);
 		}
 		return button;
@@ -77,12 +77,13 @@ public class Button extends Component implements elf.ui.Button, ActionListener, 
 	@Override
 	public void dispose() {
 		button = null;
-		action.remove(this);
+		action.removeEntityListener(this);
 	}
 
 	@Override
 	public void enable(boolean enabled) {
-		button.setEnabled(enabled);
+		if(button != null)
+			button.setEnabled(enabled);
 	}
 
 	@Override

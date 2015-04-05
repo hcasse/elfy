@@ -285,7 +285,7 @@ public class Form extends Parent implements elf.ui.Form {
 		public Label(Field field, boolean right) {
 			super("", right ? SwingConstants.RIGHT : SwingConstants.LEFT);
 			this.field = field;
-			field.getEntity().add(this);
+			field.getEntity().addEntityListener(this);
 			configure();
 		}
 		
@@ -297,7 +297,7 @@ public class Form extends Parent implements elf.ui.Form {
 		}
 		
 		public void dispose() {
-			field.getEntity().remove(this);
+			field.getEntity().removeEntityListener(this);
 		}
 		
 		@Override

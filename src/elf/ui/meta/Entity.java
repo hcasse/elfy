@@ -59,13 +59,13 @@ public interface Entity {
 	 * Add a listener to the entity.
 	 * @param listener	Added listener.	
 	 */
-	void add(EntityListener listener);
+	void addEntityListener(EntityListener listener);
 	
 	/**
 	 * Remove a listener.
 	 * @param listener	Removed listener.
 	 */
-	void remove(EntityListener listener);
+	void removeEntityListener(EntityListener listener);
 	
 	/**
 	 * Fire a change event on the entity.

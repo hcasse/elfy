@@ -1,6 +1,6 @@
 /*
  * Elfy library
- * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,32 +15,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui;
+package elf.ui.meta;
+
+import elf.ui.Icon;
 
 /**
- * A UI component.
+ * Entity providing message and/or icon.
  * @author casse
  */
-public interface Component {
-	public static final int
-		LEFT = 0,
-		CENTER = 1,
-		RIGHT = 2,
-		SPREAD = 3,
-		VERTICAL = 4,
-		HORIZONTAL = 5,
-		TOP = 6,
-		BOTTOM = 7;
+public class Label extends AbstractEntity {
+	private String message;
+	private Icon icon;
+	
+	public Label(String message) {
+		this.message = message;
+	}
+	
+	public Label(Icon icon, String message) {
+		this.icon = icon;
+		this.message = message;
+	}
+	
+	@Override
+	public String getLabel() {
+		return message;
+	}
 
-	/**
-	 * Get the monitor of the component.
-	 * @return	Component monitor.
-	 */
-	public Monitor getMonitor();
-	
-	/**
-	 * Called to let the component dispose its resources.
-	 */
-	public void dispose();
-	
+	@Override
+	public Icon getIcon() {
+		return icon;
+	}
+
 }

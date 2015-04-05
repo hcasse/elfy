@@ -40,7 +40,7 @@ public class ActionShield extends Action {
 	@Override public int getMnemonic() { return action.getMnemonic(); }
 	@Override public int getControl() { return action.getControl(); }
 	@Override public Icon getIcon() { return action.getIcon(); }
-	@Override public void add(EntityListener listener) { action.add(listener); }
-	@Override public void remove(EntityListener listener) { action.remove(listener); }
+	@Override public void addEntityListener(EntityListener listener) { action.addEntityListener(listener); }
+	@Override public void removeEntityListener(EntityListener listener) { action.removeEntityListener(listener); }
 
 }

@@ -107,10 +107,12 @@ public class Dialog extends Container implements elf.ui.GenericDialog {
 	}
 
 	@Override
-	public void add(Action action) {
-		tb.add(new ActionShield(action) {
-			@Override public void run() { super.run(); dialog.setVisible(false); }
-		});
+	public Action add(Action action) {
+		Action faction = new ActionShield(action) {
+			@Override public void run() { result = true; super.run(); dialog.setVisible(false); }
+		};
+		tb.add(faction);
+		return faction;
 	}
 
 	@Override
@@ -143,6 +145,11 @@ public class Dialog extends Container implements elf.ui.GenericDialog {
 	@Override
 	public View getView() {
 		return parent;
+	}
+
+	@Override
+	public Action makeValidatedAction(Action action, Entity message) {
+		return parent.makeValidatedAction(action, message);
 	}
 
 }

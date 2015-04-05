@@ -23,7 +23,7 @@ import elf.ui.meta.Var;
  * Text field.
  * @author casse
  */
-public interface TextField<T> extends Component, Var.Listener<T>, Field {
+public interface TextField<T> extends Component, Var.ChangeListener<T>, Field {
 	
 	/**
 	 * Get the current variable.

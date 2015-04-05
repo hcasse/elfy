@@ -103,7 +103,7 @@ public interface Accessor<T> {
 	 * @param <T>	Type of indirect data.
 	 * @param <U>	Type of object.
 	 */
-	abstract class Indirect<T, U> implements Accessor<T>, Var.Listener<U> {
+	abstract class Indirect<T, U> implements Accessor<T>, Var.ChangeListener<U> {
 		private Var<U> object;
 		private Var<T> var;
 	
@@ -124,14 +124,14 @@ public interface Accessor<T> {
 		@Override
 		public void link(Var<T> var) {
 			if(var == null)
-				object.addListener(this);
+				object.addChangeListener(this);
 			this.var = var;
 		}
 
 		@Override
 		public void unlink() {
 			if(var != null) {
-				object.removeListener(this);
+				object.removeChangeListener(this);
 				var = null;
 			}
 		}

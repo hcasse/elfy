@@ -54,12 +54,12 @@ public class AbstractEntity implements Entity {
 	}
 
 	@Override
-	public void add(EntityListener listener) {
+	public void addEntityListener(EntityListener listener) {
 		listeners.add(listener);
 	}
 
 	@Override
-	public void remove(EntityListener listener) {
+	public void removeEntityListener(EntityListener listener) {
 		listeners.remove(listener);
 	}
 
