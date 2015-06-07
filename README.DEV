@@ -1,0 +1,6 @@
+====== ReadMe for Developers ======
+
+===== Concept Fixes =====
+
+  * StatusBar should be a container. It is displayed at the bottom with full width and contained widgets
+    must be padded as usual widgets.
