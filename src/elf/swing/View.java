@@ -1,17 +1,17 @@
 /*
  * ElfCore library
  * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,12 +26,18 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import elf.os.DirPath;
+import elf.os.Path;
 import elf.ui.Displayer;
+import elf.ui.Field;
+import elf.ui.Form;
 import elf.ui.Monitor;
 import elf.ui.meta.Action;
 import elf.ui.meta.ActionShield;
 import elf.ui.meta.Entity;
 import elf.ui.meta.Factory;
+import elf.ui.meta.Factory.Maker;
+import elf.ui.meta.Var;
 
 /**
  * Swing version of view.
@@ -43,13 +49,25 @@ public class View extends Container implements elf.ui.View {
 	private Action close_action = Action.QUIT;
 	private Monitor monitor;
 	private UI ui;
-	private Factory factory = Factory.DEF;
-	
+	private static Factory STD = new Factory(Factory.DEF);
+	private Factory factory = STD;
+
+	static {
+		STD.add(Path.class, new Maker() {
+			@SuppressWarnings("unchecked")
+			@Override public Field make(Form form, Var<?> var) { return new PathField<Path>((Var<Path>)var); }
+		});
+		STD.add(DirPath.class, new Maker() {
+			@SuppressWarnings("unchecked")
+			@Override public Field make(Form form, Var<?> var) { return new PathField<DirPath>((Var<DirPath>)var); }
+		});
+	}
+
 	public View(UI ui, Entity entity) {
 		this.ui = ui;
 		this.entity = entity;
 	}
-	
+
 	/**
 	 * Get the viewer factory.
 	 * @return	Viewer factory.
@@ -57,7 +75,7 @@ public class View extends Container implements elf.ui.View {
 	public Factory getFactory() {
 		return factory;
 	}
-	
+
 	/**
 	 * Get the current JFrame.
 	 * @return	Current JFrame.
@@ -65,11 +83,11 @@ public class View extends Container implements elf.ui.View {
 	public JFrame getFrame() {
 		if(frame == null) {
 			frame = new JFrame(entity.getLabel());
-			
+
 			// prepare the sub-components
 			for(Component component: getComponents())
 				frame.getContentPane().add(component.getComponent(this));
-			
+
 			// prepare the frame
 			frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			frame.addWindowListener(new WindowAdapter() {
@@ -79,7 +97,7 @@ public class View extends Container implements elf.ui.View {
 		}
 		return frame;
 	}
-	
+
 	@Override
 	public void dispose() {
 		frame = null;
@@ -130,7 +148,7 @@ public class View extends Container implements elf.ui.View {
 	public UI getUI() {
 		return ui;
 	}
-	
+
 	/**
 	 * Get swing icon.
 	 * @param icon	UI icon.
@@ -165,13 +183,13 @@ public class View extends Container implements elf.ui.View {
 			@Override public elf.ui.Icon getIcon(T value) { return null; }
 		};
 		private T init;
-		
+
 		public SelectionDialog(String message, String title, Collection<T> collection) {
 			this.message = message;
 			this.title = title;
 			this.collection.addAll(collection);
 		}
-		
+
 		@Override
 		public T show() {
 			int i = -1;
@@ -179,7 +197,7 @@ public class View extends Container implements elf.ui.View {
 				i = collection.indexOf(init);
 			ListDialog<T> dialog = new ListDialog<T>(getFrame(), message, title, collection, i, action) {
 				private static final long serialVersionUID = 1L;
-				@Override protected String asString(T object) { return displayer.asString(object); }			
+				@Override protected String asString(T object) { return displayer.asString(object); }
 			};
 			return dialog.run();
 		}
@@ -204,21 +222,21 @@ public class View extends Container implements elf.ui.View {
 		public void setInitial(T value) {
 			init = value;
 		}
-		
+
 	}
 
 	@Override
 	public Action makeValidatedAction(Action action, Entity message) {
 		return new ValidatedAction(action, message);
 	}
-	
+
 	/**
 	 * Swing implementation of validated action.
 	 * @author casse
 	 */
 	private class ValidatedAction extends ActionShield {
 		private Entity message;
-		
+
 		public ValidatedAction(Action action, Entity message) {
 			super(action);
 			this.message = message;
@@ -231,7 +249,7 @@ public class View extends Container implements elf.ui.View {
 			if(View.this.showConfirmDialog(message.getLabel(), getLabel()))
 				super.run();
 		}
-		
+
 	}
-	
+
 }

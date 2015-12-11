@@ -1,17 +1,17 @@
 /*
  * ElfCore library
  * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -31,6 +31,7 @@ import elf.ui.AbstractDisplayer;
 import elf.ui.Displayer;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Entity;
+import elf.ui.meta.Var;
 import elf.util.EnumIterator;
 
 /**
@@ -48,11 +49,11 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	private Box box;
 	private JScrollPane spane;
 	private boolean do_break;
-	
+
 	public SubsetField(CollectionVar<T> set) {
 		this.set = set;
 	}
-	
+
 	@Override
 	public Entity getEntity() {
 		return set;
@@ -87,7 +88,7 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		b.setSelected(subset.contains(v));
 		b.addItemListener(this);
 	}
-	
+
 	/**
 	 * Remove a value.
 	 * @param v		Value to remove.
@@ -98,7 +99,7 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		value.remove(b);
 		box.remove(b);
 	}
-	
+
 	/**
 	 * Initialize the maps.
 	 */
@@ -108,7 +109,7 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		for(T v: set.getCollection())
 			addValue(v);
 	}
-	
+
 	/**
 	 * Set a value in the subset.
 	 * @param v		Set value.
@@ -117,9 +118,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		do_break = true;
 		JCheckBox b = cbox.get(v);
 		b.setSelected(true);
-		do_break = false;		
+		do_break = false;
 	}
-	
+
 	/**
 	 * Clear a value from subset.
 	 * @param v		Value to clear.
@@ -128,9 +129,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		do_break = true;
 		JCheckBox b = cbox.get(v);
 		b.setSelected(false);
-		do_break = false;							
+		do_break = false;
 	}
-	
+
 	/**
 	 * Clear all values from the subset.
 	 */
@@ -138,9 +139,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		do_break = true;
 		for(JCheckBox b: new EnumIterator<JCheckBox>(cbox.elements()))
 			b.setSelected(false);
-		do_break = false;		
+		do_break = false;
 	}
-	
+
 	/**
 	 * Update UI depending on a new subset.
 	 */
@@ -150,9 +151,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 			T v = value.get(b);
 			b.setSelected(subset.contains(v));
 		}
-		do_break = false;				
+		do_break = false;
 	}
-	
+
 	@Override
 	public JComponent getComponent(View view) {
 		if(spane == null) {
@@ -168,7 +169,7 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 				@Override public void onClear() { clearAll(); }
 				@Override public void onChange() { updateAll(); }
 			});
-			
+
 			// listener for set
 			set.addListener(new CollectionVar.Listener<T>() {
 				@Override public void onAdd(T item) { addValue(item); }
@@ -208,6 +209,16 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 
 	@Override
 	public void setValidity(boolean validity) {
+	}
+
+	@Override
+	public Var<?> getVar() {
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
 	}
 
 }

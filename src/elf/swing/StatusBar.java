@@ -1,17 +1,17 @@
 /*
  * ElfCore library
  * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -47,31 +47,31 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 		left = new LinkedList<elf.swing.TextInfo>(),
 		right = new LinkedList<elf.swing.TextInfo>();
 	private String message;
-	
+
 	@Override
 	public void clear() {
 		this.message = "";
 		if(box != null) {
 			timer.stop();
 			label.setText(" ");
-			label.repaint();			
+			label.repaint();
 		}
 	}
-	
+
 	@Override
 	public void set(String message) {
 		this.message = message;
 		if(box != null) {
 			timer.stop();
 			if(delay != FOREVER) {
-				timer.setDelay(delay * 1000); 
-				timer.start();			
+				timer.setDelay(delay * 1000);
+				timer.start();
 			}
 			label.setText(message);
-			label.repaint();			
+			label.repaint();
 		}
 	}
-	
+
 	@Override
 	public void info(String message) {
 		set(message);
@@ -128,11 +128,11 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 			box.add(label);
 			if(message != null)
 				set(message);
-			label.setPreferredSize(new Dimension(Short.MAX_VALUE, 0));
+			label.setPreferredSize(new Dimension(Short.MAX_VALUE, 20));
 			label.setMaximumSize(new Dimension(Short.MAX_VALUE, 20));
 			for(elf.swing.TextInfo info: right) {
 				box.add(Box.createHorizontalStrut(4));
-				JComponent component = info.getComponent(view); 
+				JComponent component = info.getComponent(view);
 				box.add(component);
 				component.setBorder(BorderFactory.createLoweredSoftBevelBorder());
 			}

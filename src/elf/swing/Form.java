@@ -1,17 +1,17 @@
 /*
  * Elfy library
  * Copyright (c) 2014 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -61,7 +61,7 @@ public class Form extends Parent implements elf.ui.Form {
 	private JComponent component, first, last;
 	private View view;
 	private Factory factory;
-	
+
 	public Form(Factory factory) {
 		this.factory = factory;
 	}
@@ -71,18 +71,18 @@ public class Form extends Parent implements elf.ui.Form {
 	 * @return	Built form.
 	 */
 	private JComponent makeTwoColumn(View view) {
-		
+
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
 		//panel.setPreferredSize(new Dimension(100, 100));
 		//panel.setMaximumSize(new Dimension(100, 100));
-		GridBagConstraints c = new GridBagConstraints();	
+		GridBagConstraints c = new GridBagConstraints();
 		c.ipadx = 4;
 		c.ipady = 4;
 		c.weightx = 0;
 		c.weighty = 0.;
 		c.insets = new Insets(2, 2, 2, 2);
-		
+
 		// build the fields
 		EnterListener listener = null;
 		if(enter_mode != ENTER_IGNORE)
@@ -114,12 +114,12 @@ public class Form extends Parent implements elf.ui.Form {
 		}
 		return panel;
 	}
-	
+
 	private JComponent makeVertical(View view) {
-		
+
 		// build the box
 		javax.swing.Box box = javax.swing.Box.createVerticalBox();
-		
+
 		// build the fields
 		EnterListener listener = null;
 		if(enter_mode != ENTER_IGNORE)
@@ -139,10 +139,10 @@ public class Form extends Parent implements elf.ui.Form {
 				last = component;
 			if(first == null && last != null)
 				first = last;
-		}		
+		}
 		return box;
 	}
-	
+
 	@Override
 	public void addAction(Action action) {
 		actions.addLast(action);
@@ -154,7 +154,7 @@ public class Form extends Parent implements elf.ui.Form {
 	public JComponent getComponent(View view) {
 		if(component == null) {
 			this.view = view;
-			
+
 			// build the form
 			JComponent form;
 			if(style == STYLE_VERTICAL)
@@ -169,7 +169,7 @@ public class Form extends Parent implements elf.ui.Form {
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			spane.setViewportBorder(null);
 			spane.getViewport().setOpaque(false);
-			
+
 			// build the buttons
 			if(!visible)
 				component = spane;
@@ -182,7 +182,7 @@ public class Form extends Parent implements elf.ui.Form {
 				bar.setAlignment(button_alignment);
 				for(Action action: actions)
 					bar.add(action);
-				box.add(bar.getComponent(view));				
+				box.add(bar.getComponent(view));
 			}
 		}
 		//component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
@@ -217,7 +217,7 @@ public class Form extends Parent implements elf.ui.Form {
 	 * @author casse
 	 */
 	private class EnterListener extends KeyAdapter {
-		
+
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if(e.getKeyChar() != '\n')
@@ -228,15 +228,15 @@ public class Form extends Parent implements elf.ui.Form {
 				first.requestFocus();
 			else
 				e.getComponent().transferFocus();
-			
+
 			// submission
 			if(enter_mode == ENTER_SUBMIT
-			||(enter_mode == ENTER_NEXT_AND_SUBMIT && e.getComponent() == last)) 
+			||(enter_mode == ENTER_NEXT_AND_SUBMIT && e.getComponent() == last))
 				if(main_action != null && main_action.isEnabled())
 					main_action.run();
-		}	
+		}
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
@@ -258,7 +258,7 @@ public class Form extends Parent implements elf.ui.Form {
 	public void setButtonVisible(boolean visible) {
 		this.visible = visible;
 	}
-	
+
 	@Override
 	public CheckBox addCheckBox(Var<Boolean> var) {
 		return add(new elf.swing.CheckBox(var));
@@ -281,30 +281,30 @@ public class Form extends Parent implements elf.ui.Form {
 	private class Label extends JLabel implements Entity.EntityListener {
 		private static final long serialVersionUID = 1L;
 		private Field field;
-		
+
 		public Label(Field field, boolean right) {
 			super("", right ? SwingConstants.RIGHT : SwingConstants.LEFT);
 			this.field = field;
 			field.getEntity().addEntityListener(this);
 			configure();
 		}
-		
+
 		private void configure() {
 			this.setText(field.getEntity().getLabel());
 			elf.ui.Icon icon = field.getEntity().getIcon();
 			if(icon != null)
 				this.setIcon(view.getIcon(icon).get(Icon.NORMAL, Icon.TEXTUAL));
 		}
-		
+
 		public void dispose() {
 			field.getEntity().removeEntityListener(this);
 		}
-		
+
 		@Override
 		public void onChange(Entity entity) {
 			configure();
 		}
-		
+
 	}
 
 	@Override
@@ -326,7 +326,7 @@ public class Form extends Parent implements elf.ui.Form {
 	public elf.ui.Field addField(Var<?> var) throws NoFieldError {
 		Factory.Maker maker = factory.get(var.get().getClass());
 		if(maker == null)
-			throw new NoFieldError("no field for " + var.getLabel());
+			throw new NoFieldError("no field maker for field " + var.getLabel());
 		return add((Field)maker.make(this, var));
 	}
 

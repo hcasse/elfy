@@ -1,17 +1,17 @@
 /*
  * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -39,33 +39,33 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	private JTextField field;
 	private boolean break_rec = false, read_only = false;
 	private Color back, inv = new Color(0xF1C7C7);
-	
+
 	private Class<?> getGenericTypeArgument() {
-		return var.get().getClass();		
+		return var.get().getClass();
 	}
 
 	public TextField(T init) {
 		set(new Var<T>(init));
 		adapter = new StringAdapter.SerializerAdapter<T>(getGenericTypeArgument());
 	}
-	
+
 	public TextField(Var<T> var) {
 		set(var);
 		adapter = new StringAdapter.SerializerAdapter<T>(getGenericTypeArgument());
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();
 		var.removeChangeListener(this);
 		field = null;
 	}
-	
+
 	@Override
 	public Var<T> get() {
 		return var;
 	}
-	
+
 	@Override
 	public void set(Var<T> var) {
 		if(var != null)
@@ -73,12 +73,12 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 		this.var = var;
 		var.addChangeListener(this);
 	}
-	
+
 	@Override
 	public void change(Var<T> data) {
 		updateUI();
 	}
-	
+
 	/**
 	 * Get it as a component.
 	 * @return	Swing component.
@@ -160,5 +160,15 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 				field.setBackground(inv);
 		}
 	}
-	
+
+	@Override
+	public Var<?> getVar() {
+		return var;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
+	}
+
 }

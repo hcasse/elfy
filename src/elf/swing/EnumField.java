@@ -1,17 +1,17 @@
 /*
  * ElfCore library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 	private JComboBox<?> combo;
 	private Vector<T> values;
 	private boolean updating = false;
-	
+
 	/**
 	 * Build an enumeration field.
 	 * @param var	Enumerated variable.
@@ -49,7 +49,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 	public EnumField(EnumVar<T> var) {
 		this.var = var;
 	}
-	
+
 	@Override
 	public Entity getEntity() {
 		return var;
@@ -63,12 +63,12 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 	@Override
 	public JComponent getComponent(View view) {
 		if(combo == null) {
-			
+
 			// fill the values
 			values = new Vector<T>();
 			for(T val: var.getValues())
 				values.add(val);
-			
+
 			// create the combo
 			combo = new JComboBox<T>(values);
 			String help = var.getHelp();
@@ -89,7 +89,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 		}
 		return combo;
 	}
-	
+
 	/**
 	 * Update user interface.
 	 */
@@ -98,7 +98,7 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 		combo.setSelectedItem(var.get());
 		updating = false;
 	}
-	
+
 	/**
 	 * Update the variable.
 	 */
@@ -119,6 +119,16 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 
 	@Override
 	public void setValidity(boolean validity) {
+	}
+
+	@Override
+	public Var<?> getVar() {
+		return var;
+	}
+
+	@Override
+	public boolean isValid() {
+		return true;
 	}
 
 }
