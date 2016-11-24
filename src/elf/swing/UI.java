@@ -136,5 +136,62 @@ public class UI implements elf.ui.UI {
 		}
 		return sicon;
 	}
+
+	@Override
+	public Color getColor(String rgba) {
+		return new Color(java.awt.Color.decode(rgba));
+	}
+
+	@Override
+	public Color getColor(int r, int g, int b) {
+		return new Color(new java.awt.Color(r, g, b));
+	}
+
+	@Override
+	public Color getColor(int r, int g, int b, int a) {
+		return new Color(new java.awt.Color(r, g, b, a));
+	}
 	
+	/**
+	 * Color representation for SWING UI.
+	 * @author casse
+	 */
+	public class Color implements elf.ui.UI.Color {
+		java.awt.Color color;
+		
+		public Color(java.awt.Color color) {
+			this.color = color;
+		}
+		
+		@Override
+		public String getRGBA() {
+			return String.format("#%2x%2x%2x%2x", getRed(), getGreen(), getBlue(), getAlpha());
+		}
+
+		@Override
+		public String getRGB() {
+			return String.format("#%2x%2x%2x", getRed(), getGreen(), getBlue());
+		}
+
+		@Override
+		public int getRed() {
+			return color.getRed();
+		}
+
+		@Override
+		public int getGreen() {
+			return color.getGreen();
+		}
+
+		@Override
+		public int getBlue() {
+			return color.getBlue();
+		}
+
+		@Override
+		public int getAlpha() {
+			return color.getAlpha();
+		}
+		
+	}
 }

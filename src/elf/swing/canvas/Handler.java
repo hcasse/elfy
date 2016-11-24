@@ -15,29 +15,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui.canvas;
+package elf.swing.canvas;
 
 /**
- * Interface provided by the parent item.
+ * Handler for the canvas component.
  * @author casse
  */
-public interface ParentItem extends Item {
-
-	/**
-	 * Called when the child item has moved.
-	 * @param item		Moved item.
-	 * @param dx		X offset.
-	 * @param dy		Y offset.
-	 */
-	void moved(Item item, int dx, int dy);
+public interface Handler {
 	
 	/**
-	 * Called when the item display need to be refreshed.
-	 * @param item		Item to refresh.
-	 * @param x			X position.
-	 * @param y			Y position.
-	 * @param w			Width.
-	 * @param h			height.
+	 * Called when the handler is installed in the canvas.
+	 * @param canvas		Canvas the handle is installed in.
 	 */
-	void refresh(Item item, int x, int y, int w, int h);
+	void install(Canvas canvas);
+
+	/**
+	 * Called when the handler is uninstalled.
+	 */
+	void uninstall();
+	
 }

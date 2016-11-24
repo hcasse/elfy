@@ -83,4 +83,76 @@ public interface UI {
 		public abstract void run();
 		
 	}
+
+	/**
+	 * Get the color from RGB(A) form.
+	 * @param rgba	RGBA form (with or without alpha).
+	 * @return		Matching color.
+	 */
+	public Color getColor(String rgba);
+
+	/**
+	 * Get the color from red, green, blue components.
+	 * @param r		Red component in [0, 255].
+	 * @param g		Green component in [0, 255].
+	 * @param b		Blue component in [0, 255].
+	 * @return		Matching color.
+	 */
+	public Color getColor(int r, int g, int b);
+	
+	/**
+	 * Get the color from red, green, blue, alpha components.
+	 * @param r		Red component in [0, 255].
+	 * @param g		Green component in [0, 255].
+	 * @param b		Blue component in [0, 255].
+	 * @param a		Alpha component in [0, 255].
+	 * @return		Matching color.
+	 */
+	public Color getColor(int r, int g, int b, int a);
+
+	/**
+	 * Represents a color in the current UI.
+	 * @author casse
+	 */
+	public interface Color {
+		
+		/**
+		 * Get the textual representation of the color:
+		 * #RRGGBBAA
+		 * @return	RGBA representation.
+		 */
+		public String getRGBA();
+		
+		/**
+		 * Get the textual representation of the color:
+		 * #RRGGBB
+		 * @return	RGB representation.
+		 */
+		public String getRGB();
+		
+		/**
+		 * Get red component.
+		 * @return	Red in [0, 255].
+		 */
+		public int getRed();
+		
+		/**
+		 * Get green component.
+		 * @return	Green in [0, 255].
+		 */
+		public int getGreen();
+		
+		/**
+		 * Get blue component.
+		 * @return	Blue in [0, 255].
+		 */
+		public int getBlue();
+		
+		/**
+		 * Get alpha component.
+		 * @return	Alpha in [0, 255].
+		 */
+		public int getAlpha();
+			
+	}
 }

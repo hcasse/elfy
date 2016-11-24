@@ -85,6 +85,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	 */
 	public JComponent getComponent(View view) {
 		if(field == null) {
+			prepare(view);
 			field = new JTextField();
 			back = field.getBackground();
 			field.getDocument().addDocumentListener(new DocumentListener() {
@@ -94,6 +95,9 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 			});
 			field.setEditable(!read_only);
 			updateUI();
+			if(style != null) {
+				field.setFont(getFontStyle(field, field.getFont()));
+			}
 		}
 		return field;
 	}

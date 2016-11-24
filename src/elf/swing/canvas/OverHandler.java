@@ -1,5 +1,5 @@
 /*
- * ElfCore library
+ * ElfUI library
  * Copyright (c) 2012 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -15,23 +15,36 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package elf.ui.canvas;
+package elf.swing.canvas;
+
+import java.awt.event.MouseEvent;
 
 /**
- * Handler for the canvas component.
+ * Handler for the mouse-over events.
  * @author casse
  */
-public interface Handler {
-	
-	/**
-	 * Called when the handler is installed in the canvas.
-	 * @param canvas		Canvas the handle is installed in.
-	 */
-	void install(Canvas canvas);
+public interface OverHandler {
 
 	/**
-	 * Called when the handler is uninstalled.
+	 * Called when the over-handler is installed.
+	 * @param canvas	Owner canvas.
+	 */
+	void install(Canvas canvas);
+	
+	/**
+	 * Called when the over-handler is uninstalled.
 	 */
 	void uninstall();
+	
+	/**
+	 * Called each time the mouse is moved.
+	 * @param event		Mouse motion event.
+	 */
+	void onMove(MouseEvent event);
+	
+	/**
+	 * Called when the mouse leaves the window.
+	 */
+	void onLeave();
 	
 }

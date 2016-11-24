@@ -39,6 +39,12 @@ public interface Component {
 	public Monitor getMonitor();
 	
 	/**
+	 * Set the style of the text field.
+	 * @param style		Style set.
+	 */
+	public void setStyle(Style style);
+	
+	/**
 	 * Called to let the component dispose its resources.
 	 */
 	public void dispose();
