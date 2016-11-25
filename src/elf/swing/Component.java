@@ -137,6 +137,8 @@ public abstract class Component implements elf.ui.Component, elf.ui.Style.Listen
 		// select the size
 		int size = font.getSize();
 		FontSize fs = style.getFontSize();
+		if(fs == null)
+			return font;
 		switch(fs.getType()) {
 		case Style.MEDIUM:
 			return font;
@@ -184,6 +186,13 @@ public abstract class Component implements elf.ui.Component, elf.ui.Style.Listen
 		
 		// allocate the font
 		return font.deriveFont((float)size);
+	}
+	public java.awt.Color getColor(java.awt.Color color) {
+		elf.swing.UI.Color scolor = (elf.swing.UI.Color)style.getColor();
+		if(scolor == null)
+			return color;
+		else
+			return scolor.getColor();
 	}
 	
 }

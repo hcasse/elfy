@@ -67,7 +67,7 @@ public class View extends Container implements elf.ui.View {
 		this.ui = ui;
 		this.entity = entity;
 	}
-
+	
 	/**
 	 * Get the viewer factory.
 	 * @return	Viewer factory.

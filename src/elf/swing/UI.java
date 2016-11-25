@@ -163,6 +163,14 @@ public class UI implements elf.ui.UI {
 			this.color = color;
 		}
 		
+		/**
+		 * Get the native color.
+		 * @return	Native color.
+		 */
+		public java.awt.Color getColor() {
+			return color;
+		}
+		
 		@Override
 		public String getRGBA() {
 			return String.format("#%2x%2x%2x%2x", getRed(), getGreen(), getBlue(), getAlpha());

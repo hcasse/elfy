@@ -20,6 +20,7 @@ package elf.ui;
 import java.util.LinkedList;
 
 import elf.data.Pair;
+import elf.ui.UI.Color;
 
 /**
  * Descriptor of style a-la CSS.
@@ -194,6 +195,30 @@ public class Style {
 	 */
 	public FontSize getFontSize() {
 		return (FontSize)get(FONT_SIZE);
+	}
+	
+	/**
+	 * Change the font size.
+	 * @param fs	Font size to change.
+	 */
+	public void setFontSize(FontSize fs) {
+		set(FONT_SIZE, fs);
+	}
+	
+	/**
+	 * Get the text color item.
+	 * @return	Color item.
+	 */
+	public Color getColor() {
+		return (Color)get(COLOR);
+	}
+	
+	/**
+	 * Get the text color item.
+	 * @param color	Text color item.
+	 */
+	public void setColor(Color color) {
+		set(COLOR, color);
 	}
 
 	/**

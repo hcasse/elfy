@@ -26,6 +26,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import elf.ui.StringAdapter;
+import elf.ui.Style;
 import elf.ui.meta.Entity;
 import elf.ui.meta.Var;
 
@@ -39,6 +40,8 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	private JTextField field;
 	private boolean break_rec = false, read_only = false;
 	private Color back, inv = new Color(0xF1C7C7);
+	private java.awt.Font initial_font;
+	private java.awt.Color current_color = java.awt.Color.BLACK;
 
 	private Class<?> getGenericTypeArgument() {
 		return var.get().getClass();
@@ -59,6 +62,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 		super.dispose();
 		var.removeChangeListener(this);
 		field = null;
+		initial_font = null;
 	}
 
 	@Override
@@ -96,7 +100,9 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 			field.setEditable(!read_only);
 			updateUI();
 			if(style != null) {
-				field.setFont(getFontStyle(field, field.getFont()));
+				initial_font = field.getFont();
+				current_color = field.getForeground();
+				onUpdate(new int[] { Style.FONT_SIZE, Style.COLOR });
 			}
 		}
 		return field;
@@ -115,7 +121,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 			return;
 		try {
 			Object value = adapter.fromString(field.getText());
-			field.setForeground(Color.BLACK);
+			field.setForeground(current_color);
 			get().set((T)value);
 		} catch (IOException e) {
 			field.setForeground(Color.RED);
@@ -173,6 +179,21 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	@Override
 	public boolean isValid() {
 		return true;
+	}
+
+	@Override
+	public void onUpdate(int[] items) {
+		super.onUpdate(items);
+		for(int key: items)
+			switch(key) {
+			case Style.FONT_SIZE:
+				field.setFont(getFontStyle(field, initial_font));
+				break;
+			case Style.COLOR:
+				current_color = getColor(field.getForeground());
+				field.setForeground(current_color);
+				break;
+			}
 	}
 
 }
