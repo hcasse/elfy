@@ -94,6 +94,7 @@ public class View extends Container implements elf.ui.View {
 				@Override public void windowClosing(WindowEvent e) { close_action.run(); }
 			});
 			frame.setSize(500, 300);
+			frame.setLocationRelativeTo(null);
 		}
 		return frame;
 	}

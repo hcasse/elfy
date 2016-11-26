@@ -17,6 +17,8 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.Collection;
 
 import javax.swing.JComponent;
@@ -59,14 +61,13 @@ public class Dialog extends Container implements elf.ui.GenericDialog {
 		if(dialog == null) {
 			dialog = new JDialog(parent.getFrame(), entity.getLabel(), true);
 			javax.swing.Box box = javax.swing.Box.createVerticalBox();
-			//box.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
 			dialog.add(box);
 			for(Component component: getComponents())
 				box.add(component.getComponent(parent));
 			box.add(tb.getComponent(parent));
 		}
 		dialog.pack();
-		//dialog.setSize(new Dimension(100, 100));
+		dialog.setLocationRelativeTo(parent.getFrame());
 		dialog.setVisible(true);
 	}
 
