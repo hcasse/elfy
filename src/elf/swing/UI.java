@@ -23,9 +23,15 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.Timer;
 
 import elf.ui.View;
@@ -202,4 +208,45 @@ public class UI implements elf.ui.UI {
 		}
 		
 	}
+	
+	/**
+	 * Implementation of a sound.
+	 * @author casse
+	 */
+	public static class Sound implements elf.ui.Sound {
+		private Clip clip;
+		
+		public Sound(Clip clip) {
+			this.clip = clip;
+		}
+		
+		@Override
+		public void play() {
+			clip.stop();
+			clip.setMicrosecondPosition(0);
+			clip.start();
+		}
+
+		@Override
+		public void stop() {
+			clip.stop();
+		}
+		
+	}
+
+	@Override
+	public elf.ui.Sound getSound(URL url) throws IOException {
+		try {
+			Clip clip = AudioSystem.getClip();
+	        AudioInputStream in = AudioSystem.getAudioInputStream(url);
+	        clip.open(in);
+	        in.close();
+	        return new Sound(clip);
+		} catch (LineUnavailableException e) {
+			throw new IOException("Error during load of " + url, e);
+		} catch (UnsupportedAudioFileException e) {
+			throw new IOException("Error during load of " + url, e);
+		}
+	}
+
 }

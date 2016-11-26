@@ -53,6 +53,11 @@ public interface PagePane extends Component {
 	void pop();
 	
 	/**
+	 * Go back to the previous page.
+	 */
+	void back();
+	
+	/**
 	 * Get action causing a back move in the pages.
 	 * @return		Back action.
 	 */

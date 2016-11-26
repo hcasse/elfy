@@ -130,4 +130,9 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 		return back_action;
 	}
 
+	@Override
+	public void back() {
+		pop();
+	}
+
 }

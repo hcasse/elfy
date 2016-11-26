@@ -17,6 +17,9 @@
  */
 package elf.ui;
 
+import java.io.IOException;
+import java.net.URL;
+
 import elf.ui.meta.Entity;
 
 /**
@@ -84,6 +87,14 @@ public interface UI {
 		
 	}
 
+	/**
+	 * Load a sound from the given URL.
+	 * @param url			URL of the sound.
+	 * @return				Loaded sound.
+	 * @throws IOException	Thrown if there is an error during load.
+	 */
+	public Sound getSound(URL url) throws IOException;
+	
 	/**
 	 * Get the color from RGB(A) form.
 	 * @param rgba	RGBA form (with or without alpha).
@@ -155,4 +166,5 @@ public interface UI {
 		public int getAlpha();
 			
 	}
+
 }
