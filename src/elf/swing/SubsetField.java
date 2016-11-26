@@ -50,6 +50,22 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	private JScrollPane spane;
 	private boolean do_break;
 
+	private CollectionVar.Listener<T> subset_listener =
+		new CollectionVar.Listener<T>() {
+			@Override public void onAdd(T item) { setValue(item); }
+			@Override public void onRemove(T item) { clearValue(item); }
+			@Override public void onClear() { clearAll(); }
+			@Override public void onChange() { updateAll(); }
+		};
+
+	private CollectionVar.Listener<T> set_listener =
+		new CollectionVar.Listener<T>() {
+			@Override public void onAdd(T item) { addValue(item); }
+			@Override public void onRemove(T item) { removeValue(item); }
+			@Override public void onClear() { onChange(); }
+			@Override public void onChange() { subset.clear(); box.removeAll(); init(); }
+		};
+
 	public SubsetField(CollectionVar<T> set) {
 		this.set = set;
 	}
@@ -68,7 +84,9 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	public void setSubset(CollectionVar<T> subset) {
 		subset.getCollection().clear();
 		subset.getCollection().addAll(this.subset.getCollection());
+		this.subset.removeListener(subset_listener);
 		this.subset = subset;
+		this.subset.addListener(subset_listener);
 	}
 
 	@Override
@@ -161,22 +179,8 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 			init();
 			spane = new JScrollPane(box);
 			spane.setMaximumSize(FILL);
-
-			// listener for subset
-			subset.addListener(new CollectionVar.Listener<T>() {
-				@Override public void onAdd(T item) { setValue(item); }
-				@Override public void onRemove(T item) { clearValue(item); }
-				@Override public void onClear() { clearAll(); }
-				@Override public void onChange() { updateAll(); }
-			});
-
-			// listener for set
-			set.addListener(new CollectionVar.Listener<T>() {
-				@Override public void onAdd(T item) { addValue(item); }
-				@Override public void onRemove(T item) { removeValue(item); }
-				@Override public void onClear() { onChange(); }
-				@Override public void onChange() { subset.clear(); box.removeAll(); init(); }
-			});
+			subset.addListener(subset_listener);
+			set.addListener(set_listener);
 		}
 		return spane;
 	}
@@ -196,10 +200,14 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	@Override
 	public void dispose() {
 		super.dispose();
-		box = null;
-		spane = null;
-		cbox.clear();
-		value.clear();
+		if(box != null) {
+			box = null;
+			spane = null;
+			cbox.clear();
+			value.clear();
+			set.removeListener(set_listener);
+			subset.removeListener(subset_listener);
+		}
 	}
 
 	@Override
@@ -219,6 +227,20 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 	@Override
 	public boolean isValid() {
 		return true;
+	}
+
+	@Override
+	public void setSet(CollectionVar<T> set) {
+		clearAll();
+		this.set.removeListener(set_listener);
+		this.set = set;
+		init();
+		this.set.addListener(set_listener);
+	}
+
+	@Override
+	public CollectionVar<T> getSet() {
+		return set;
 	}
 
 }

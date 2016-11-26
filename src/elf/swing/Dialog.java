@@ -17,8 +17,6 @@
  */
 package elf.swing;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
 import java.util.Collection;
 
 import javax.swing.JComponent;

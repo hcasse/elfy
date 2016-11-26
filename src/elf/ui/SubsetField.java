@@ -42,4 +42,16 @@ public interface SubsetField<T> extends Field {
 	 * @param displayer		Displayer.
 	 */
 	void setDisplayer(Displayer<T> displayer);
+	
+	/**
+	 * Set the set to take a subset from (reset the current subset).
+	 * @param set	New set.
+	 */
+	void setSet(CollectionVar<T> set);
+	
+	/**
+	 * Get the current set of values.
+	 * @return	Current set of values.
+	 */
+	CollectionVar<T> getSet();
 }
