@@ -19,6 +19,7 @@ package elf.swing;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.AbstractListModel;
@@ -27,8 +28,6 @@ import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -42,7 +41,7 @@ import elf.ui.meta.Var;
  * @author casse
  */
 public class List<T> extends Component implements elf.ui.List<T> {
-	private Var<T> select = new Var<T>();
+	private Handler<T> handler;
 	private CollectionVar<T> coll;
 	private Displayer<T> display = new AbstractDisplayer<T>();
 	private Model model;
@@ -78,13 +77,16 @@ public class List<T> extends Component implements elf.ui.List<T> {
 	
 	@Override
 	public Var<T> getSelector() {
-		return select;
+		return handler.getselector();
 	}
 
 	@Override
 	public void setSelector(Var<T> select) {
-		select.set(this.select.get());
-		this.select = select;
+		if(jlist != null)
+			handler.cleanup(jlist);
+		handler = new SingleHandler(select);
+		if(jlist != null)
+			handler.setup(jlist);
 	}
 
 	@Override
@@ -94,6 +96,7 @@ public class List<T> extends Component implements elf.ui.List<T> {
 
 	@Override
 	public void setCollection(CollectionVar<T> coll) {
+		handler.reset();
 		coll.removeListener(model);
 		this.coll = coll;
 		coll.addListener(model);
@@ -158,12 +161,14 @@ public class List<T> extends Component implements elf.ui.List<T> {
 		public void onClear() {
 			update();
 			this.fireContentsChanged(this, 0, array.size() - 1);
+			handler.reset();
 		}
 
 		@Override
 		public void onChange() {
 			update();
 			this.fireContentsChanged(this, 0, array.size() - 1);			
+			handler.recompute();
 		}
 	}
 
@@ -172,23 +177,10 @@ public class List<T> extends Component implements elf.ui.List<T> {
 		if(spane == null) {
 			this.view = view;
 			jlist = new JList<T>();
+			handler.setup(jlist);
 			model = new Model();
 			coll.addListener(model);
 			jlist.setModel(model);
-			
-			// handlers for selection
-			jlist.addListSelectionListener(new ListSelectionListener() {
-				@Override public void valueChanged(ListSelectionEvent arg0)
-					{ select.set(jlist.getSelectedValue()); }
-			});
-			jlist.getModel().addListDataListener(new ListDataListener() {
-				@Override public void contentsChanged(ListDataEvent event)
-					{ select.set(jlist.getSelectedValue()); }
-				@Override public void intervalAdded(ListDataEvent arg0)
-					{ select.set(jlist.getSelectedValue()); }
-				@Override public void intervalRemoved(ListDataEvent arg0)
-					{ select.set(jlist.getSelectedValue()); }
-			});
 			
 			// add displayer
 			jlist.setCellRenderer(new DefaultListCellRenderer() {
@@ -210,11 +202,142 @@ public class List<T> extends Component implements elf.ui.List<T> {
 			// other configuration
 			spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			//spane.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			spane.setPreferredSize(jlist.getPreferredSize());
 			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		}
 		return spane;
+	}
+
+	@Override
+	public void setSelector(CollectionVar<T> select) {
+		if(jlist != null)
+			handler.cleanup(jlist);
+		handler = new MultiHandler(select);
+		if(jlist != null)
+			handler.setup(jlist);
+	}
+
+	@Override
+	public CollectionVar<T> getMultiSelector() {
+		return handler.getMultiSelector();
+	}
+	
+	private interface Handler<T> {
+		
+		void setup(JList<T> list);
+		
+		void cleanup(JList<T> list);
+		
+		Var<T> getselector();
+		
+		CollectionVar<T> getMultiSelector();
+
+		void reset();
+
+		void recompute();
+
+	};
+	
+	private class SingleHandler implements Handler<T>, ListSelectionListener {
+		Var<T> select;
+
+		SingleHandler(Var<T> select) {
+			this.select = select;
+		}
+		
+		@Override
+		public Var<T> getselector() {
+			return select;
+		}
+
+		@Override
+		public CollectionVar<T> getMultiSelector() {
+			return null;
+		}
+
+		@Override
+		public void setup(JList<T> list) {
+			list.addListSelectionListener(this);
+			list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		}
+
+		@Override
+		public void cleanup(JList<T> list) {
+			list.removeListSelectionListener(this);			
+		}
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			select.set(jlist.getSelectedValue());
+		}
+
+		@Override
+		public void reset() {
+			select.set(null);
+		}
+
+		@Override
+		public void recompute() {
+			T value = jlist.getSelectedValue();
+			if(value != select.get())
+				select.set(value);
+		}
+		
+	}
+	
+	private class MultiHandler implements Handler<T>, ListSelectionListener {
+		private CollectionVar<T> select;
+		
+		public MultiHandler(CollectionVar<T> select) {
+			this.select = select;
+		}
+		
+		@Override
+		public Var<T> getselector() {
+			return null;
+		}
+
+		@Override
+		public CollectionVar<T> getMultiSelector() {
+			return select;
+		}
+
+		@Override
+		public void setup(JList<T> list) {
+			list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			list.addListSelectionListener(this);
+		}
+
+		@Override
+		public void cleanup(JList<T> list) {
+			list.removeListSelectionListener(this);
+		}
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+		}
+
+		@Override
+		public void reset() {
+			select.clear();
+		}
+
+		@Override
+		public void recompute() {
+			Collection<T> selected = jlist.getSelectedValuesList();
+			
+			// compute to delete
+			Vector<T> to_delete = new Vector<T>(select.getCollection());
+			to_delete.removeAll(selected);
+			for(T value: to_delete)
+				select.remove(value);
+			
+			// compute to add
+			selected.removeAll(select.getCollection());
+			for(T value: selected)
+				select.remove(value);
+		}
+		
 	}
 
 }

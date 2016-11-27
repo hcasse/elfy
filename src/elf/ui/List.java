@@ -39,6 +39,18 @@ public interface List<T> {
 	public void setSelector(Var<T> select);
 
 	/**
+	 * Change the selector to support multi-selection.
+	 * @param select	Collection to store the multi(selection.
+	 */
+	public void setSelector(CollectionVar<T> select);
+	
+	/**
+	 * Get the selector in multi-selector mode.
+	 * @return	Multi-selector.
+	 */
+	public CollectionVar<T> getMultiSelector();
+	
+	/**
 	 * Get the current collection.
 	 * @return	Current collection.
 	 */
