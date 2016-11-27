@@ -82,7 +82,7 @@ public class Monitor implements elf.ui.Monitor {
 	public boolean end() {
 		if(!msgs.isEmpty()) {
 			// should be fixed: read-only list, only one button.
-			ListDialog<String> list = new ListDialog<String>(view.getFrame(), "", title, msgs, -1, "Proceed");
+			ListDialog<String> list = new ListDialog<String>(view.getUI(), view.getFrame(), "", title, msgs, -1, "Proceed");
 			list.run();
 		}
 		return success;

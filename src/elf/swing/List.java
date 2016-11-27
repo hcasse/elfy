@@ -201,7 +201,6 @@ public class List<T> extends Component implements elf.ui.List<T> {
 
 			// other configuration
 			spane = new JScrollPane(jlist, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-			jlist.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			spane.setPreferredSize(jlist.getPreferredSize());
 			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		}
@@ -315,6 +314,7 @@ public class List<T> extends Component implements elf.ui.List<T> {
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
+			recompute();
 		}
 
 		@Override
@@ -335,7 +335,8 @@ public class List<T> extends Component implements elf.ui.List<T> {
 			// compute to add
 			selected.removeAll(select.getCollection());
 			for(T value: selected)
-				select.remove(value);
+				if(value != null)		// Java returns a singleton { null } if there is no selection!
+					select.add(value);
 		}
 		
 	}

@@ -21,6 +21,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import elf.ui.I18N;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -55,6 +57,7 @@ public class ListDialog<T> extends JDialog {
 	}
 
 	private void init(
+		UI ui,
 		Frame parent,
 		String comment,
 		String title,
@@ -63,13 +66,14 @@ public class ListDialog<T> extends JDialog {
 		String action
 	) {
 		// cancel button
-		JButton cancelButton = new JButton("Cancel");
+		JButton cancelButton = new JButton(I18N.STD.t("Cancel"));
 		cancelButton.addActionListener(new ActionListener() {
 			@Override public void actionPerformed(ActionEvent arg0) {
 				setVisible(false);
 			}			
 		});
-
+		cancelButton.setIcon(ui.getIcon(elf.ui.Icon.CANCEL).get(Icon.NORMAL, Icon.TEXTUAL));
+		
 		// action button
 		final JButton setButton = new JButton(action);
 		setButton.setActionCommand("Set");
@@ -81,6 +85,7 @@ public class ListDialog<T> extends JDialog {
 		});
 		setButton.setEnabled(false);
 		getRootPane().setDefaultButton(setButton);
+		setButton.setIcon(ui.getIcon(elf.ui.Icon.SELECT).get(Icon.NORMAL, Icon.TEXTUAL));
 
 		// setup the list
 		list = new JList<T>(values) {
@@ -185,6 +190,7 @@ public class ListDialog<T> extends JDialog {
 	 * @param init		Index of initial value (or -1).
 	 */
 	public ListDialog(
+		UI ui,
 		JComponent parent,
 		String comment,
 		String title,
@@ -193,7 +199,7 @@ public class ListDialog<T> extends JDialog {
 		String action
 	) {
 		super(JOptionPane.getFrameForComponent(parent), title, true);
-		init(JOptionPane.getFrameForComponent(parent), comment, title, values, init, action);
+		init(ui, JOptionPane.getFrameForComponent(parent), comment, title, values, init, action);
 	}
 
 	/**
@@ -205,6 +211,7 @@ public class ListDialog<T> extends JDialog {
 	 * @param init		Index of initial value (or -1).
 	 */
 	public ListDialog(
+		UI ui,
 		Frame parent,
 		String comment,
 		String title,
@@ -213,7 +220,7 @@ public class ListDialog<T> extends JDialog {
 		String action
 	) {
 		super(parent, title, true);
-		init(parent, comment, title, values, init, action);
+		init(ui, parent, comment, title, values, init, action);
 	}
 
 	/**

@@ -31,6 +31,7 @@ import elf.os.Path;
 import elf.ui.Displayer;
 import elf.ui.Field;
 import elf.ui.Form;
+import elf.ui.I18N;
 import elf.ui.Monitor;
 import elf.ui.meta.Action;
 import elf.ui.meta.ActionShield;
@@ -177,7 +178,7 @@ public class View extends Container implements elf.ui.View {
 	 */
 	private class SelectionDialog<T> implements elf.ui.SelectionDialog<T> {
 		// TODO Make it in its own class and remove ListDialog.
-		private String title, message, action;
+		private String title, message, action = I18N.STD.t("Select");
 		private Vector<T> collection = new Vector<T>();
 		private Displayer<T> displayer = new Displayer<T>() {
 			@Override public String asString(T value) { return value.toString(); }
@@ -196,7 +197,7 @@ public class View extends Container implements elf.ui.View {
 			int i = -1;
 			if(init != null)
 				i = collection.indexOf(init);
-			ListDialog<T> dialog = new ListDialog<T>(getFrame(), message, title, collection, i, action) {
+			ListDialog<T> dialog = new ListDialog<T>(ui, getFrame(), message, title, collection, i, action) {
 				private static final long serialVersionUID = 1L;
 				@Override protected String asString(T object) { return displayer.asString(object); }
 			};

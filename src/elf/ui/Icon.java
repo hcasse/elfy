@@ -38,7 +38,8 @@ public class Icon {
 		OK			= STD.get("ok"),
 		QUIT 		= STD.get("quit"),
 		WARNING		= STD.get("warning"),
-		WEBSITE		= STD.get("website");
+		WEBSITE		= STD.get("website"),
+		SELECT		= STD.get("select");
 
 	private URL url;
 

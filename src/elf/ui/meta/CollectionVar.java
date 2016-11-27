@@ -100,6 +100,15 @@ public class CollectionVar<T> extends AbstractEntity implements Iterable<T> {
 	}
 	
 	/**
+	 * Remove a collection of values.
+	 * @param items		Removed values.
+	 */
+	public void remove(Collection<T> items) {
+		for(T item: items)
+			remove(item);
+	}
+	
+	/**
 	 * Clear the content of the collection.
 	 */
 	public void clear() {
