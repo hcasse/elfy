@@ -196,4 +196,9 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 			}
 	}
 
+	@Override
+	public boolean takeFocus() {
+		return field.requestFocusInWindow();
+	}
+
 }

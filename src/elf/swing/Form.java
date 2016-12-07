@@ -34,7 +34,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import elf.ui.CheckBox;
-import elf.ui.EnumField;
+import elf.ui.ChoiceField;
+import elf.ui.Displayer;
 import elf.ui.SubsetField;
 import elf.ui.TextField;
 import elf.ui.meta.Action;
@@ -270,8 +271,13 @@ public class Form extends Parent implements elf.ui.Form {
 	}
 
 	@Override
-	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
-		return add(new  elf.swing.EnumField<T>(var));
+	public <T> ChoiceField<T> addEnumField(EnumVar<T> var) {
+		CollectionVar<T> values =  new CollectionVar<T>();
+		for(T value: var.getValues())
+			values.add(value);
+		ChoiceField<T> field = new elf.swing.ChoiceField<T>(var, values);
+		field.setDisplayer(new EnumDisplayer<T>(var));
+		return field;
 	}
 
 	/**
@@ -335,4 +341,25 @@ public class Form extends Parent implements elf.ui.Form {
 		actions.add(action);
 		main_action = action;
 	}
+
+	@Override
+	public <T> ChoiceField<T> addChoiceField(Var<T> choice, CollectionVar<T> list) {
+		return add(new elf.swing.ChoiceField<T>(choice, list));
+	}
+	
+	public static class EnumDisplayer<T> implements Displayer<T> {
+		private EnumVar<T> var;
+		public EnumDisplayer(EnumVar<T> var) { this.var = var; }
+		@Override public String asString(T value) { return var.getLabel(value); }
+		@Override public elf.ui.Icon getIcon(T value) { return null; }
+	}
+
+	@Override
+	public boolean takeFocus() {
+		for(Component c: fields)
+			if(c.takeFocus())
+				return true;
+		return false;
+	}
+	
 }

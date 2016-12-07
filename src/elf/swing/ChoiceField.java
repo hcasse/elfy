@@ -28,31 +28,38 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 
+import elf.ui.Displayer;
+import elf.ui.Icon;
+import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Entity;
-import elf.ui.meta.EnumVar;
 import elf.ui.meta.Var;
 
 /**
- * Swing implementation of an enumeration field.
+ * Swing implementation of a choice field.
  * @author casse
  */
-public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.ChangeListener<T>, ActionListener {
-	private EnumVar<T> var;
+public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.ChangeListener<T>, ActionListener {
+	private Var<T> chosen;
 	private JComboBox<?> combo;
-	private Vector<T> values;
+	private CollectionVar<T> choices;
 	private boolean updating = false;
+	private Displayer<T> displayer = new Displayer<T>() {
+		@Override public String asString(T value) { return value.toString(); }
+		@Override public Icon getIcon(T value) { return null; }
+	};
 
 	/**
 	 * Build an enumeration field.
 	 * @param var	Enumerated variable.
 	 */
-	public EnumField(EnumVar<T> var) {
-		this.var = var;
+	public ChoiceField(Var<T> chosen, CollectionVar<T> choices) {
+		this.chosen = chosen;
+		this.choices = choices;
 	}
 
 	@Override
 	public Entity getEntity() {
-		return var;
+		return chosen;
 	}
 
 	@Override
@@ -64,14 +71,11 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 	public JComponent getComponent(View view) {
 		if(combo == null) {
 
-			// fill the values
-			values = new Vector<T>();
-			for(T val: var.getValues())
-				values.add(val);
-
 			// create the combo
-			combo = new JComboBox<T>(values);
-			String help = var.getHelp();
+			Vector<T> v = new Vector<T>();
+			v.addAll(choices.getCollection());
+			combo = new JComboBox<T>(v);
+			String help = chosen.getHelp();
 			if(help != null)
 				combo.setToolTipText(help);
 			combo.setRenderer(new DefaultListCellRenderer() {
@@ -80,7 +84,8 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 				@Override
 				public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 					JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-					label.setText(var.getLabel((T)value));
+					label.setText(displayer.asString((T)value));
+					label.setBorder(new CustomBorder(label.getBorder()));
 					return label;
 				}
 			});
@@ -95,15 +100,16 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 	 */
 	private void updateUI() {
 		updating = true;
-		combo.setSelectedItem(var.get());
+		combo.setSelectedItem(chosen.get());
 		updating = false;
 	}
 
 	/**
 	 * Update the variable.
 	 */
+	@SuppressWarnings("unchecked")
 	private void updateVar() {
-		var.set(values.elementAt(combo.getSelectedIndex()));
+		chosen.set((T)combo.getSelectedItem());
 	}
 
 	@Override
@@ -123,12 +129,22 @@ public class EnumField<T> extends Field implements elf.ui.EnumField<T>, Var.Chan
 
 	@Override
 	public Var<?> getVar() {
-		return var;
+		return chosen;
 	}
 
 	@Override
 	public boolean isValid() {
 		return true;
+	}
+
+	@Override
+	public void setDisplayer(Displayer<T> displayer) {
+		this.displayer = displayer;
+	}
+
+	@Override
+	public boolean takeFocus() {
+		return combo.requestFocusInWindow();
 	}
 
 }

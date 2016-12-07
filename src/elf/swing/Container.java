@@ -23,9 +23,10 @@ import java.util.LinkedList;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import elf.swing.Form.EnumDisplayer;
 import elf.ui.ActionBar;
 import elf.ui.CheckBox;
-import elf.ui.EnumField;
+import elf.ui.ChoiceField;
 import elf.ui.ErrorManager;
 import elf.ui.Form;
 import elf.ui.List;
@@ -171,8 +172,13 @@ public abstract class Container extends Parent implements elf.ui.Container {
 	}
 
 	@Override
-	public <T> EnumField<T> addEnumField(EnumVar<T> var) {
-		return add(new  elf.swing.EnumField<T>(var));
+	public <T> ChoiceField<T> addEnumField(EnumVar<T> var) {
+		CollectionVar<T> values =  new CollectionVar<T>();
+		for(T value: var.getValues())
+			values.add(value);
+		ChoiceField<T> field = new elf.swing.ChoiceField<T>(var, values);
+		field.setDisplayer(new EnumDisplayer<T>(var));
+		return field;
 	}
 
 	@Override
@@ -206,4 +212,18 @@ public abstract class Container extends Parent implements elf.ui.Container {
 	public ErrorManager addErrorManager() {
 		return add(new elf.swing.ErrorManager());
 	}
+
+	@Override
+	public <T> ChoiceField<T> addChoiceField(Var<T> choice, CollectionVar<T> list) {
+		return add(new elf.swing.ChoiceField<T>(choice, list));
+	}
+
+	@Override
+	public boolean takeFocus() {
+		for(Component c: content)
+			if(c.takeFocus())
+				return true;
+		return false;
+	}
+	
 }

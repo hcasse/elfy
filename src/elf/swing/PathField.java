@@ -77,4 +77,9 @@ public class PathField<T extends Path> extends Field {
 		return true;
 	}
 
+	@Override
+	public boolean takeFocus() {
+		return field.requestFocusInWindow();
+	}
+
 }

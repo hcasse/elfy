@@ -66,11 +66,19 @@ public interface Form extends Component {
 	<T> SubsetField<T> addSubsetField(CollectionVar<T> set);
 	
 	/**
-	 * Add an enumeration field.
+	 * Add an choice field based on an enumeration.
 	 * @param var	Field variable.
 	 * @return		Added field.
 	 */
-	<T> EnumField<T> addEnumField(EnumVar<T> var);
+	<T> ChoiceField<T> addEnumField(EnumVar<T> var);
+	
+	/**
+	 * Add a choice field.
+	 * @param choice	Chosen value.
+	 * @param list		List of choices.
+	 * @return			Built field.
+	 */
+	<T> ChoiceField<T> addChoiceField(Var<T> choice, CollectionVar<T> list);
 	
 	/**
 	 * Add non-nominal action.

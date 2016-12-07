@@ -67,6 +67,7 @@ public class Dialog extends Container implements elf.ui.GenericDialog {
 		dialog.pack();
 		dialog.setLocationRelativeTo(parent.getFrame());
 		dialog.setVisible(true);
+		takeFocus();
 	}
 
 	@Override

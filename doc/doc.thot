@@ -1,0 +1,106 @@
+@use dokuwiki
+@TITLE=Elf Documentation
+@VERSION=1
+@LANG=en_EN
+@ENCODING=utf-8
+
+====== Elf Library ======
+
+The ELF library aims to make easier the development of Graphic User Interface applications. It contains a set of classes supporting:
+  * identification of the application and common services (like About dialog generation),
+  * easy, efficient and fast management of configuration,
+  * re-targetable GUI emphasizing semantics over display,
+  * a meta system enabling a semantic approach to user interface development with easy management of relationship between data of the application and the reactivity of the use interface.
+
+A secondary goal of the ELF library is to be portable: the current user interface implementation is based on Java Swing but we aims to provide the same with the Androïd OS and maybe for iOS.
+
+The first section describes the work and the use of the meta package providing reactive data and auto-descriptive actions. The second section describes the user interface itself and the third section provides an overview on other facilities.
+
+
+===== The meta Package =====
+
+The meta-package is divided in two main parts. In the first one, the actions of the application may be descriebd independently of the use rinterface and so can used at several places with a minimal effort of the user. The second shows how the data of the application can be embedded in special object supporting Subject-Observer design pattern.
+
+==== Actions ====
+
+An action (class ''elf.ui.meta.Action'') represents any action that may be triggered by the user.
+
+An action is basically an entity (class ''elf.ui.meta.Entity'') that is a resource that may be presented and handled by the user. An entity is made of:
+  * a label aimed to be displayed to the user,
+  * an help message usually displayed by tool tip mechanism,
+  * a advised control character + mnemonic character used if the action is part of a menu or of a button,
+  * an icon for intuitive display of the action.
+
+In addition, the ''Action'' class provides two methods:
+  * run() is used to run the code associated with the action,
+  * isEnabled() is called to test if the action is currently enabled or not.
+ 
+Using all together, an action is simply declare by a code like:
+@code java
+Action remove_theme =  new Action() {
+	@Override public String getLabel()		{ return "Remove"; }
+	@Override public void run()				{ remove(current_theme.get()); }
+	@Override public Icon getIcon()			{ return getIcon("list_remove"); }
+	@Override public boolean isEnabled()	{ return current_theme.get() != null; }
+	@Override public String getHelp()		{ return app.t("Remove the selected theme."); }
+}, new Label(app.t("Do you want to remove this theme?")));
+@endcode
+
+This code shows how the default entity method behavior can be overridden to provide custom label, icon and help message It shows also how the ''run()'' and ''isEnabled()'' are tightly coupled with the data of the application.
+
+In this example, the tied data is called ''current_theme'' and is of type ''Var<Theme>''. As presented in the next section, a ''Var'' object contains some application data and facilities to implement the Subject-Observer design pattern. Now, the action has to register as an observer to this data item to be aware of its changes and to update its activation state automatically.
+@code java
+remove_theme.add(current_theme);
+@endcode
+
+Each time ''current_theme'' is modified, a method of ''Action'' is triggered that in turn trigger methods of the user interface item using the action and let them update according to the result of ''isEnabled()'' method of ''Action''. So the ''isEnabled()'' method has just to test if the action can be performed according to the state of the application data.
+
+Such approach avoids boring and error-prone activation tasks to the programmer and it makes also easy the use of the same action among different display mechanisms like buttons, menu, etc while preserving the consistency of the user interface. Coupled with the internationalization and icon loading mechanisms of Elf, this make very easy and powerful the implementation of the interface letting the developer to focus on the main task of the application. 
+
+Moreover, the ''Entity'' class implements a Subject-Observer design pattern to update the display of the ''Action'' when one of lookup attributes changes. This lets the display mechanism update itself consistently without the action of the developer. 
+
+In addition, the ''Action'' class proposes ready-to-use common actions like:
+  * NULL -- action that does nothing,
+  * QUIT -- action that stops the application.
+
+
+
+==== Application Data ====
+
+
+
+
+==== Icon Management ====
+
+In the ELF library, the icons (class elf.ui.Icon) are generic image representations that adapted automatically according to the display needs.
+
+The Icon class comes with an icon manager, Icon Manager, that has the ability to download icon files (for now in .png format) relatively to an URL. This makes very to create your icons with a single call to the manager:
+@code java
+Icon.Manager man = new Icon.Manager(SOME_URL);
+
+Icon icon = man.get("send");
+@endcode
+
+In the example above, the loaded file will be ''SOME_URL/send.png''. If there is some error during the icon load, it will be replaced automatically by a broken icon. As this event rarely happens, the application can ignore the error case and go on with the broken icon.
+
+The manager supports easily the icons provided with your application and possibly in a tar file using such URL:
+@code java
+IconManager man = new Icon.Manager(MyClass.class.getResource("/pix/"));
+@endcode
+Where ''MyClass'' is a class of the application and the icons are located in the parent of the package and in directory ''/pix''. 
+
+In addition, the ELF library provides a comprehensive set of most used icons as:
+  * Icon.BACK -- back action,
+  * Icon.BROKEN -- broken icon,
+  * Icon.CANCEL -- cancel action,
+  * Icon.ERROR -- error dialog,
+  * Icon.HELP -- help action,
+  * Icon.INFO -- information dialog, 
+  * Info.MENU -- menu button,
+  * Info.OK -- ok button,
+  * Info.QUIT -- quit action,
+  * Info.WARNING -- warning dialog,
+  * Info.WEBSITE -- web site emphasize,
+  * Info.SELECT -- selection button.
+
+   

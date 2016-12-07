@@ -160,7 +160,15 @@ public interface Container extends Component {
 	 * @param var	Variable handled by this field.
 	 * @return		Added field.
 	 */
-	<T> EnumField<T> addEnumField(EnumVar<T> var);
+	<T> ChoiceField<T> addEnumField(EnumVar<T> var);
+
+	/**
+	 * Add a choice field from a list of choices.
+	 * @param choice	Current choice.
+	 * @param list		List of choices.
+	 * @return			Added field.
+	 */
+	<T> ChoiceField<T> addChoiceField(Var<T> choice, CollectionVar<T> list);
 	
 	/**
 	 * Add an icon.

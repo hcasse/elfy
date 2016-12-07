@@ -42,7 +42,7 @@ public class I18N {
 	 * @param name		Module name.
 	 * @param locales	Supported locales.
 	 */
-	public I18N(String name, Locale[] locales) {
+	public I18N(String name, Locale... locales) {
 		
 		// look for the good I18N file
 		for(Locale loc: locales) {
@@ -74,7 +74,7 @@ public class I18N {
 			}
 		}
 	}
-	
+
 	/**
 	 * Try to load the properties from the given path file.
 	 * @param path		Path to load from.
@@ -105,6 +105,15 @@ public class I18N {
 	 */
 	public String t(String key) {
 		return props.getProperty(key, key);
+	}
+	
+	/**
+	 * Look a translation for the given key.
+	 * @param key	Key to look for.
+	 * @return		Found translation or null.
+	 */
+	public String look(String key) {
+		return props.getProperty(key, null);		
 	}
 	
 }

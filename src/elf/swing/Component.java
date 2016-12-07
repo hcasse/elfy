@@ -187,12 +187,22 @@ public abstract class Component implements elf.ui.Component, elf.ui.Style.Listen
 		// allocate the font
 		return font.deriveFont((float)size);
 	}
+
 	public java.awt.Color getColor(java.awt.Color color) {
 		elf.swing.UI.Color scolor = (elf.swing.UI.Color)style.getColor();
 		if(scolor == null)
 			return color;
 		else
 			return scolor.getColor();
+	}
+
+	/**
+	 * This method is called to let the component take the focus
+	 * if it wants.
+	 * @return	True if the focus is taken, false else.
+	 */
+	public boolean takeFocus() {
+		return false;
 	}
 	
 }

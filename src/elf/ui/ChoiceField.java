@@ -21,6 +21,12 @@ package elf.ui;
  * Field for enumerarion value (usually button with popup menu to select a value).
  * @author casse
  */
-public interface EnumField<T> extends Field {
+public interface ChoiceField<T> extends Field {
 
+	/**
+	 * Set the displayer for the values of the choices.
+	 * @param displayer		Displayer for the choice values.
+	 */
+	void setDisplayer(Displayer<T> displayer);
+	
 }
