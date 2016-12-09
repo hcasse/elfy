@@ -96,6 +96,14 @@ public class View extends Container implements elf.ui.View {
 			});
 			frame.setSize(500, 300);
 			frame.setLocationRelativeTo(null);
+			
+			// set the icon if any
+			Icon icon = ui.getIcon(entity.getIcon());
+			if(icon != null) {
+				java.awt.Image im = icon.asImage(0, Icon.DESKTOP);
+				if(im != null)
+					frame.setIconImage(im);
+			}
 		}
 		return frame;
 	}

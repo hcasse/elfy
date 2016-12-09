@@ -155,6 +155,8 @@ public abstract class Application extends AbstractEntity {
 		return new AboutAction(view);
 	}
 	
+	
+	
 	/**
 	 * Action displaying a model "about" dialog.
 	 * @author casse
@@ -226,5 +228,12 @@ public abstract class Application extends AbstractEntity {
 			return elf.ui.Icon.INFO;
 		}
 		
+	}
+
+
+
+	@Override
+	public Icon getIcon() {
+		return getLogo();
 	}
 }

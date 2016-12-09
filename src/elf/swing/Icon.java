@@ -17,6 +17,9 @@
  */
 package elf.swing;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -59,6 +62,21 @@ public interface Icon {
 	public javax.swing.Icon get(int state, int size);
 	
 	/**
+	 * Get an icon image according the given state.
+	 * @param state		OR'ed composition of SELECTED, DISABLED, etc.
+	 * @return			Matching image (null if there is no icon).
+	 */
+	public java.awt.Image asImage(int state);
+	
+	/**
+	 * Get an icon image according the given state.
+	 * @param state		OR'ed composition of SELECTED, DISABLED, etc.
+	 * @param size		One of TEXTUAL, TOOLBAR, DESKTOP
+	 * @return			Matching image (null if there is no icon).
+	 */
+	public java.awt.Image asImage(int state, int size);
+	
+	/**
 	 * Null icon. 
 	 */
 	public class Null implements Icon {
@@ -70,6 +88,16 @@ public interface Icon {
 
 		@Override
 		public javax.swing.Icon get(int state, int size) {
+			return null;
+		}
+
+		@Override
+		public java.awt.Image asImage(int state) {
+			return null;
+		}
+
+		@Override
+		public java.awt.Image asImage(int state, int size) {
 			return null;
 		}
 		
@@ -98,6 +126,16 @@ public interface Icon {
 			else
 				return null;
 		}
+
+		@Override
+		public java.awt.Image asImage(int state) {
+			return null;
+		}
+
+		@Override
+		public java.awt.Image asImage(int state, int size) {
+			return null;
+		}
 		
 	}
 	
@@ -108,7 +146,7 @@ public interface Icon {
 	public static class Image implements Icon {
 		java.awt.Image image;
 		int w, h;
-		javax.swing.Icon textual, toolbar, desktop;		
+		javax.swing.ImageIcon textual, toolbar, desktop;		
 
 		public Image(java.awt.Image image) {
 			this.image = image;
@@ -142,32 +180,26 @@ public interface Icon {
 		 * Get the textual form of the icon.
 		 * @return		Textual form.
 		 */
-		private javax.swing.Icon getTextual() {
+		private javax.swing.ImageIcon getTextual() {
 			if(textual == null) {
 				if(h <= MAX_TEXTUAL)
 					textual = new javax.swing.ImageIcon(image);
 				else
-					textual = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_TEXTUAL / h,
-								MAX_TEXTUAL,
-								java.awt.Image.SCALE_SMOOTH));
+					textual = new javax.swing.ImageIcon(scale(image, w * MAX_TEXTUAL / h, MAX_TEXTUAL));
 			}
 			return textual;
 		}
-
+		
 		/**
 		 * Get the toolbar form of the icon.
 		 * @return		Textual form.
 		 */
-		private javax.swing.Icon getToolbar() {
+		private javax.swing.ImageIcon getToolbar() {
 			if(toolbar == null) {
 				if(MAX_TEXTUAL < h && h <= MAX_TOOLBAR)
 					toolbar = new javax.swing.ImageIcon(image);
 				else
-					toolbar = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_TOOLBAR / h,
-								MAX_TOOLBAR,
-								java.awt.Image.SCALE_SMOOTH));
+					toolbar = new javax.swing.ImageIcon(scale(image, w * MAX_TOOLBAR / h, MAX_TOOLBAR));
 			}
 			return toolbar;
 		}
@@ -176,19 +208,20 @@ public interface Icon {
 		 * Get the desktop form of the icon.
 		 * @return		Desktop form.
 		 */
-		private javax.swing.Icon getDesktop() {
-			if(toolbar == null) {
+		private javax.swing.ImageIcon getDesktop() {
+			if(desktop == null) {
 				if(MAX_TOOLBAR < h && h <= MAX_DESKTOP)
-					toolbar = new javax.swing.ImageIcon(image);
+					desktop = new javax.swing.ImageIcon(image);
 				else
-					toolbar = new javax.swing.ImageIcon(image.getScaledInstance(
-								w * MAX_DESKTOP / h,
-								MAX_DESKTOP,
-								java.awt.Image.SCALE_SMOOTH));
+					desktop = new javax.swing.ImageIcon(scale(image, w * MAX_DESKTOP / h, MAX_DESKTOP));
 			}
-			return toolbar;
+			return desktop;
 		}
 
+		/**
+		 * Get the picture for a broken image.
+		 * @return	Broken image image.
+		 */
 		public static Image getBroken() {
 			try {
 				return new Image(ImageIO.read(Image.class.getResourceAsStream("broken.png")));
@@ -196,6 +229,44 @@ public interface Icon {
 				return null;
 			}
 		}
+
+		@Override
+		public java.awt.Image asImage(int state) {
+			return asImage(state, TEXTUAL);
+		}
+
+		@Override
+		public java.awt.Image asImage(int state, int size) {
+			if(state != 0)
+				return null;
+			switch(size) {
+			case ORIGINAL:
+				return image;
+			case TOOLBAR:
+				return getToolbar().getImage();
+			case DESKTOP:
+				return getDesktop().getImage();
+			case TEXTUAL:
+			default:
+				return getTextual().getImage();
+			}
+		}
+		
+		/**
+		 * Perform synchronous image scaling.
+		 * @param image		Image to scale.
+		 * @param w			Width to scale to.
+		 * @param h			Height to scale to.
+		 * @return			Scaled image.
+		 */
+		private static java.awt.Image scale(java.awt.Image image, int w, int h) {
+			BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2d = (Graphics2D)bi.createGraphics();
+			g2d.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+			g2d.drawImage(image, 0, 0, w, h, null);
+			return bi;
+		}
+
 	}
 	
 }
