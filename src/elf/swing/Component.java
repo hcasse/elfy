@@ -205,4 +205,27 @@ public abstract class Component implements elf.ui.Component, elf.ui.Style.Listen
 		return false;
 	}
 	
+	/**
+	 * Display components composing a Swing UI (for debugging purpose).
+	 * @param component		Component to display.
+	 * @param indent		Current indentation.
+	 */
+	public static void display(java.awt.Component component, int indent) {
+		
+		// display current item
+		for(int i = 0; i < indent; i++)
+			System.out.print("  ");
+		System.out.println("" + component);
+		
+		if(component instanceof javax.swing.Box || component instanceof javax.swing.JPanel) {
+			java.awt.Container c = (java.awt.Container)component;
+			for(int i = 0; i < c.getComponentCount(); i++)
+				display(c.getComponent(i), indent + 1);
+		}
+		
+		else if(component instanceof javax.swing.JScrollPane)
+			display(((javax.swing.JScrollPane)component).getViewport().getView(), indent + 1);
+		
+	}
+	
 }

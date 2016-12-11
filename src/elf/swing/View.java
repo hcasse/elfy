@@ -115,7 +115,8 @@ public class View extends Container implements elf.ui.View {
 
 	@Override
 	public void show() {
-		getFrame().setVisible(true);
+		JFrame frame = getFrame();
+		frame.setVisible(true);
 		takeFocus();
 	}
 

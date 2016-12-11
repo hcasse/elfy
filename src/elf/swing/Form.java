@@ -17,13 +17,11 @@
  */
 package elf.swing;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.Transient;
 import java.util.LinkedList;
 
 import javax.swing.JComponent;
@@ -162,15 +160,15 @@ public class Form extends Parent implements elf.ui.Form {
 				form = makeVertical(view);
 			else
 				form = makeTwoColumn(view);
-			JScrollPane spane = new JScrollPane(form) {
-				private static final long serialVersionUID = 1L;
-				@Override @Transient public Dimension getMinimumSize() { return super.getPreferredSize(); }
-			};
+			//form.setPreferredSize(new Dimension(100, 400));
+			
+			// build the scroll
+			JScrollPane spane = new JScrollPane(form);
 			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 			spane.setViewportBorder(null);
 			spane.getViewport().setOpaque(false);
-
+			
 			// build the buttons
 			if(!visible)
 				component = spane;
@@ -186,8 +184,6 @@ public class Form extends Parent implements elf.ui.Form {
 				box.add(bar.getComponent(view));
 			}
 		}
-		//component.setPreferredSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
-		component.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 		return component;
 	}
 
