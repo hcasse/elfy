@@ -20,6 +20,10 @@ package elf.swing;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.LinkedList;
@@ -43,11 +47,15 @@ import elf.ui.meta.EnumVar;
 import elf.ui.meta.Factory;
 import elf.ui.meta.Var;
 
+
+// TODO adjust according to the OS
+// TODO	move the scroll pane according to the focus
+
 /**
  * Swing implementation of a form.
  * @author casse
  */
-public class Form extends Parent implements elf.ui.Form {
+public class Form extends Parent implements elf.ui.Form, FocusListener {
 	private int style = STYLE_TWO_COLUMN,
 				button_style = Button.STYLE_ICON_TEXT,
 				button_alignment = LEFT;
@@ -58,6 +66,7 @@ public class Form extends Parent implements elf.ui.Form {
 	private LinkedList<Label> labels = new LinkedList<Label>();
 	private boolean visible = true;
 	private JComponent component, first, last;
+	private JScrollPane spane;
 	private View view;
 	private Factory factory;
 
@@ -73,8 +82,6 @@ public class Form extends Parent implements elf.ui.Form {
 
 		// build the panel
 		JPanel panel = new JPanel(new GridBagLayout());
-		//panel.setPreferredSize(new Dimension(100, 100));
-		//panel.setMaximumSize(new Dimension(100, 100));
 		GridBagConstraints c = new GridBagConstraints();
 		c.ipadx = 4;
 		c.ipady = 4;
@@ -95,6 +102,7 @@ public class Form extends Parent implements elf.ui.Form {
 			c.anchor = GridBagConstraints.NORTHEAST;
 			panel.add(label, c);
 			last = field.getComponent(view);
+			last.addFocusListener(this);
 			c.gridx = 1;
 			c.gridy = i;
 			c.anchor = GridBagConstraints.NORTHWEST;
@@ -129,7 +137,8 @@ public class Form extends Parent implements elf.ui.Form {
 			label.setMaximumSize(HFILL);
 			label.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(label);
-			JComponent component = field.getComponent(view);
+			final JComponent component = field.getComponent(view);
+			component.addFocusListener(this);
 			component.setAlignmentX(javax.swing.Box.LEFT_ALIGNMENT);
 			box.add(component);
 			if(listener != null)
@@ -160,12 +169,12 @@ public class Form extends Parent implements elf.ui.Form {
 				form = makeVertical(view);
 			else
 				form = makeTwoColumn(view);
-			//form.setPreferredSize(new Dimension(100, 400));
 			
 			// build the scroll
-			JScrollPane spane = new JScrollPane(form);
+			spane = new JScrollPane(form);
 			spane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			spane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+			spane.getVerticalScrollBar().setUnitIncrement(4);
 			spane.setViewportBorder(null);
 			spane.getViewport().setOpaque(false);
 			
@@ -243,6 +252,7 @@ public class Form extends Parent implements elf.ui.Form {
 		component = null;
 		first = null;
 		last = null;
+		spane = null;
 	}
 
 	protected <T extends Field> T add(T field) {
@@ -356,6 +366,24 @@ public class Form extends Parent implements elf.ui.Form {
 			if(c.takeFocus())
 				return true;
 		return false;
+	}
+
+	@Override
+	public void focusGained(FocusEvent evt) {
+		Rectangle vr = spane.getViewport().getViewRect();
+		Rectangle cr = evt.getComponent().getBounds();
+		int d = cr.y + cr.height - (vr.y + vr.height); 
+		if(d <= 0) {
+			d = cr.y - vr.y;
+			if(d >= 0)
+				d = 0;
+		}
+		if(d != 0)
+			spane.getViewport().setViewPosition(new Point(vr.x, vr.y + d));
+	}
+
+	@Override
+	public void focusLost(FocusEvent arg0) {
 	}
 	
 }

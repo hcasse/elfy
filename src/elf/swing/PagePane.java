@@ -52,15 +52,11 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 			if(this.page != null)
 				this.page.uninstall(pane);
 			page.install(view, pane);
-			//pane.doLayout();
-			//pane.revalidate();
-			pane.invalidate();
 			pane.validate();
 			pane.repaint();
 			page.takeFocus();
 		}
 		this.page = page;
-		Component.display(pane, 0);
 	}
 
 	@Override
