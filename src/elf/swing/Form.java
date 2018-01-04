@@ -17,6 +17,7 @@
  */
 package elf.swing;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -125,7 +126,8 @@ public class Form extends Parent implements elf.ui.Form, FocusListener {
 	private JComponent makeVertical(View view) {
 
 		// build the box
-		javax.swing.Box box = javax.swing.Box.createVerticalBox();
+		//javax.swing.Box box = javax.swing.Box.createVerticalBox();
+		javax.swing.Box box = new javax.swing.Box(javax.swing.BoxLayout.PAGE_AXIS);
 
 		// build the fields
 		EnterListener listener = null;
@@ -177,6 +179,7 @@ public class Form extends Parent implements elf.ui.Form, FocusListener {
 			spane.getVerticalScrollBar().setUnitIncrement(4);
 			spane.setViewportBorder(null);
 			spane.getViewport().setOpaque(false);
+			spane.setMaximumSize(new Dimension(Short.MAX_VALUE, Short.MAX_VALUE));
 			
 			// build the buttons
 			if(!visible)

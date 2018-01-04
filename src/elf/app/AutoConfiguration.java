@@ -24,6 +24,14 @@ package elf.app;
 public class AutoConfiguration {
 	private Configuration conf;
 	
+	/**
+	 * Build a configuration registering itself to the given application.
+	 * the configuration item to save and load are the attributes of the super-class
+	 * of this class.
+	 * 
+	 * @param app		Application to register to.
+	 * @param name		Name of the configuration.
+	 */
 	public AutoConfiguration(Application app, String name) {
 		conf = new Configuration(app, name, this);
 	}

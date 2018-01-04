@@ -10,3 +10,4 @@ WARNING:=ATTENTION:
 ERROR:=ERREUR:
 FATAL:=FATAL:
 Select=Sélectionner
+no\ choice\ available=Pas de choix disponible

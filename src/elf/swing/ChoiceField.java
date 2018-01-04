@@ -20,8 +20,8 @@ package elf.swing;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -29,6 +29,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 
 import elf.ui.Displayer;
+import elf.ui.I18N;
 import elf.ui.Icon;
 import elf.ui.meta.CollectionVar;
 import elf.ui.meta.Entity;
@@ -38,11 +39,12 @@ import elf.ui.meta.Var;
  * Swing implementation of a choice field.
  * @author casse
  */
-public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.ChangeListener<T>, ActionListener {
+public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.ChangeListener<T>, ActionListener, CollectionVar.Listener<T> {
 	private Var<T> chosen;
-	private JComboBox<?> combo;
+	private JComboBox<T> combo;
 	private CollectionVar<T> choices;
 	private boolean updating = false;
+	private DefaultComboBoxModel<T> model;
 	private Displayer<T> displayer = new Displayer<T>() {
 		@Override public String asString(T value) { return value.toString(); }
 		@Override public Icon getIcon(T value) { return null; }
@@ -54,7 +56,9 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 	 */
 	public ChoiceField(Var<T> chosen, CollectionVar<T> choices) {
 		this.chosen = chosen;
+		chosen.add(this);
 		this.choices = choices;
+		choices.addListener(this);
 	}
 
 	@Override
@@ -70,11 +74,12 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 	@Override
 	public JComponent getComponent(View view) {
 		if(combo == null) {
-
+			
 			// create the combo
-			Vector<T> v = new Vector<T>();
-			v.addAll(choices.getCollection());
-			combo = new JComboBox<T>(v);
+			model = new DefaultComboBoxModel<T>();
+			combo = new JComboBox<T>(model);
+			for(T item: choices)
+				model.addElement(item);
 			String help = chosen.getHelp();
 			if(help != null)
 				combo.setToolTipText(help);
@@ -84,7 +89,10 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 				@Override
 				public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 					JLabel label = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-					label.setText(displayer.asString((T)value));
+					if(value == null)
+						label.setText(I18N.STD.t("no choice available"));
+					else
+						label.setText(displayer.asString((T)value));
 					label.setBorder(new CustomBorder(label.getBorder()));
 					return label;
 				}
@@ -100,7 +108,7 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 	 */
 	private void updateUI() {
 		updating = true;
-		combo.setSelectedItem(chosen.get());
+		model.setSelectedItem(chosen.get());
 		updating = false;
 	}
 
@@ -109,11 +117,11 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 	 */
 	@SuppressWarnings("unchecked")
 	private void updateVar() {
-		chosen.set((T)combo.getSelectedItem());
+		chosen.set((T)model.getSelectedItem());
 	}
 
 	@Override
-	public void change(Var<T> data) {
+	public void onChange(Var<T> data) {
 		updateUI();
 	}
 
@@ -145,6 +153,28 @@ public class ChoiceField<T> extends Field implements elf.ui.ChoiceField<T>, Var.
 	@Override
 	public boolean takeFocus() {
 		return combo.requestFocusInWindow();
+	}
+
+	@Override
+	public void onAdd(T item) {
+		model.addElement(item);
+	}
+
+	@Override
+	public void onRemove(T item) {
+		model.removeElement(item);
+	}
+
+	@Override
+	public void onClear() {
+		model.removeAllElements();
+	}
+
+	@Override
+	public void onChange() {
+		model.removeAllElements();
+		for(T item: choices)
+			model.addElement(item);
 	}
 
 }

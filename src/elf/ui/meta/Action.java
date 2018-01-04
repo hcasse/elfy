@@ -80,7 +80,7 @@ public abstract class Action extends AbstractEntity {
 	 * Add a dependency on a listenable object.
 	 * @param listenable	Listenable to be dependent on.
 	 */
-	public void add(Listenable listenable) {
+	public void add(Subject listenable) {
 		new ListenableDependency(this, listenable);
 	}
 	
@@ -96,8 +96,8 @@ public abstract class Action extends AbstractEntity {
 	 * Add dependency on several listenables.
 	 * @param listenables	Listenables to depend on.
 	 */
-	public void dependOn(Listenable... listenables) {
-		for(Listenable listenable: listenables)
+	public void dependOn(Subject... listenables) {
+		for(Subject listenable: listenables)
 			new ListenableDependency(this, listenable);
 	}
 	
@@ -138,7 +138,7 @@ public abstract class Action extends AbstractEntity {
 		/**
 		 * Update the commands.
 		 */
-		protected void update() {
+		public void update() {
 			action.update();
 		}
 		
@@ -149,18 +149,13 @@ public abstract class Action extends AbstractEntity {
 	 * @author casse
 	 *
 	 */
-	public static class ListenableDependency extends Dependency implements Listenable.Listener {
+	public static class ListenableDependency extends Dependency implements Subject.Observer {
 
-		public ListenableDependency(Action action, Listenable listenable) {
+		public ListenableDependency(Action action, Subject listenable) {
 			super(action);
 			listenable.add(this);
 		}
 
-		@Override
-		public void update(Listenable obs) {
-			update();
-		}
-		
 	}
 	
 	/**
@@ -175,11 +170,11 @@ public abstract class Action extends AbstractEntity {
 		public DataDependency(Action action, Var<T> data) {
 			super(action);
 			this.data = data;
-			data.addChangeListener(this);
+			data.add(this);
 		}
 
 		@Override
-		public void change(Var<T> data) {
+		public void onChange(Var<T> data) {
 			action.update();
 		}
 

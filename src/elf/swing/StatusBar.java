@@ -119,7 +119,16 @@ public class StatusBar extends Component implements elf.ui.StatusBar {
 	@Override
 	public JComponent getComponent(View view) {
 		if(box == null) {
-			box = Box.createHorizontalBox();
+			box = new javax.swing.Box(javax.swing.BoxLayout.LINE_AXIS) {
+				private static final long serialVersionUID = 1L;
+
+				@Override public Dimension getMaximumSize() {
+					Dimension d = super.getPreferredSize();
+					d.width = Short.MAX_VALUE;
+					return d;
+				}
+
+			};
 			for(elf.swing.TextInfo info: left)
 				box.add(info.getComponent(view));
 			label = new JLabel();

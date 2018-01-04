@@ -17,31 +17,69 @@
  */
 package elf.ui.meta;
 
-import java.util.Vector;
+import java.util.LinkedList;
 
 /**
  * Abstract implementation of a listener.
  * @author casse
  */
-public class AbstractListenable extends AbstractEntity implements Listenable {
-	private Vector<Listenable.Listener> listeners = new Vector<Listenable.Listener>();
+public class AbstractListenable extends AbstractEntity implements Subject {
+	private LinkedList<Delegate> delegates = new LinkedList<Delegate>();
 
 	@Override
-	public void add(Listenable.Listener listener) {
-		listeners.add(listener);
+	public void add(final Observer listener) {
+		add(new Delegate(listener) {
+			@Override public void update() { listener.update(); }
+		});
 	}
 
 	@Override
-	public void remove(Listenable.Listener listener) {
-		listeners.remove(listener);
+	public void remove(Observer listener) {
+		removeByID(listener);
+	}
+	
+	protected void removeByID(Object id) {
+		for(Delegate delegate: delegates)
+			if(id == delegate.getID()) {
+				delegates.remove(delegate);
+				return;
+			}		
 	}
 
 	/**
 	 * Called to update all listeners.
 	 */
-	protected void fireListenableChange() {
-		for(Listenable.Listener listener: listeners)
-			listener.update(this);
+	protected void fireChange() {
+		for(Delegate delegate: delegates)
+			delegate.update();
 	}
+
+	/**
+	 * Add directly a listener using a wrapper.
+	 * @param delegate	Adde listener.
+	 */
+	protected void add(Delegate delegate) {
+		delegates.add(delegate);
+	}
+
+	/**
+	 * Wrapper to embed complex listeners.
+	 * @author casse
+	 *
+	 * @param <T>	Type of complex listener.
+	 */
+	protected static abstract class Delegate implements Observer {
+		protected Object id;
+		
+		public Delegate(Object id) {
+			this.id = id;
+		}
+		
+		public Object getID() {
+			return id;
+		}
+		
+	}
+
 }
 

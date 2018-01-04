@@ -25,6 +25,9 @@ import javax.swing.JPanel;
 
 import elf.ui.I18N;
 import elf.ui.meta.Action;
+import elf.ui.meta.Activable;
+import elf.ui.meta.Var;
+import elf.ui.meta.Var.ChangeListener;
 
 /**
  * Swing implementation of page pane.
@@ -33,7 +36,6 @@ import elf.ui.meta.Action;
 public class PagePane extends Parent implements elf.ui.PagePane {
 	private final LinkedList<Page> stack = new LinkedList<Page>();
 	private Page page;
-	//private javax.swing.Box pane;
 	private javax.swing.JPanel pane;
 	private Action back_action;
 	private View view;
@@ -99,9 +101,14 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 	 */
 	private static class Page extends elf.swing.Container implements elf.ui.PagePane.Page {
 		Listener listener = NULL;
+		LinkedList<Activable> activables = new LinkedList<Activable>();
+		boolean shown = false;
 		
-		public void install(View view, /*javax.swing.Box*/ JPanel panel) {
+		public void install(View view, JPanel panel) {
+			shown = true;
 			listener.onShow();
+			for(Activable activable: activables)
+				activable.enable();
 			for(Component component: getComponents())
 				panel.add(component.getComponent(view));
 			panel.doLayout();
@@ -112,7 +119,10 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 			return null;
 		}
 		
-		public void uninstall(/*javax.swing.Box*/ JPanel panel) {
+		public void uninstall(JPanel panel) {
+			shown = false;
+			for(Activable activable: activables)
+				activable.disable();
 			listener.onHide();
 			panel.removeAll();
 		}
@@ -120,6 +130,27 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 		@Override
 		public void setListener(Listener listener) {
 			this.listener = listener;
+		}
+
+		@Override
+		public void add(Activable activable) {
+			activables.add(activable);
+			if(shown)
+				activable.enable();
+			else
+				activable.disable();
+		}
+
+		@Override
+		public void remove(Activable activable) {
+			activables.remove(activable);
+		}
+
+		@Override
+		public <T> void listenExtern(Var<T> var, ChangeListener<T> listener) {
+			Var.DelayedListener<T> dlist = new Var.DelayedListener<T>(listener);
+			var.add(dlist);
+			add(dlist);
 		}
 		
 	}
@@ -140,5 +171,5 @@ public class PagePane extends Parent implements elf.ui.PagePane {
 	public void back() {
 		pop();
 	}
-
+	
 }

@@ -73,9 +73,9 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Change
 		if(bar == null) {
 			bar = new JProgressBar(axis == HORIZONTAL ? JProgressBar.HORIZONTAL : JProgressBar.VERTICAL, min.get(), max.get());
 			bar.setValue(var.get());
-			var.addChangeListener(this);
-			max.addChangeListener(this);
-			min.addChangeListener(this);
+			var.add(this);
+			max.add(this);
+			min.add(this);
 			if(axis == HORIZONTAL) {
 				bar.setStringPainted(true);
 				bar.setString(getBarString());
@@ -86,20 +86,20 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Change
 
 	@Override
 	public void setMin(int min) {
-		this.min.removeChangeListener(this);
+		this.min.remove(this);
 		this.min = new Var<Integer>(min);
 		if(bar != null) {
-			this.min.addChangeListener(this);
+			this.min.add(this);
 			bar.setMinimum(min);
 		}
 	}
 
 	@Override
 	public void setMax(int max) {
-		this.min.removeChangeListener(this);
+		this.min.remove(this);
 		this.min = new Var<Integer>(max);
 		if(bar != null) {
-			this.max.addChangeListener(this);
+			this.max.add(this);
 			bar.setMaximum(max);
 		}
 	}
@@ -108,13 +108,13 @@ public class ProgressBar extends Field implements elf.ui.ProgressBar, Var.Change
 	public void dispose() {
 		super.dispose();
 		bar = null;
-		var.removeChangeListener(this);
-		min.removeChangeListener(this);
-		max.removeChangeListener(this);
+		var.remove(this);
+		min.remove(this);
+		max.remove(this);
 	}
 
 	@Override
-	public void change(Var<Integer> data) {
+	public void onChange(Var<Integer> data) {
 		if(bar != null) {
 			if(data == var) {
 				bar.setValue(data.get());

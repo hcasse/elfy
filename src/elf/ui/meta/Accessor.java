@@ -116,7 +116,7 @@ public interface Accessor<T> {
 		}
 
 		@Override
-		public void change(Var<U> data) {
+		public void onChange(Var<U> data) {
 			if(var != null)
 				var.fireChange();
 		}
@@ -124,14 +124,14 @@ public interface Accessor<T> {
 		@Override
 		public void link(Var<T> var) {
 			if(var == null)
-				object.addChangeListener(this);
+				object.add(this);
 			this.var = var;
 		}
 
 		@Override
 		public void unlink() {
 			if(var != null) {
-				object.removeChangeListener(this);
+				object.remove(this);
 				var = null;
 			}
 		}

@@ -65,9 +65,10 @@ public class Box extends Container implements elf.ui.Box {
 		@Override
 		public JComponent getComponent(View view) {
 			if(axis == HORIZONTAL)
-				return new javax.swing.Box.Filler(ZERO, HFILL, HFILL);
-			else
-				return new javax.swing.Box.Filler(ZERO, VFILL, VFILL);
+				return new javax.swing.Box.Filler(ZERO, ZERO, HFILL);
+			else {
+				return new javax.swing.Box.Filler(ZERO, ZERO, VFILL);
+			}
 		}
 		
 	}

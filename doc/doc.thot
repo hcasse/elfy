@@ -104,3 +104,14 @@ In addition, the ELF library provides a comprehensive set of most used icons as:
   * Info.SELECT -- selection button.
 
    
+
+   
+====== Storage Package ======
+
+This package consists of classes providing facilities to save and load data from persistent storage. The persistent storage may be the hard disk or any memory device available on the current hardware. It is not file-oriented but instead application-oriented providing a storage for a particular use: storage of configuration data, storage of application, data, storage of temporary data, etc. These classes are mainly available in ''elf.store'' package.
+
+ 
+
+
+
+ 

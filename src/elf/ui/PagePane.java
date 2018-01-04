@@ -18,6 +18,8 @@
 package elf.ui;
 
 import elf.ui.meta.Action;
+import elf.ui.meta.Activable;
+import elf.ui.meta.Var;
 
 /**
  * A pane made of succeeding pages (one after one). 
@@ -74,6 +76,27 @@ public interface PagePane extends Component {
 		 * @param listener	Current page listener.
 		 */
 		void setListener(Listener listener);
+
+		/**
+		 * Add a listener to a variable set out of the current page.
+		 * If the page is not shown, the change event is postponed until display.
+		 * @param v				Variable it applies to.
+		 * @param listener		Listener.
+		 */
+		<T> void listenExtern(Var<T> var, Var.ChangeListener<T> listener);
+		
+		/**
+		 * Add an activable object that will be enabled when the page is shown
+		 * and disabled when the page is hidden.
+		 * @param activable		Added activable.
+		 */
+		void add(Activable activable);
+		
+		/**
+		 * Remove an activable.
+		 * @param activable		Removed activable.
+		 */
+		void remove(Activable activable);
 		
 	}
 	

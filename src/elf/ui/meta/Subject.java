@@ -21,31 +21,31 @@ package elf.ui.meta;
  * Common interface for piece application whose update is observable.
  * @author casse
  */
-public interface Listenable {
+public interface Subject {
 
 	/**
 	 * Interface implemented by entities that may observe the entity.
 	 * @author casse
 	 */
-	interface Listener {
+	interface Observer {
 		
 		/**
 		 * Called each time a change arises on the current observable.
-		 * @param obs	Changed observer.	
 		 */
-		void update(Listenable obs);
+		void update();
+
 	}
 	
 	/**
-	 * Add a listener.
-	 * @param listener	Added listener.
+	 * Add an observer.
+	 * @param observer	Added observer.
 	 */
-	void add(Listener listener);
+	void add(Observer observer);
 	
 	/**
-	 * Remove a listener.
-	 * @param listener	Removed listener.
+	 * Remove an observer.
+	 * @param observer	Removed observer.
 	 */
-	void remove(Listener listener);
-	
+	void remove(Observer observer);
+
 }

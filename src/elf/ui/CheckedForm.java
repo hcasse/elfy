@@ -23,7 +23,7 @@ import java.util.Vector;
 
 import elf.ui.meta.AbstractListenable;
 import elf.ui.meta.Action;
-import elf.ui.meta.Listenable;
+import elf.ui.meta.Subject;
 import elf.ui.meta.Var;
 
 /**
@@ -31,11 +31,11 @@ import elf.ui.meta.Var;
  * that may be edited from a form.  
  * @author casse
  */
-public class CheckedForm extends AbstractListenable implements Listenable.Listener {
+public class CheckedForm extends AbstractListenable implements Subject.Observer {
 	private Form form;
 	private LinkedList<Var<?>> vars = new LinkedList<Var<?>>();
 	private Vector<CheckedAction> checked_actions = new Vector<CheckedAction>();
-	private TreeMap<Listenable, Field> map = new TreeMap<Listenable, Field>(); 
+	private TreeMap<Subject, Field> map = new TreeMap<Subject, Field>(); 
 	private boolean valid = true;
 	
 	public CheckedForm(Form form, Var<?>... args) {
@@ -104,7 +104,7 @@ public class CheckedForm extends AbstractListenable implements Listenable.Listen
 	}
 
 	@Override
-	public void update(Listenable obs) {
+	public void update() {
 		
 		// need for update?
 		boolean old_valid = valid;
@@ -113,7 +113,7 @@ public class CheckedForm extends AbstractListenable implements Listenable.Listen
 			return;
 		
 		// update actions
-		fireListenableChange();
+		fireChange();
 	}
 	
 	/**
@@ -129,4 +129,5 @@ public class CheckedForm extends AbstractListenable implements Listenable.Listen
 		}
 		
 	}
+
 }

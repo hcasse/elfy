@@ -60,7 +60,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	@Override
 	public void dispose() {
 		super.dispose();
-		var.removeChangeListener(this);
+		var.remove(this);
 		field = null;
 		initial_font = null;
 	}
@@ -73,13 +73,13 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	@Override
 	public void set(Var<T> var) {
 		if(var != null)
-			var.removeChangeListener(this);
+			var.remove(this);
 		this.var = var;
-		var.addChangeListener(this);
+		var.add(this);
 	}
 
 	@Override
-	public void change(Var<T> data) {
+	public void onChange(Var<T> data) {
 		updateUI();
 	}
 
@@ -198,7 +198,10 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 
 	@Override
 	public boolean takeFocus() {
-		return field.requestFocusInWindow();
+		if(!read_only)
+			return field.requestFocusInWindow();
+		else
+			return false;
 	}
 
 }

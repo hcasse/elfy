@@ -80,6 +80,15 @@ public class CollectionVar<T> extends AbstractEntity implements Iterable<T> {
 	}
 	
 	/**
+	 * Add several items.
+	 * @param items		Added items.
+	 */
+	public void add(Collection<T> items) {
+		for(T item: items)
+			add(item);
+	}
+	
+	/**
 	 * Add an item.
 	 * @param item	Added item.
 	 */
@@ -112,6 +121,8 @@ public class CollectionVar<T> extends AbstractEntity implements Iterable<T> {
 	 * Clear the content of the collection.
 	 */
 	public void clear() {
+		if(coll.isEmpty())
+			return;
 		coll.clear();
 		for(Listener<T> listener: listeners)
 			listener.onClear();		

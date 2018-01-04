@@ -1,6 +1,6 @@
 /*
  * Elfy library
- * Copyright (c) 2015 - Hugues Cassé <hugues.casse@laposte.net>
+ * Copyright (c) 2017 - Hugues Cassé <hugues.casse@laposte.net>
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,31 +17,20 @@
  */
 package elf.ui.meta;
 
-import java.util.LinkedList;
-
-
 /**
- * Represents an action that is guarded by a list of checks.
+ * Interface implemented by any object that is activable or not.
  * @author casse
  */
-public abstract class CheckedAction extends Action {
-	private LinkedList<Check> checks = new LinkedList<Check>(); 
+public interface Activable {
+
+	/**
+	 * Call for activation.
+	 */
+	void enable();
 	
 	/**
-	 * Add a check to drive this action.
-	 * @param check		Added check.
+	 * Call for disactivation.
 	 */
-	public void add(Check check) {
-		add((Subject)check);
-		checks.add(check);
-	}
-
-	@Override
-	public boolean isEnabled() {
-		for(Check check: checks)
-			if(!check.isChecked())
-				return false;
-		return true;
-	}
+	void disable();
 	
 }

@@ -103,6 +103,8 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		cbox.put(v,  b);
 		value.put(b,  v);
 		box.add(b);
+		box.revalidate();
+		box.repaint();
 		b.setSelected(subset.contains(v));
 		b.addItemListener(this);
 	}
@@ -116,8 +118,10 @@ public class SubsetField<T> extends Field implements elf.ui.SubsetField<T>, Item
 		cbox.remove(v);
 		value.remove(b);
 		box.remove(b);
+		box.revalidate();
+		box.repaint();
 	}
-
+	
 	/**
 	 * Initialize the maps.
 	 */

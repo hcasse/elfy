@@ -39,7 +39,7 @@ public class Configuration {
 	 * Build a configuration for the given object.
 	 * @param app			Owner application.
 	 * @param name			Configuration name.
-	 * @param object		Object containing the configuration.
+	 * @param object		Object containing the configuration (attributes).
 	 */
 	public Configuration(Application app, String name, Object object) {
 		this.app = app;

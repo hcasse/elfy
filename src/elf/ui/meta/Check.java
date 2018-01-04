@@ -29,7 +29,7 @@ import elf.ui.Monitor;
  * @author casse
  *
  */
-public abstract class Check extends AbstractListenable implements Listenable.Listener {
+public abstract class Check extends AbstractListenable implements Subject.Observer {
 	private Component component;
 	private Monitor monitor;
 	private Field[] fields;
@@ -96,7 +96,7 @@ public abstract class Check extends AbstractListenable implements Listenable.Lis
 	}
 
 	@Override
-	public void update(Listenable obs) {
+	public void update() {
 		boolean new_state = checkAll();
 		if(new_state != state) {
 			state = new_state;
@@ -108,7 +108,7 @@ public abstract class Check extends AbstractListenable implements Listenable.Lis
 				monitor.error(message);
 
 			// update listener
-			fireListenableChange();
+			this.fireChange();
 
 			// update fields
 			for(Field field: fields)

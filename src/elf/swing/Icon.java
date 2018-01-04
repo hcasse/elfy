@@ -40,9 +40,9 @@ public interface Icon {
 		DESKTOP = 2,
 		ORIGINAL = 3;
 	public static final int
-		MAX_TEXTUAL = 16,
-		MAX_TOOLBAR = 24,
-		MAX_DESKTOP = 32;
+		MAX_TEXTUAL = 24,
+		MAX_TOOLBAR = 32,
+		MAX_DESKTOP = 64;
 	public static final Icon NULL = new Null();
 	public static final Icon BROKEN = Image.getBroken();
 

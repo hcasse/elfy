@@ -60,13 +60,6 @@ public class Var<T> extends AbstractListenable {
 	}
 
 	/**
-	 * Called when the variable is modified.
-	 */
-	public void fireChange() {
-		fireListenableChange();
-	}
-	
-	/**
 	 * Change the accessor.
 	 * @param accessor	New accessor.
 	 */
@@ -90,44 +83,75 @@ public class Var<T> extends AbstractListenable {
 	 * @param value		Set value.
 	 */
 	public void set(T value) {
-		accessor.set(value);
-		fireChange();
+		if(value != get()) {
+			accessor.set(value);
+			fireChange();			
+		}
 	}
 	
 	/**
-	 * Add the given listener.
+	 * Add a listener to be alerted about changes of value of the variable.
 	 * @param listener	Listener to add.
 	 */
-	public void addChangeListener(ChangeListener<T> listener) {
-		add(new ListenerSupport(listener));
+	public void add(final ChangeListener<T> listener) {
+		add(new Delegate(listener) {
+			@Override public void update() { listener.onChange(Var.this); }
+		});
 	}
 	
 	/**
 	 * Listen the current variable and trigger entity event on the given entity.
 	 * @param entity	Entity to signal.
 	 */
-	public void listenForEntity(Entity entity) {
-		add(new EntityPropagator<T>(entity));
+	public void observeForEntity(final Entity entity) {
+		add(new Delegate(entity) {
+			@Override public void update() { entity.fireEntityChange(); }
+		});
 	}
 	
 	/**
 	 * Remove the given listener.
 	 * @param listener	Removed listener.
 	 */
-	public void removeChangeListener(ChangeListener<T> listener) {
-		remove(new ListenerSupport(listener));
+	public void remove(ChangeListener<T> listener) {
+		removeByID(listener);
 	}
 	
+	/**
+	 * Remove the given listener.
+	 * @param listener	Removed listener.
+	 */
+	public void remove(EventListener listener) {
+		removeByID(listener);
+	}
+
 	/**
 	 * Listener to record change in the data.
 	 */
 	public interface ChangeListener<T> {
 		
 		/**
-		 * Called each time the data has been changed.
-		 * @param data	Changed data.
+		 * This method is called each time the variable
+		 * this listener is attached to is changed.
+		 * @param var	Variable triggering the event.
 		 */
-		public void change(Var<T> data);
+		void onChange(Var<T> var);
+		
+	}
+	
+	/**
+	 * Listener for a single change event (without reference to the
+	 * changed variable).
+	 * @author casse
+	 */
+	public interface EventListener {
+		
+		/**
+		 * This method is called each time the listened variable
+		 * is changed.
+		 */
+		void onChange();
+		
 	}
 	
 	/**
@@ -179,44 +203,57 @@ public class Var<T> extends AbstractListenable {
 		}
 		
 	}
-	
+
 	/**
-	 * Provide support for variable listener based on listenable listeners.
+	 * A listener that can be disabled (recording but ignoring the events) or enabled (propagating an event
+	 * or triggering postponed event). To let it working, you have to overload actualChange() instead of
+	 * onChange().
 	 * @author casse
 	 *
-	 * @param <T>	Type of variable.
 	 */
-	public class ListenerSupport implements Listenable.Listener {
-		ChangeListener<T> listener;
-		
-		public ListenerSupport(ChangeListener<T> listener) {
+	public static class DelayedListener<T> implements ChangeListener<T>, Activable {
+		private ChangeListener<T> listener;
+		private boolean disabled = false;
+		private boolean triggered = false;
+		private Var<T> var;
+
+		/**
+		 * Build a delayed listener.
+		 * @param listener	Added listener.
+		 */
+		public DelayedListener(ChangeListener<T> listener) {
 			this.listener = listener;
 		}
 		
+		/**
+		 * Enable the immediate raise of events. 
+		 */
 		@Override
-		public void update(Listenable obs) {
-			listener.change(Var.this);
+		public void enable() {
+			if(disabled && triggered) {
+				listener.onChange(var);
+				triggered = false;
+			}
+			disabled = false;
 		}
 		
-	}
-	
-	/**
-	 * Listener propagating change on variable to entity lookup.
-	 * @author casse
-	 *
-	 * @param <T>	Type of variable value.
-	 */
-	public static class EntityPropagator<T> implements Listenable.Listener {
-		Entity entity;
-		
-		public EntityPropagator(Entity entity) {
-			this.entity = entity;
-		}
-		
+		/**
+		 * Disable the immediate raise of events.
+		 */
 		@Override
-		public void update(Listenable obs) {
-			entity.fireEntityChange();
+		public void disable() {
+			disabled = true;
 		}
-		
+
+		@Override
+		public void onChange(Var<T> var) {
+			if(disabled) {
+				triggered = true;
+				this.var = var;
+			}
+			else
+				listener.onChange(var);
+		}		
 	}
+
 }
