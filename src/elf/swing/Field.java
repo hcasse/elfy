@@ -24,4 +24,9 @@ package elf.swing;
  */
 public abstract class Field extends Component implements elf.ui.Field {
 
+	@Override
+	public void gainFocus() {
+		takeFocus();
+	}
+
 }

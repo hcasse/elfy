@@ -161,5 +161,9 @@ public abstract class Check extends AbstractListenable implements Subject.Observ
 		public void setValidity(boolean validity) {
 		}
 
+		@Override
+		public void gainFocus() {
+		}
+
 	}
 }

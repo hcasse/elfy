@@ -77,6 +77,15 @@ public class Formatter {
 	}
 	
 	/**
+	 * Get the symbol corresponding to the identifier.
+	 * @param id	Looked identifier.
+	 * @return		Found value or null.
+	 */
+	public Object get(String id) {
+		return map.get(id);
+	}
+	
+	/**
 	 * Perform the replacement of escape sequences in the given string.
 	 * @param s					String to replace in.
 	 * @return					String where are sequences has been replaced.
@@ -113,7 +122,7 @@ public class Formatter {
 			}
 			
 			// look for the identifier
-			Object val = map.get(id);
+			Object val = get(id);
 			if(val == null)
 				throw new NotFound(id);
 			

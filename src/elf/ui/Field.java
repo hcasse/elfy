@@ -58,4 +58,8 @@ public interface Field {
 	 */
 	void setValidity(boolean validity);
 
+	/**
+	 * Set the focus on the current field.
+	 */
+	void gainFocus();
 }

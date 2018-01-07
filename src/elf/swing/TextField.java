@@ -198,7 +198,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 
 	@Override
 	public boolean takeFocus() {
-		if(!read_only)
+		if(field != null && !read_only)
 			return field.requestFocusInWindow();
 		else
 			return false;
