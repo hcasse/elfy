@@ -98,6 +98,7 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 				@Override public void removeUpdate(DocumentEvent arg0) { updateSync(); }
 			});
 			field.setEditable(!read_only);
+			field.setFocusable(!read_only);
 			updateUI();
 			if(style != null) {
 				initial_font = field.getFont();
@@ -152,8 +153,10 @@ public class TextField<T> extends Field implements elf.ui.TextField<T>, Var.Chan
 	@Override
 	public void setReadOnly(boolean ro) {
 		read_only = ro;
-		if(field != null)
+		if(field != null) {
 			field.setEditable(!read_only);
+			field.setFocusable(!read_only);
+		}
 	}
 
 	@Override

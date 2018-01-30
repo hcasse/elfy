@@ -50,7 +50,6 @@ import elf.ui.meta.Var;
 
 
 // TODO adjust according to the OS
-// TODO	move the scroll pane according to the focus
 
 /**
  * Swing implementation of a form.
